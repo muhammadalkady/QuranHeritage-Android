@@ -1,0 +1,105 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: "androidx.navigation.safeargs.kotlin"
+
+android {
+    compileSdkVersion 29
+    defaultConfig {
+        applicationId "com.kady.muhammad.quran.heritage"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        release {
+            storeFile file(System.getenv("KEYSTORE"))
+            storePassword System.getenv("KEYSTORE_PASSWORD")
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
+    buildTypes {
+        debug {
+            buildConfigField "Boolean", "IS_LOGGING_ENABLED", "true"
+        }
+        release {
+            signingConfig signingConfigs.release
+            buildConfigField "Boolean", "IS_LOGGING_ENABLED", "false"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    flavorDimensions "default"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        dataBinding = true
+    }
+}
+
+def exo_Player = "2.9.5"
+def slidinguppanel = "3.4.0"
+def lifecycle = "2.2.0"
+def livedata = "2.2.0"
+def materialprogressbar = "1.6.1"
+def appcompat = "1.1.0"
+def legacy_support = "1.0.0"
+def gson = "2.8.6"
+def nav_ktx = "2.3.0-rc01"
+def fuel = "2.1.0"
+def koin_version = '2.0.1'
+def preference = "1.1.1"
+def circle_image_view = "4.2.0"
+def quick_permissions = "0.4.0"
+def upload_service = "4.0.0-rc2"
+def multi_file_picker = "1.6"
+def okhttp_logging_interceptor = "4.4.0"
+def lingver = "1.2.1"
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "com.google.android.exoplayer:exoplayer:$exo_Player"
+    implementation "com.sothree.slidinguppanel:library:$slidinguppanel"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
+    implementation group: "androidx.lifecycle", name: "lifecycle-viewmodel", version: "$lifecycle"
+    implementation group: "androidx.lifecycle", name: "lifecycle-extensions", version: "$lifecycle"
+    implementation group: "androidx.lifecycle", name: "lifecycle-livedata", version: "$livedata"
+    implementation group: "androidx.lifecycle", name: "lifecycle-livedata-ktx", version: "$livedata"
+    implementation "me.zhanghai.android.materialprogressbar:library:$materialprogressbar"
+    implementation "androidx.appcompat:appcompat:$appcompat"
+    implementation "androidx.legacy:legacy-support-v4:$legacy_support"
+    implementation group: "com.google.code.gson", name: "gson", version: "$gson"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_ktx"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_ktx"
+    implementation "com.github.kittinunf.fuel:fuel:$fuel"
+    implementation "com.github.kittinunf.fuel:fuel-android:$fuel"
+    implementation "com.github.kittinunf.fuel:fuel-coroutines:$fuel"
+    implementation "com.github.kittinunf.fuel:fuel-gson:$fuel"
+    implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-androidx-scope:$koin_version"
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+    implementation "org.koin:koin-androidx-ext:$koin_version"
+    implementation "androidx.preference:preference-ktx:$preference"
+    implementation "com.mikhaellopez:circularimageview:$circle_image_view"
+    implementation "com.github.quickpermissions:quickpermissions-kotlin:$quick_permissions"
+    implementation "net.gotev:uploadservice:$upload_service"
+    implementation "net.gotev:uploadservice-okhttp:$upload_service"
+    implementation "com.kbeanie:multipicker:$multi_file_picker@aar"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_logging_interceptor"
+    implementation "com.github.YarikSOffice:lingver:$lingver"
+    //test
+    androidTestImplementation group: "androidx.test.ext", name: "junit", version: "1.1.1"
+    testImplementation "junit:junit:4.13"
+    androidTestImplementation "androidx.test:runner:1.2.0"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.2.0"
+}
+androidExtensions {
+    experimental = true
+}

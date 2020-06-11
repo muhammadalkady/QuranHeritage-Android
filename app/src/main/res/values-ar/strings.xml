@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">تراث القرآن الكريم</string>
+    <string name="zero_time">٠٠:٠٠:٠٠</string>
+    <string name="empty_title">عفوا لا يوجد محتوي</string>
+    <string name="empty_sub_title">غير متاح</string>
+    <string name="user_notification_channel_name">القرآن الكريم</string>
+    <string name="user_notification_channel_desc">القرآن الكريم</string>
+    <string name="main_title">القرآن الكريم</string>
+</resources>
