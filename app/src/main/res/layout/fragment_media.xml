@@ -25,7 +25,7 @@
                     android:id="@+id/logo"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/black_circle"
+                    android:background="@drawable/avatar_color_circle"
                     android:scaleType="center"
                     app:avd="@drawable/logo_avd_anim" />
 

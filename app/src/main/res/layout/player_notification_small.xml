@@ -10,7 +10,8 @@
         android:layout_height="match_parent"
         android:contentDescription="@null"
         android:scaleType="centerCrop"
-        android:src="@drawable/notification_background" />
+        android:src="@drawable/notification_background"
+        android:tint="@color/colorPrimaryDark" />
 
     <LinearLayout
         android:layout_width="match_parent"
