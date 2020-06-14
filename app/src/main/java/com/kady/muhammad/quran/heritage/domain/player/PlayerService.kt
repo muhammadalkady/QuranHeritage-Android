@@ -12,7 +12,7 @@ import com.kady.muhammad.quran.heritage.entity.constant.Const
 
 class PlayerService : MediaBrowserServiceCompat() {
 
-    private val tag = "Qadi-Player-Service"
+    private val tag = "Player-Service"
 
     private lateinit var player: Player
     private lateinit var mutableMediaSession: MediaSessionCompat
