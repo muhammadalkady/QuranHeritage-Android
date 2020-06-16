@@ -6,21 +6,37 @@
     android:id="@+id/panel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorPrimaryDark"
     android:gravity="bottom"
+    sothree:umanoFadeColor="@android:color/transparent"
     sothree:umanoPanelHeight="64dp"
     sothree:umanoShadowHeight="4dp"
     tools:context="com.kady.muhammad.quran.heritage.presentation.main.MainActivity">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/nav_host_fragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/colorPrimaryDark"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph">
+        android:layout_height="match_parent">
 
-    </androidx.fragment.app.FragmentContainerView>
+        <com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
+            android:id="@+id/logo"
+            android:layout_width="92dp"
+            android:layout_height="92dp"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="16dp"
+            app:avd="@drawable/logo_avd_anim" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/nav_graph">
+
+        </androidx.fragment.app.FragmentContainerView>
+
+    </FrameLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/player"
