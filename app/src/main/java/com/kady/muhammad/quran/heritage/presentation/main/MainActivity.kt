@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setupSlidingPanel()
-        setupLogo()
         panel.post { syncNavHostFragmentOffset(getPanelOffset()) }
     }
 
@@ -53,10 +52,6 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
 
     private fun setupSlidingPanel() {
         panel.addPanelSlideListener(this)
-    }
-
-    private fun setupLogo() {
-        logo.startAVDAnim()
     }
 
     private fun getPanelOffset() =
