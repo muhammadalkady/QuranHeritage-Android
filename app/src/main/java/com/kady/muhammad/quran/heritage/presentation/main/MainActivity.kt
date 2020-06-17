@@ -5,7 +5,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.kady.muhammad.quran.heritage.R
-import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.presentation.player.PlayerFragment
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModel
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
@@ -20,9 +19,7 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
         setContentView(R.layout.activity_main)
         setupSlidingPanel()
         setupLogo()
-        panel.post {
-            syncNavHostFragmentOffset(getPanelOffset())
-        }
+        panel.post { syncNavHostFragmentOffset(getPanelOffset()) }
     }
 
     override fun onBackPressed() {
@@ -34,19 +31,10 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
     }
 
     override fun onPanelSlide(panel: View, slideOffset: Float) {
-        Logger.logI(
-            "onPanelSlide",
-            """"slidingOffset = $slideOffset | playerHeight = ${player.height} | navHostHeight = ${nav_host_fragment.height}""",
-            true
-        )
         syncNavHostFragmentOffset(slideOffset)
     }
 
-    override fun onPanelStateChanged(
-        panel: View,
-        previousState: SlidingUpPanelLayout.PanelState,
-        newState: SlidingUpPanelLayout.PanelState
-    ) {
+    override fun onPanelStateChanged(panel: View, previousState: SlidingUpPanelLayout.PanelState, newState: SlidingUpPanelLayout.PanelState) {
     }
 
     fun playPause(mediaId: String) {
@@ -56,6 +44,7 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
     private fun syncNavHostFragmentOffset(slideOffset: Float) {
         nav_host_fragment.translationY = -(nav_host_fragment.height * slideOffset)
         nav_host_fragment.alpha = 1 - slideOffset
+        logo.alpha = slideOffset
     }
 
     private fun playerFragment(): PlayerFragment {
