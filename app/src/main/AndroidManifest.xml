@@ -29,7 +29,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.main.MainActivity" />
+        <activity
+            android:name=".presentation.main.MainActivity"
+            android:launchMode="singleTask" />
 
         <service
             android:name=".domain.player.PlayerService"
