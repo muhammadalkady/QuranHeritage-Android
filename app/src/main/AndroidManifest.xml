@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name="com.kady.muhammad.quran.heritage.App"
+        android:name=".App"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,7 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.kady.muhammad.quran.heritage.presentation.main.MainActivity">
+        <activity
+            android:name=".presentation.splash.SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,8 +29,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".presentation.main.MainActivity" />
+
         <service
-            android:name="com.kady.muhammad.quran.heritage.domain.player.PlayerService"
+            android:name=".domain.player.PlayerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
@@ -43,7 +47,6 @@
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>
