@@ -35,20 +35,15 @@ object MediaRepo : KoinComponent {
         parentMediaId: ParentMediaId,
         force: Boolean = false
     ): List<Media> {
-        return (allMedia(force).filter { it.parentId == parentMediaId }).apply {
-            mediaMap[parentMediaId] = this
-        }
+        return (allMedia(force).filter { it.parentId == parentMediaId }).apply { mediaMap[parentMediaId] = this }
     }
 
     suspend fun mediaChildrenForParentId(
         parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID,
         force: Boolean
     ): List<ChildMedia> {
-        if (mediaMap[parentMediaId]?.isEmpty() != false || force) return filterMedia(
-            parentMediaId,
-            force
-        )
-        return mediaMap[parentMediaId] ?: filterMedia(parentMediaId, force)
+        return if (mediaMap[parentMediaId]?.isEmpty() != false || force) filterMedia(parentMediaId, force)
+        else mediaMap[parentMediaId] ?: filterMedia(parentMediaId, force)
     }
 
     suspend fun parentMediaForChildId(childMediaId: ChildMediaId): ParentMedia {
