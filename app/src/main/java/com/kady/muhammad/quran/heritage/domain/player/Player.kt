@@ -42,9 +42,9 @@ import com.kady.muhammad.quran.heritage.domain.player.Player as QuranPlayer
 class Player(private val playerService: PlayerService) : Runnable,
     AudioManager.OnAudioFocusChangeListener, KoinComponent {
 
-    private val tag = "Qadi-Player"
+    private val tag = "Player"
     private val elapsedTimeRefreshInterval = 1000L
-    private val userAgent = "Muhammad-Qadi"
+    private val userAgent = "Muhammad-Alkady"
     private val playerHandlerThread = HandlerThread("player_handler_thread")
     private val playerHandler: Handler by lazy { Handler(playerHandlerThread.looper) }
     private val elapsedTimeHandler = Handler()

@@ -81,7 +81,7 @@ class PlayerService : MediaBrowserServiceCompat() {
 
     private fun initMediaSession(): MediaSessionCompat {
         Logger.logI(tag, "Initializing mainMedia session ...")
-        val mediaSession = MediaSessionCompat(this, "Muhammad-Qadi")
+        val mediaSession = MediaSessionCompat(this, "Muhammad-Alkady")
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS or MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS)
         mediaSession.setCallback(mediaSessionCallback)
         sessionToken = mediaSession.sessionToken
