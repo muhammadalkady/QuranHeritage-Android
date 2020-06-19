@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class PlayerViewModel(private val app: Application) : AndroidViewModel(app) {
 
-    private val tag = "Qadi-Player-View-Model"
+    private val tag = "Player-View-Model"
 
     val playerState: MutableLiveData<Int> = MutableLiveData()
     val playerMetadata: MutableLiveData<PlayerMetadata> = MutableLiveData()
