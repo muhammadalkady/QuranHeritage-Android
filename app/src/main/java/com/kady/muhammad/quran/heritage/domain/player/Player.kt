@@ -78,7 +78,7 @@ class Player(private val playerService: PlayerService) : Runnable,
     private val metadataBuilder: MediaMetadataCompat.Builder by lazy { MediaMetadataCompat.Builder() }
     private val wifiLock: WifiManager.WifiLock by lazy {
         (playerService.application.getSystemService(WIFI_SERVICE) as WifiManager)
-            .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "Muhammad-Qadi")
+            .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "Muhammad-Alkady")
     }
 
     private val playerBundle = Bundle()
