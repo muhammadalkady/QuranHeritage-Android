@@ -276,8 +276,12 @@ class Player(private val playerService: PlayerService) : Runnable,
     }
 
     private fun onBuffering() {
+        setMetadata(childMediaId)
         setPlaybackState(PlaybackStateCompat.STATE_BUFFERING)
-        playerService.stopForeground(false)
+        playerService.startForeground(
+            PlayerNotification.NOTIFICATION_ID,
+            PlayerNotification.notify(playerService, mediaSession, false)
+        )
     }
 
     private fun onPositionDiscontinuity() {
