@@ -125,7 +125,8 @@ class PlayerViewModel(private val app: Application) : AndroidViewModel(app) {
         return mediaControllerCompat.metadata?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
     }
 
-    private fun play() {
+    private fun play(caller: Int) {
+        Logger.logI(tag, "play caller = $caller")
         mediaControllerCompat.transportControls.play()
     }
 
@@ -142,17 +143,18 @@ class PlayerViewModel(private val app: Application) : AndroidViewModel(app) {
     }
 
     private fun isPlaying(): Boolean {
-        return mediaControllerCompat.playbackState?.state == PlaybackStateCompat.STATE_PLAYING
+        return mediaControllerCompat.playbackState?.state == PlaybackStateCompat.STATE_PLAYING ||
+                mediaControllerCompat.playbackState?.state == PlaybackStateCompat.STATE_BUFFERING
     }
 
     fun playPause(childMediaId: ChildMediaId) {
         viewModelScope.launch {
             if (lastChildMediaId() == childMediaId) {
-                if (isPlaying()) pause() else play()
+                if (isPlaying()) pause() else play(1)
             } else {
                 val playingChildMediaId: String? = lastChildMediaId()
                 if (playingChildMediaId == null) {
-                    prepare(childMediaId).also { play() }
+                    prepare(childMediaId).also { play(2) }
                 } else {
                     if (isSiblings(childMediaId, lastChildMediaId()!!)) {
                         mediaControllerCompat.transportControls
@@ -161,7 +163,7 @@ class PlayerViewModel(private val app: Application) : AndroidViewModel(app) {
                                 Bundle().apply
                                 { putString(Const.MEDIA_ID, childMediaId) })
                     } else {
-                        prepare(childMediaId).also { play() }
+                        prepare(childMediaId).also { play(3) }
                     }
                 }
             }
@@ -169,7 +171,7 @@ class PlayerViewModel(private val app: Application) : AndroidViewModel(app) {
     }
 
     fun playPause() {
-        if (isPlaying()) pause() else play()
+        if (isPlaying()) pause() else play(4)
     }
 
     fun seekTo(progress: Int) {

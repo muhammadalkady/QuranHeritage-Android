@@ -63,18 +63,22 @@ class TwoStatesAVDImageView : AppCompatImageView {
     }
 
     fun toState1() {
-        if (!state2Avd.isRunning) {
-            setImageDrawable(state1Avd)
-            state1Avd.start()
-            state = 1
+        post {
+            if (!state2Avd.isRunning && state != 1) {
+                setImageDrawable(state1Avd)
+                state1Avd.start()
+                state = 1
+            }
         }
     }
 
     fun toState2() {
-        if (!state1Avd.isRunning) {
-            setImageDrawable(state2Avd)
-            state2Avd.start()
-            state = 2
+        post {
+            if (!state1Avd.isRunning && state != 2) {
+                setImageDrawable(state2Avd)
+                state2Avd.start()
+                state = 2
+            }
         }
     }
 

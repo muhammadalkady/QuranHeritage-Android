@@ -240,21 +240,29 @@ class Player(private val playerService: PlayerService) : Runnable,
 
     private fun onReady(playWhenReady: Boolean) {
         if (playWhenReady) {
-            setPlaybackState(PlaybackStateCompat.STATE_PLAYING)
-            setMetadata(childMediaId)
-            elapsedTimeHandler.post(this)
-            registerNoisyReceiver()
-            playerService.startForeground(
-                PlayerNotification.NOTIFICATION_ID,
-                PlayerNotification.notify(playerService, mediaSession, false)
-            )
+            onPlay()
         } else {
-            setPlaybackState(PlaybackStateCompat.STATE_PAUSED)
-            elapsedTimeHandler.removeCallbacks(this)
-            unregisterNoisyReceiver()
-            playerService.stopForeground(false)
-            PlayerNotification.notify(playerService, mediaSession, true)
+            onPause()
         }
+    }
+
+    private fun onPause() {
+        setPlaybackState(PlaybackStateCompat.STATE_PAUSED)
+        elapsedTimeHandler.removeCallbacks(this)
+        unregisterNoisyReceiver()
+        playerService.stopForeground(false)
+        PlayerNotification.notify(playerService, mediaSession, true)
+    }
+
+    private fun onPlay() {
+        setPlaybackState(PlaybackStateCompat.STATE_PLAYING)
+        setMetadata(childMediaId)
+        elapsedTimeHandler.post(this)
+        registerNoisyReceiver()
+        playerService.startForeground(
+            PlayerNotification.NOTIFICATION_ID,
+            PlayerNotification.notify(playerService, mediaSession, false)
+        )
     }
 
     private fun onIdle() {
@@ -319,6 +327,7 @@ class Player(private val playerService: PlayerService) : Runnable,
             if (wifiLock.isHeld) wifiLock.release()
             simpleExoPlayer.playWhenReady = false
             if (!playOnFocus) abandonAudioFocus()
+            onPause()
         }
     }
 

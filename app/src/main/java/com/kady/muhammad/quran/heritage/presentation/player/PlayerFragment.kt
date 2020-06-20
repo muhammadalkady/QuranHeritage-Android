@@ -122,10 +122,12 @@ class PlayerFragment : Fragment() {
 
     private fun onError() {
         loading.hide()
+        playPause.toState2()
     }
 
     private fun onBuffering() {
         loading.show()
+        playPause.toState1()
     }
 
     private fun onStopped() {
