@@ -1,5 +1,6 @@
 package com.kady.muhammad.quran.heritage.domain.player
 
+import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Context.WIFI_SERVICE
@@ -20,13 +21,17 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.RequiresApi
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
-import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
+import com.kady.muhammad.quran.heritage.App
 import com.kady.muhammad.quran.heritage.domain.api.API
 import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.domain.repo.MediaRepo
@@ -42,6 +47,7 @@ import com.kady.muhammad.quran.heritage.domain.player.Player as QuranPlayer
 class Player(private val playerService: PlayerService) : Runnable,
     AudioManager.OnAudioFocusChangeListener, KoinComponent {
 
+    private val context: Application = playerService.applicationContext as App
     private val tag = "Player"
     private val elapsedTimeRefreshInterval = 1000L
     private val userAgent = "Muhammad-Alkady"
@@ -77,7 +83,7 @@ class Player(private val playerService: PlayerService) : Runnable,
 
     private val metadataBuilder: MediaMetadataCompat.Builder by lazy { MediaMetadataCompat.Builder() }
     private val wifiLock: WifiManager.WifiLock by lazy {
-        (playerService.application.getSystemService(WIFI_SERVICE) as WifiManager)
+        (context.getSystemService(WIFI_SERVICE) as WifiManager)
             .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "Muhammad-Alkady")
     }
 
@@ -85,10 +91,16 @@ class Player(private val playerService: PlayerService) : Runnable,
 
     private fun initComponents() {
         Logger.logI(tag, "initializing player components")
-        cache = SimpleCache(playerService.cacheDir, LeastRecentlyUsedCacheEvictor(Long.MAX_VALUE))
-        dataSourceFactory = DefaultHttpDataSourceFactory(userAgent)
+        cache = SimpleCache(
+            playerService.cacheDir, LeastRecentlyUsedCacheEvictor(Long.MAX_VALUE),
+            ExoDatabaseProvider(context)
+        )
+        dataSourceFactory = DefaultHttpDataSourceFactory(
+            userAgent, 0,
+            0, true
+        )
         cacheDataSourceFactory = CacheDataSourceFactory(cache, dataSourceFactory)
-        defaultTrackSelector = DefaultTrackSelector()
+        defaultTrackSelector = DefaultTrackSelector(context)
         defaultLoadControl = DefaultLoadControl()
         defaultRendererFactory = DefaultRenderersFactory(playerService)
     }
@@ -192,9 +204,11 @@ class Player(private val playerService: PlayerService) : Runnable,
     }
 
     private fun internalPrepare(allChildren: List<ChildMedia>) {
-        val mediaSources: Array<ExtractorMediaSource> = allChildren
+        val mediaSources: Array<ProgressiveMediaSource> = allChildren
             .map {
-                ExtractorMediaSource.Factory(cacheDataSourceFactory)
+                ProgressiveMediaSource
+                    .Factory(cacheDataSourceFactory)
+                    .setLoadErrorHandlingPolicy(CustomLoadErrorLoadPolicy())
                     .createMediaSource(Uri.parse(api.streamUrl(it.id)))
             }.toTypedArray()
         val contactingMediaSource = ConcatenatingMediaSource(*mediaSources)
@@ -318,14 +332,13 @@ class Player(private val playerService: PlayerService) : Runnable,
         playerHandlerThread.start()
         playerHandler.post {
             initComponents()
-            simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(
-                playerService,
-                defaultRendererFactory,
-                defaultTrackSelector,
-                defaultLoadControl,
-                null,
-                playerHandlerThread.looper
-            )
+            simpleExoPlayer = SimpleExoPlayer
+                .Builder(context, defaultRendererFactory)
+                .setTrackSelector(defaultTrackSelector)
+                .setLoadControl(defaultLoadControl)
+                .setBandwidthMeter(DefaultBandwidthMeter.Builder(context).build())
+                .setLooper(playerHandler.looper)
+                .build()
             simpleExoPlayer.addListener(Listener(this))
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) initAudioFocusRequest()
             isInit = true
@@ -411,6 +424,12 @@ class Player(private val playerService: PlayerService) : Runnable,
         }
     }
 
+    class CustomLoadErrorLoadPolicy : DefaultLoadErrorHandlingPolicy() {
+        override fun getMinimumLoadableRetryCount(dataType: Int): Int {
+            return Int.MAX_VALUE
+        }
+    }
+
     object Listener : Player.EventListener {
 
         private lateinit var player: QuranPlayer
@@ -422,7 +441,10 @@ class Player(private val playerService: PlayerService) : Runnable,
 
         override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {}
         override fun onSeekProcessed() {}
-        override fun onPlayerError(error: ExoPlaybackException) {}
+        override fun onPlayerError(error: ExoPlaybackException) {
+            error.printStackTrace()
+        }
+
         override fun onPositionDiscontinuity(reason: Int) = player.onPositionDiscontinuity()
         override fun onRepeatModeChanged(repeatMode: Int) {}
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) =

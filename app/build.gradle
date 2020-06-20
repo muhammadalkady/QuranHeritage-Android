@@ -43,7 +43,7 @@ android {
     }
 }
 
-def exo_Player = "2.9.5"
+def exo_Player = "2.11.5"
 def slidinguppanel = "3.4.0"
 def lifecycle = "2.2.0"
 def livedata = "2.2.0"
