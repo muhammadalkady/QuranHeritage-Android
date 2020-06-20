@@ -2,8 +2,6 @@ package com.kady.muhammad.quran.heritage.presentation.widget
 
 import android.content.Context
 import android.graphics.drawable.AnimatedVectorDrawable
-import android.os.Bundle
-import android.os.Parcelable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import com.kady.muhammad.quran.heritage.R
@@ -38,27 +36,6 @@ class TwoStatesAVDImageView : AppCompatImageView {
             setImageDrawable(state1Avd)
             //
             typedArray.recycle()
-        }
-    }
-
-    private fun restorePlayPauseState(state: Int) {
-        if (state == 1) toState1() else toState2()
-    }
-
-    override fun onSaveInstanceState(): Parcelable? {
-        val bundle = Bundle()
-        val superState = super.onSaveInstanceState()
-        bundle.putParcelable("super_state", superState)
-        bundle.putInt("state", state)
-        return bundle
-    }
-
-    override fun onRestoreInstanceState(state: Parcelable?) {
-        if (state is Bundle) {
-            val superState: Parcelable? = state.getParcelable("super_state")
-            this.state = state.getInt("state")
-            restorePlayPauseState(this.state)
-            super.onRestoreInstanceState(superState)
         }
     }
 
