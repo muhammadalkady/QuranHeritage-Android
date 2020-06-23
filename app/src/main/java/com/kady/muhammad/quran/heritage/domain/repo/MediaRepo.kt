@@ -18,44 +18,37 @@ object MediaRepo : KoinComponent {
 
     private val allMediaMutex = Mutex()
     private val allMedia: MutableList<Media> = mutableListOf()
-    private val mediaMap: MutableMap<String, List<Media>> = mutableMapOf()
     private val api: API by inject()
 
-    private suspend fun allMedia(force: Boolean = false): List<Media> {
-        allMediaMutex.withLock {
-            return if (allMedia.isEmpty() || force) {
-                if (allMedia.isNotEmpty()) allMedia.clear()
-                allMedia.addAll((api.allMedia() as GetMediaResponse).media.sorted())
-                allMedia
-            } else allMedia
+    private suspend fun allMedia(fromCache: Boolean): List<Media> {
+        return allMediaMutex.withLock {
+            if (fromCache && allMedia.isNotEmpty()) return@withLock allMedia
+            (api.allMedia() as GetMediaResponse).media
+                .sorted().apply {
+                    allMedia.clear()
+                    allMedia.addAll(this)
+                }
         }
     }
 
-    private suspend fun filterMedia(
-        parentMediaId: ParentMediaId,
-        force: Boolean = false
-    ): List<Media> {
-        return (allMedia(force).filter { it.parentId == parentMediaId }).apply { mediaMap[parentMediaId] = this }
+    private suspend fun filterMedia(fromCache: Boolean, parentMediaId: ParentMediaId): List<Media> {
+        return (allMedia(fromCache).filter { it.parentId == parentMediaId })
     }
 
-    suspend fun mediaChildrenForParentId(
-        parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID,
-        force: Boolean
-    ): List<ChildMedia> {
-        return if (mediaMap[parentMediaId]?.isEmpty() != false || force) filterMedia(parentMediaId, force)
-        else mediaMap[parentMediaId] ?: filterMedia(parentMediaId, force)
+    suspend fun mediaChildrenForParentId(fromCache: Boolean, parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID): List<ChildMedia> {
+        return filterMedia(fromCache, parentMediaId)
     }
 
-    suspend fun parentMediaForChildId(childMediaId: ChildMediaId): ParentMedia {
-        val childMedia = allMedia().first { it.id == childMediaId }
+    suspend fun parentMediaForChildId(fromCache: Boolean, childMediaId: ChildMediaId): ParentMedia {
+        val childMedia = allMedia(fromCache).first { it.id == childMediaId }
         val parentMediaId = childMedia.parentId
-        return allMedia().first { it.id == parentMediaId }
+        return allMedia(fromCache).first { it.id == parentMediaId }
     }
 
-    suspend fun otherChildren(childMediaId: ChildMediaId): List<ChildMedia> {
-        val childMedia = allMedia().first { it.id == childMediaId }
+    suspend fun otherChildren(fromCache: Boolean, childMediaId: ChildMediaId): List<ChildMedia> {
+        val childMedia = allMedia(fromCache).first { it.id == childMediaId }
         val parentMediaId = childMedia.parentId
-        return allMedia().filter { it.parentId == parentMediaId && !it.isList }
+        return allMedia(fromCache).filter { it.parentId == parentMediaId && !it.isList }
     }
 
 }

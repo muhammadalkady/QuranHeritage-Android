@@ -6,14 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.domain.log.Logger
-import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.presentation.ext.hide
 import com.kady.muhammad.quran.heritage.presentation.ext.show
-import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
+import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModel
+import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModelFactory
 import kotlinx.android.synthetic.main.fragment_media.*
 
 class MediaFragment : Fragment() {
@@ -22,7 +23,14 @@ class MediaFragment : Fragment() {
     private val adapter by lazy { MediaAdapter(requireContext(), resources.getInteger(R.integer.span_count), mTitle, mutableListOf()) }
     private val parentMediaId: String by lazy { arguments?.getString("media-id")!! }
     private val mTitle: String by lazy { arguments?.getString("title") ?: getString(R.string.main_title) }
-    private val vm by lazy { (activity as MainActivity).vm }
+    private val vm by lazy {
+        ViewModelProvider(
+            this, MediaViewModelFactory(
+                requireActivity().application,
+                parentMediaId
+            )
+        ).get(MediaViewModel::class.java)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_media, container, false)
@@ -33,16 +41,15 @@ class MediaFragment : Fragment() {
         setupToolbarLogo()
         initPullToRefresh()
         initList()
-        loadMediaList()
+        observeMediaList()
     }
 
     private fun initPullToRefresh() {
-        if (parentMediaId != Const.MAIN_MEDIA_ID) srl.isEnabled = false
         srl.setOnRefreshListener { onRefresh() }
     }
 
     private fun onRefresh() {
-        loadMediaList(true)
+        vm.mediaChildrenForParentId(false, parentMediaId)
     }
 
     private fun initList() {
@@ -61,12 +68,12 @@ class MediaFragment : Fragment() {
         logo.startAVDAnim()
     }
 
-    private fun loadMediaList(force: Boolean = false) {
+    private fun observeMediaList() {
         Logger.logI(logTag, "loadMediaList")
-        if (parentMediaId == Const.MAIN_MEDIA_ID) srl.isRefreshing = true
-        vm.mediaChildrenForParentId(parentMediaId, force)
+        loading.show()
+        vm.liveMedia
             .observe(viewLifecycleOwner,
-                Observer { updateAdapter(it);srl.isRefreshing = false;showNoContent(it.isEmpty()) })
+                Observer { updateAdapter(it);showNoContent(it.isEmpty()) })
     }
 
     private fun showNoContent(isShown: Boolean) {
@@ -74,6 +81,6 @@ class MediaFragment : Fragment() {
     }
 
     private fun updateAdapter(childrenMedia: List<Media>) {
-        context?.let { adapter.updateMedia(childrenMedia);srl.isRefreshing = false }
+        context?.let { adapter.updateMedia(childrenMedia);srl.isRefreshing = false;loading.hide() }
     }
 }

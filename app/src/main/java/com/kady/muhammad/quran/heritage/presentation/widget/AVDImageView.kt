@@ -31,7 +31,7 @@ class AVDImageView : AppCompatImageView {
     }
 
     fun startAVDAnim() {
-        if (!avd.isRunning) avd.start()
+        avd.start()
     }
 
 }

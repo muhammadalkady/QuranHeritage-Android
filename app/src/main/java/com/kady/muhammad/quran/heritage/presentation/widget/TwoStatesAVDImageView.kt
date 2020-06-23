@@ -12,7 +12,6 @@ class TwoStatesAVDImageView : AppCompatImageView {
 
     private lateinit var state2Avd: AnimatedVectorDrawable
 
-    private var state = 2
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -41,21 +40,15 @@ class TwoStatesAVDImageView : AppCompatImageView {
 
     fun toState1() {
         post {
-            if (!state2Avd.isRunning && state != 1) {
-                setImageDrawable(state1Avd)
-                state1Avd.start()
-                state = 1
-            }
+            setImageDrawable(state1Avd)
+            state1Avd.start()
         }
     }
 
     fun toState2() {
         post {
-            if (!state1Avd.isRunning && state != 2) {
-                setImageDrawable(state2Avd)
-                state2Avd.start()
-                state = 2
-            }
+            setImageDrawable(state2Avd)
+            state2Avd.start()
         }
     }
 

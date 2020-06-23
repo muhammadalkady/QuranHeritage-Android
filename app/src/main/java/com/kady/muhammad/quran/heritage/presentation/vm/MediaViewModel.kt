@@ -1,22 +1,37 @@
 package com.kady.muhammad.quran.heritage.presentation.vm
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
 import com.kady.muhammad.quran.heritage.domain.repo.MediaRepo
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMedia
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ParentMediaId
 import com.kady.muhammad.quran.heritage.entity.constant.Const
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-class MediaViewModel(val app: Application) : AndroidViewModel(app) {
+class MediaViewModel(val app: Application, parentMediaId: ParentMediaId) : AndroidViewModel(app) {
 
-    fun mediaChildrenForParentId(
-        parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID,
-        force: Boolean
-    ): LiveData<List<ChildMedia>> =
-        liveData {
-            emit(MediaRepo.mediaChildrenForParentId(parentMediaId, force))
+    private val _liveMedia: MutableLiveData<List<ChildMedia>> = MutableLiveData()
+    val liveMedia: LiveData<List<ChildMedia>> get() = _liveMedia
+
+    init {
+        mediaChildrenForParentId(false, parentMediaId)
+    }
+
+    fun mediaChildrenForParentId(fromCache: Boolean, parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val childMedia = MediaRepo.mediaChildrenForParentId(fromCache, parentMediaId)
+            _liveMedia.postValue(childMedia)
         }
+    }
 
+}
+
+class MediaViewModelFactory(val app: Application, private val parentMediaId: ParentMediaId) :
+    ViewModelProvider.AndroidViewModelFactory(app) {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
+        return MediaViewModel(app, parentMediaId) as T
+    }
 }

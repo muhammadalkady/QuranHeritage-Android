@@ -179,7 +179,7 @@ class Player(private val playerService: PlayerService) : Runnable,
     }
 
     private suspend fun allChildren(childMediaId: ChildMediaId): List<ChildMedia> {
-        return MediaRepo.otherChildren(childMediaId)
+        return MediaRepo.otherChildren(true, childMediaId)
     }
 
     private suspend fun currentChildMedia(childMediaId: ChildMediaId): Media {
@@ -187,7 +187,7 @@ class Player(private val playerService: PlayerService) : Runnable,
     }
 
     private suspend fun parentMedia(childMediaId: ChildMediaId): Media {
-        return MediaRepo.parentMediaForChildId(childMediaId)
+        return MediaRepo.parentMediaForChildId(true, childMediaId)
     }
 
     private fun buildMetadata(childMediaId: ChildMediaId): MediaMetadataCompat {
@@ -381,7 +381,7 @@ class Player(private val playerService: PlayerService) : Runnable,
             Logger.logI(tag, "next")
             if (::childMediaId.isInitialized) {
                 with(simpleExoPlayer) {
-                    val allChildren = runBlocking { MediaRepo.otherChildren(childMediaId) }
+                    val allChildren = runBlocking { MediaRepo.otherChildren(true, childMediaId) }
                     if (currentWindowIndex < allChildren.lastIndex) seekTo(simpleExoPlayer.currentWindowIndex + 1, 0)
                     else seekTo(0, 0)
                     if (!playWhenReady) play()
@@ -395,7 +395,7 @@ class Player(private val playerService: PlayerService) : Runnable,
             Logger.logI(tag, "previous")
             if (::childMediaId.isInitialized) {
                 with(simpleExoPlayer) {
-                    val allChildren = runBlocking { MediaRepo.otherChildren(childMediaId) }
+                    val allChildren = runBlocking { MediaRepo.otherChildren(true, childMediaId) }
                     if (currentWindowIndex == 0) seekTo(allChildren.lastIndex, 0)
                     else seekTo(currentWindowIndex - 1, 0)
                     if (!playWhenReady) play()

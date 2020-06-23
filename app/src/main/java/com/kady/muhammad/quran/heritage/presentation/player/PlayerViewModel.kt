@@ -138,7 +138,7 @@ class PlayerViewModel(private val app: Application) : AndroidViewModel(app) {
         childMediaId1: ChildMediaId,
         childMediaId2: ChildMediaId
     ): Boolean {
-        val siblings = MediaRepo.otherChildren(childMediaId1).map { it.id }
+        val siblings = MediaRepo.otherChildren(true, childMediaId1).map { it.id }
         return siblings.contains(childMediaId2)
     }
 

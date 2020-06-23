@@ -3,16 +3,12 @@ package com.kady.muhammad.quran.heritage.presentation.main
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.presentation.player.PlayerFragment
-import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModel
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListener {
-
-    val vm by lazy { ViewModelProvider(this).get(MediaViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

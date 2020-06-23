@@ -5,6 +5,7 @@ import com.github.kittinunf.fuel.coroutines.awaitResult
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.entity.api_response.GetMediaResponse
 import com.kady.muhammad.quran.heritage.entity.api_response.Response
 import com.kady.muhammad.quran.heritage.entity.media.Media
@@ -41,6 +42,7 @@ class API(private val cc: CoroutineContext, private val pref: Pref) :
             .awaitResult(GetMediaResponse.Deserializer(), this)
             .component1()
             ?.apply { if (this is GetMediaResponse) cacheAllMedia(media) }
+            ?.apply { Logger.logI("Calling API", "all media = ${(this as GetMediaResponse).media.size}") }
             ?: GetMediaResponse(allCachedMedia())
     }
 
