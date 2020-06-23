@@ -56,10 +56,6 @@ def fuel = '2.2.3'
 def koin_version = '2.0.1'
 def preference = "1.1.1"
 def circle_image_view = "4.2.0"
-def quick_permissions = "0.4.0"
-def upload_service = "4.0.0-rc2"
-def multi_file_picker = "1.6"
-def okhttp_logging_interceptor = '4.7.2'
 def lingver = "1.2.1"
 
 dependencies {
@@ -88,11 +84,6 @@ dependencies {
     implementation "org.koin:koin-androidx-ext:$koin_version"
     implementation "androidx.preference:preference-ktx:$preference"
     implementation "com.mikhaellopez:circularimageview:$circle_image_view"
-    implementation "com.github.quickpermissions:quickpermissions-kotlin:$quick_permissions"
-    implementation "net.gotev:uploadservice:$upload_service"
-    implementation "net.gotev:uploadservice-okhttp:$upload_service"
-    implementation "com.kbeanie:multipicker:$multi_file_picker@aar"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_logging_interceptor"
     implementation "com.github.YarikSOffice:lingver:$lingver"
     //test
     androidTestImplementation group: "androidx.test.ext", name: "junit", version: "1.1.1"
