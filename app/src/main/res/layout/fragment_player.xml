@@ -32,10 +32,24 @@
             tools:alpha="1" />
 
         <LinearLayout
+            android:id="@+id/iconsContainer"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_gravity="top"
             android:gravity="center">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/up"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorPrimaryDark"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="@{()->fm.up()}"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                app:srcCompat="@drawable/ic_arrow_up_24" />
 
             <com.kady.muhammad.quran.heritage.presentation.widget.TwoStatesAVDImageView
                 android:id="@+id/repeatOne"

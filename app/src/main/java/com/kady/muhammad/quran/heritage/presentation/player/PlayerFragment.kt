@@ -6,6 +6,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.SeekBar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -14,16 +15,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.FragmentPlayerBinding
 import com.kady.muhammad.quran.heritage.domain.ext.millisToPlayerDuration
-import com.kady.muhammad.quran.heritage.presentation.ext.hide
-import com.kady.muhammad.quran.heritage.presentation.ext.show
+import com.kady.muhammad.quran.heritage.presentation.ext.*
+import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.android.synthetic.main.fragment_player.*
 
-class PlayerFragment : Fragment() {
+class PlayerFragment : Fragment(), PanelSlideListener {
 
     private val vm: PlayerViewModel by lazy { ViewModelProvider(this).get(PlayerViewModel::class.java) }
-
     private lateinit var binding: FragmentPlayerBinding
-
     private var isUserSeeking: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,11 +40,29 @@ class PlayerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observerPlayerState();observerPlayerMetadata();observerElapsedTime();observerRepeatOneMode();observerShuffleMode()
         setSeekBarChangeListener()
+        syncWithPanelLayout()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         vm.disconnectMediaBrowser()
+    }
+
+    override fun onPanelSlide(panel: View, slideOffset: Float) {
+        panel.post {
+            up.layoutParams = LinearLayout
+                .LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT).apply {
+                    weight = 1 - slideOffset
+                }
+            up.translationX = slideOffset * up.width
+        }
+    }
+
+    private fun syncWithPanelLayout() {
+        (activity as? PanelLayout)?.let {
+            val panel: SlidingUpPanelLayout = it.getPanel()
+            onPanelSlide(panel, if (panel.panelState == SlidingUpPanelLayout.PanelState.EXPANDED) 1F else 0F)
+        }
     }
 
     private fun setBindingVariables() {
@@ -170,6 +187,10 @@ class PlayerFragment : Fragment() {
     fun next() {
         next.startAVDAnim()
         vm.next()
+    }
+
+    fun up() {
+        (activity as? PlayerUpClickListener)?.onUp()
     }
 
 }
