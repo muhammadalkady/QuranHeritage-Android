@@ -10,6 +10,7 @@ import com.kady.muhammad.quran.heritage.presentation.ext.PlayerUpClickListener
 import com.kady.muhammad.quran.heritage.presentation.player.PlayerFragment
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_player.*
 
 class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListener, PlayerUpClickListener, PanelLayout {
 
@@ -67,6 +68,7 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
 
     private fun setupSlidingPanel() {
         panel.addPanelSlideListener(this)
+        panel.setDragView(playerFragment.metaContainer)
     }
 
     private fun getPanelOffset() =
