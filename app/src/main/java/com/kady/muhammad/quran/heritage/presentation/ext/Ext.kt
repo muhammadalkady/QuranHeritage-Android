@@ -2,6 +2,7 @@ package com.kady.muhammad.quran.heritage.presentation.ext
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -19,6 +20,16 @@ fun View.hide(onEnd: () -> Unit = {}) {
     animate().alpha(0F).setDuration(300).setListener(object : AnimatorListenerAdapter() {
         override fun onAnimationEnd(animation: Animator) = onEnd()
     }).start()
+}
+
+fun View.upDownAnimation(): ObjectAnimator {
+    val objectAnimator: ObjectAnimator = ObjectAnimator
+        .ofFloat(this, "translationY", 10F, -10F)
+    objectAnimator.repeatMode = ObjectAnimator.REVERSE
+    objectAnimator.repeatCount = ObjectAnimator.INFINITE
+    objectAnimator.duration = 1000L
+    objectAnimator.start()
+    return objectAnimator
 }
 
 fun textToBitmap(messageText: String, textSize: Float, textColor: Int, isBold: Boolean = true): Bitmap {

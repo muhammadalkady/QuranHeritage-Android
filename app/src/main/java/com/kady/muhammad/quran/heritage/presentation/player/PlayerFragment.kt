@@ -39,6 +39,7 @@ class PlayerFragment : Fragment(), PanelSlideListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observerPlayerState();observerPlayerMetadata();observerElapsedTime();observerRepeatOneMode();observerShuffleMode()
+        setupUp()
         setSeekBarChangeListener()
         syncWithPanelLayout()
     }
@@ -56,6 +57,10 @@ class PlayerFragment : Fragment(), PanelSlideListener {
                 }
             up.translationX = slideOffset * up.width
         }
+    }
+
+    private fun setupUp() {
+        upIcon.upDownAnimation()
     }
 
     private fun syncWithPanelLayout() {
