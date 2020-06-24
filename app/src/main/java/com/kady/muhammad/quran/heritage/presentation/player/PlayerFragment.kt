@@ -56,6 +56,13 @@ class PlayerFragment : Fragment(), PanelSlideListener {
                     weight = 1 - slideOffset
                 }
             up.translationX = slideOffset * up.width
+            metaContainer
+                .measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            metaContainer.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                (metaContainer.measuredHeight * slideOffset).toInt()
+            )
+            metaContainer.alpha = slideOffset
         }
     }
 
