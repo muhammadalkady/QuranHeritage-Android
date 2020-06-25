@@ -62,10 +62,12 @@ class Player(private val playerService: PlayerService) : Runnable,
         }
     }
     private val api: API by inject()
+    private val repo: MediaRepo by inject()
 
     private var isInit = false
     private var playOnFocus: Boolean = false
     private var isNoisyReceiverRegistered: Boolean = false
+    private var childrenCount: Int = 0
 
     private lateinit var simpleExoPlayer: SimpleExoPlayer
     private lateinit var cache: SimpleCache
@@ -179,7 +181,7 @@ class Player(private val playerService: PlayerService) : Runnable,
     }
 
     private suspend fun allChildren(childMediaId: ChildMediaId): List<ChildMedia> {
-        return MediaRepo.otherChildren(true, childMediaId)
+        return repo.otherChildren(true, childMediaId)
     }
 
     private suspend fun currentChildMedia(childMediaId: ChildMediaId): Media {
@@ -187,7 +189,7 @@ class Player(private val playerService: PlayerService) : Runnable,
     }
 
     private suspend fun parentMedia(childMediaId: ChildMediaId): Media {
-        return MediaRepo.parentMediaForChildId(true, childMediaId)
+        return repo.parentMediaForChildId(true, childMediaId)
     }
 
     private fun buildMetadata(childMediaId: ChildMediaId): MediaMetadataCompat {
@@ -204,6 +206,7 @@ class Player(private val playerService: PlayerService) : Runnable,
     }
 
     private fun internalPrepare(allChildren: List<ChildMedia>) {
+        childrenCount = allChildren.size
         val mediaSources: Array<ProgressiveMediaSource> = allChildren
             .map {
                 ProgressiveMediaSource
@@ -289,6 +292,13 @@ class Player(private val playerService: PlayerService) : Runnable,
         PlayerNotification.notify(playerService, mediaSession, false)
     }
 
+    private suspend fun ensureChildrenCount(childMediaId: ChildMediaId) {
+        if (allChildren(childMediaId).size.apply {
+                Logger.logI(tag, "ensureChildrenCount $this | $childrenCount")
+            } != childrenCount)
+            internalPrepare(allChildren(childMediaId)).also { seekToChild(childMediaId) }
+    }
+
     override fun onAudioFocusChange(focusChange: Int) {
         when (focusChange) {
             AudioManager.AUDIOFOCUS_GAIN -> onAudioFocusGain()
@@ -309,6 +319,7 @@ class Player(private val playerService: PlayerService) : Runnable,
     fun seekToChild(childMediaId: ChildMediaId) {
         playerHandler.post {
             runBlocking {
+                ensureChildrenCount(childMediaId)
                 simpleExoPlayer.seekTo(
                     allChildren(childMediaId).indexOfFirst { it.id == childMediaId },
                     0
@@ -320,6 +331,7 @@ class Player(private val playerService: PlayerService) : Runnable,
     fun play() {
         playerHandler.post {
             Logger.logI(tag, "play")
+            runBlocking { ensureChildrenCount(childMediaId) }
             wifiLock.acquire()
             if (requestAudioFocus()) simpleExoPlayer.playWhenReady = true
         }
@@ -328,6 +340,7 @@ class Player(private val playerService: PlayerService) : Runnable,
     fun pause() {
         playerHandler.post {
             Logger.logI(tag, "pause")
+            runBlocking { ensureChildrenCount(childMediaId) }
             if (wifiLock.isHeld) wifiLock.release()
             simpleExoPlayer.playWhenReady = false
             if (!playOnFocus) abandonAudioFocus()
@@ -364,7 +377,10 @@ class Player(private val playerService: PlayerService) : Runnable,
     }
 
     fun seekTo(pos: Long) {
-        playerHandler.post { simpleExoPlayer.seekTo(pos) }
+        playerHandler.post {
+            runBlocking { ensureChildrenCount(childMediaId) }
+            simpleExoPlayer.seekTo(pos)
+        }
     }
 
     fun prepare() {
@@ -380,8 +396,9 @@ class Player(private val playerService: PlayerService) : Runnable,
         playerHandler.post {
             Logger.logI(tag, "next")
             if (::childMediaId.isInitialized) {
+                runBlocking { ensureChildrenCount(childMediaId) }
                 with(simpleExoPlayer) {
-                    val allChildren = runBlocking { MediaRepo.otherChildren(true, childMediaId) }
+                    val allChildren = runBlocking { repo.otherChildren(true, childMediaId) }
                     if (currentWindowIndex < allChildren.lastIndex) seekTo(simpleExoPlayer.currentWindowIndex + 1, 0)
                     else seekTo(0, 0)
                     if (!playWhenReady) play()
@@ -394,8 +411,9 @@ class Player(private val playerService: PlayerService) : Runnable,
         playerHandler.post {
             Logger.logI(tag, "previous")
             if (::childMediaId.isInitialized) {
+                runBlocking { ensureChildrenCount(childMediaId) }
                 with(simpleExoPlayer) {
-                    val allChildren = runBlocking { MediaRepo.otherChildren(true, childMediaId) }
+                    val allChildren = runBlocking { repo.otherChildren(true, childMediaId) }
                     if (currentWindowIndex == 0) seekTo(allChildren.lastIndex, 0)
                     else seekTo(currentWindowIndex - 1, 0)
                     if (!playWhenReady) play()

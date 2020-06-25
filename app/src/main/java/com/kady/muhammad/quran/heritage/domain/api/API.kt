@@ -6,6 +6,7 @@ import com.github.kittinunf.fuel.httpGet
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kady.muhammad.quran.heritage.domain.log.Logger
+import com.kady.muhammad.quran.heritage.domain.repo.MediaRepo
 import com.kady.muhammad.quran.heritage.entity.api_response.GetMediaResponse
 import com.kady.muhammad.quran.heritage.entity.api_response.Response
 import com.kady.muhammad.quran.heritage.entity.media.Media
@@ -13,7 +14,7 @@ import com.kady.muhammad.quran.heritage.pref.Pref
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-class API(private val cc: CoroutineContext, private val pref: Pref) :
+class API(private val cc: CoroutineContext, private val pref: Pref, private val mediaRepo: MediaRepo) :
     CoroutineContext by cc {
 
     companion object {
@@ -26,14 +27,6 @@ class API(private val cc: CoroutineContext, private val pref: Pref) :
             pref.saveString("all_media", value)
         }
 
-    private suspend fun allCachedMedia() =
-        withContext(this) {
-            Gson().fromJson<List<Media>>(
-                pref.getString("all_media", "[]"),
-                object : TypeToken<List<Media>>() {}.type
-            )
-        }
-
     suspend fun allMedia(): Response {
         return Uri.parse(BASE_URL)
             .buildUpon()
@@ -43,7 +36,7 @@ class API(private val cc: CoroutineContext, private val pref: Pref) :
             .component1()
             ?.apply { if (this is GetMediaResponse) cacheAllMedia(media) }
             ?.apply { Logger.logI("Calling API", "all media = ${(this as GetMediaResponse).media.size}") }
-            ?: GetMediaResponse(allCachedMedia())
+            ?: GetMediaResponse(mediaRepo.allCachedMedia())
     }
 
     fun streamUrl(mediaId: String): String =

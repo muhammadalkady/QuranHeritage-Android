@@ -18,10 +18,14 @@ import com.kady.muhammad.quran.heritage.domain.repo.MediaRepo
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMediaId
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import kotlinx.coroutines.launch
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-class PlayerViewModel(private val app: Application) : AndroidViewModel(app) {
+class PlayerViewModel(private val app: Application) : AndroidViewModel(app), KoinComponent {
 
     private val tag = "Player-View-Model"
+
+    private val repo: MediaRepo by inject()
 
     val playerState: MutableLiveData<Int> = MutableLiveData()
     val playerMetadata: MutableLiveData<PlayerMetadata> = MutableLiveData()
@@ -138,7 +142,7 @@ class PlayerViewModel(private val app: Application) : AndroidViewModel(app) {
         childMediaId1: ChildMediaId,
         childMediaId2: ChildMediaId
     ): Boolean {
-        val siblings = MediaRepo.otherChildren(true, childMediaId1).map { it.id }
+        val siblings = repo.otherChildren(true, childMediaId1).map { it.id }
         return siblings.contains(childMediaId2)
     }
 
