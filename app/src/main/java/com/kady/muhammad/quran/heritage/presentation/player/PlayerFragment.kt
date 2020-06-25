@@ -24,6 +24,7 @@ class PlayerFragment : Fragment(), PanelSlideListener {
     private val vm: PlayerViewModel by lazy { ViewModelProvider(this).get(PlayerViewModel::class.java) }
     private lateinit var binding: FragmentPlayerBinding
     private var isUserSeeking: Boolean = false
+    private val upLp = LinearLayout.LayoutParams(0, 0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,17 +51,17 @@ class PlayerFragment : Fragment(), PanelSlideListener {
     }
 
     override fun onPanelSlide(panel: View, slideOffset: Float) {
-        panel.post {
-            up.layoutParams = LinearLayout
-                .LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT).apply {
-                    weight = 1 - slideOffset
-                }
-            up.translationX = slideOffset * up.width
+        up.layoutParams = upLp.apply {
+            width = 0
+            height = LinearLayout.LayoutParams.MATCH_PARENT
+            weight = 1 - slideOffset
         }
+        up.translationX = slideOffset * up.width
+        metaContainer.alpha = slideOffset
     }
 
     private fun setupUp() {
-        upIcon.upDownAnimation()
+        upIcon.upAnimation()
     }
 
     private fun syncWithPanelLayout() {

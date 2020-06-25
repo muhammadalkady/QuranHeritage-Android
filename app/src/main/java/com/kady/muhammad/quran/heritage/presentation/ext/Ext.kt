@@ -22,9 +22,9 @@ fun View.hide(onEnd: () -> Unit = {}) {
     }).start()
 }
 
-fun View.upDownAnimation(): ObjectAnimator {
+fun View.upAnimation(): ObjectAnimator {
     val objectAnimator: ObjectAnimator = ObjectAnimator
-        .ofFloat(this, "translationY", 10F, -10F)
+        .ofFloat(this, "translationY", 0F, -10F)
     objectAnimator.repeatMode = ObjectAnimator.REVERSE
     objectAnimator.repeatCount = ObjectAnimator.INFINITE
     objectAnimator.duration = 1000L
