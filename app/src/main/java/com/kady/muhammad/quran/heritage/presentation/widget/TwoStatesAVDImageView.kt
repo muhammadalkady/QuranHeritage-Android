@@ -9,9 +9,8 @@ import com.kady.muhammad.quran.heritage.R
 class TwoStatesAVDImageView : AppCompatImageView {
 
     private lateinit var state1Avd: AnimatedVectorDrawable
-
     private lateinit var state2Avd: AnimatedVectorDrawable
-
+    private var state = -1
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -32,7 +31,7 @@ class TwoStatesAVDImageView : AppCompatImageView {
             state1Avd = typedArray.getDrawable(R.styleable.TwoStatesAVDImageView_avd1) as AnimatedVectorDrawable
             state2Avd = typedArray.getDrawable(R.styleable.TwoStatesAVDImageView_avd2) as AnimatedVectorDrawable
             //
-            setImageDrawable(state1Avd)
+            toState2()
             //
             typedArray.recycle()
         }
@@ -40,15 +39,21 @@ class TwoStatesAVDImageView : AppCompatImageView {
 
     fun toState1() {
         post {
-            setImageDrawable(state1Avd)
-            state1Avd.start()
+            if (state != 1 || state == -1) {
+                state = 1
+                setImageDrawable(state1Avd)
+                state1Avd.start()
+            }
         }
     }
 
     fun toState2() {
         post {
-            setImageDrawable(state2Avd)
-            state2Avd.start()
+            if (state != 2 || state == -1) {
+                state = 2
+                setImageDrawable(state2Avd)
+                state2Avd.start()
+            }
         }
     }
 
