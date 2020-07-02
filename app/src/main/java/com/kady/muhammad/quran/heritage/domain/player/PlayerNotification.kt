@@ -88,7 +88,7 @@ object PlayerNotification {
         val style: androidx.media.app.NotificationCompat.MediaStyle =
             androidx.media.app.NotificationCompat
                 .MediaStyle()
-                .setMediaSession(mediaSession.sessionToken)
+//                .setMediaSession(mediaSession.sessionToken)
                 .setShowCancelButton(false)
                 .setShowActionsInCompactView(1)
         /*
