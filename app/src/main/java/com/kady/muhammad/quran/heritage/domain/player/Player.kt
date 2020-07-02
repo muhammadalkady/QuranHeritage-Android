@@ -47,7 +47,7 @@ import com.kady.muhammad.quran.heritage.domain.player.Player as QuranPlayer
 class Player(private val playerService: PlayerService) : Runnable,
     AudioManager.OnAudioFocusChangeListener, KoinComponent {
 
-    private val context: Application = playerService.applicationContext as App
+    private val app: Application = playerService.applicationContext as App
     private val tag = "Player"
     private val elapsedTimeRefreshInterval = 1000L
     private val userAgent = "Muhammad-Alkady"
@@ -85,7 +85,7 @@ class Player(private val playerService: PlayerService) : Runnable,
 
     private val metadataBuilder: MediaMetadataCompat.Builder by lazy { MediaMetadataCompat.Builder() }
     private val wifiLock: WifiManager.WifiLock by lazy {
-        (context.getSystemService(WIFI_SERVICE) as WifiManager)
+        (app.getSystemService(WIFI_SERVICE) as WifiManager)
             .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "Muhammad-Alkady")
     }
 
@@ -95,14 +95,14 @@ class Player(private val playerService: PlayerService) : Runnable,
         Logger.logI(tag, "initializing player components")
         cache = SimpleCache(
             playerService.cacheDir, LeastRecentlyUsedCacheEvictor(Long.MAX_VALUE),
-            ExoDatabaseProvider(context)
+            ExoDatabaseProvider(app)
         )
         dataSourceFactory = DefaultHttpDataSourceFactory(
             userAgent, 0,
             0, true
         )
         cacheDataSourceFactory = CacheDataSourceFactory(cache, dataSourceFactory)
-        defaultTrackSelector = DefaultTrackSelector(context)
+        defaultTrackSelector = DefaultTrackSelector(app)
         defaultLoadControl = DefaultLoadControl()
         defaultRendererFactory = DefaultRenderersFactory(playerService)
     }
@@ -254,7 +254,7 @@ class Player(private val playerService: PlayerService) : Runnable,
         elapsedTimeHandler.removeCallbacks(this)
         unregisterNoisyReceiver()
         playerService.stopForeground(false)
-        PlayerNotification.notify(playerService, mediaSession, true)
+        PlayerNotification.notify(app, mediaSession, true)
     }
 
     private fun onPlay() {
@@ -264,7 +264,7 @@ class Player(private val playerService: PlayerService) : Runnable,
         registerNoisyReceiver()
         playerService.startForeground(
             PlayerNotification.NOTIFICATION_ID,
-            PlayerNotification.notify(playerService, mediaSession, false)
+            PlayerNotification.notify(app, mediaSession, false)
         )
     }
 
@@ -283,13 +283,13 @@ class Player(private val playerService: PlayerService) : Runnable,
         setPlaybackState(PlaybackStateCompat.STATE_BUFFERING)
         playerService.startForeground(
             PlayerNotification.NOTIFICATION_ID,
-            PlayerNotification.notify(playerService, mediaSession, false)
+            PlayerNotification.notify(app, mediaSession, false)
         )
     }
 
     private fun onPositionDiscontinuity() {
         setMetadata(childMediaId)
-        PlayerNotification.notify(playerService, mediaSession, false)
+        PlayerNotification.notify(app, mediaSession, false)
     }
 
     private suspend fun ensureChildrenCount(childMediaId: ChildMediaId) {
@@ -359,10 +359,10 @@ class Player(private val playerService: PlayerService) : Runnable,
         playerHandler.post {
             initComponents()
             simpleExoPlayer = SimpleExoPlayer
-                .Builder(context, defaultRendererFactory)
+                .Builder(app, defaultRendererFactory)
                 .setTrackSelector(defaultTrackSelector)
                 .setLoadControl(defaultLoadControl)
-                .setBandwidthMeter(DefaultBandwidthMeter.Builder(context).build())
+                .setBandwidthMeter(DefaultBandwidthMeter.Builder(app).build())
                 .setLooper(playerHandler.looper)
                 .build()
             simpleExoPlayer.addListener(Listener(this))

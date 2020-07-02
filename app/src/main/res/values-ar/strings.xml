@@ -6,4 +6,8 @@
     <string name="user_notification_channel_name">القرآن الكريم</string>
     <string name="user_notification_channel_desc">القرآن الكريم</string>
     <string name="main_title">القرآن الكريم</string>
+    <string name="play">تشغيل</string>
+    <string name="pause">إيقاف</string>
+    <string name="next">التالي</string>
+    <string name="previous">السابق</string>
 </resources>

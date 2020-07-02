@@ -6,4 +6,8 @@
     <string name="user_notification_channel_name">Quran</string>
     <string name="user_notification_channel_desc">Quran</string>
     <string name="main_title">Main</string>
+    <string name="play">play</string>
+    <string name="pause">pause</string>
+    <string name="next">next</string>
+    <string name="previous">previous</string>
 </resources>
