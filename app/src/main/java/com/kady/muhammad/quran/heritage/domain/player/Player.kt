@@ -331,6 +331,7 @@ class Player(private val playerService: PlayerService) : Runnable,
     fun play() {
         playerHandler.post {
             Logger.logI(tag, "play")
+            if (!::childMediaId.isInitialized) return@post
             runBlocking { ensureChildrenCount(childMediaId) }
             wifiLock.acquire()
             if (requestAudioFocus()) simpleExoPlayer.playWhenReady = true
@@ -378,6 +379,7 @@ class Player(private val playerService: PlayerService) : Runnable,
 
     fun seekTo(pos: Long) {
         playerHandler.post {
+            if (!::childMediaId.isInitialized) return@post
             runBlocking { ensureChildrenCount(childMediaId) }
             simpleExoPlayer.seekTo(pos)
         }

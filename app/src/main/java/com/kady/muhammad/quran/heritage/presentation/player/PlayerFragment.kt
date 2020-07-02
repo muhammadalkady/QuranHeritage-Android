@@ -51,6 +51,7 @@ class PlayerFragment : Fragment(), PanelSlideListener {
     }
 
     override fun onPanelSlide(panel: View, slideOffset: Float) {
+        view ?: return
         up.layoutParams = upLp.apply {
             width = 0
             height = LinearLayout.LayoutParams.MATCH_PARENT
