@@ -35,12 +35,3 @@ fun Long.millisToPlayerDuration(): String =
 fun List<Media>.sorted(): List<Media> {
     return this.sortedBy { !it.isList }
 }
-
-fun String.name(): String {
-    val index = this.lastIndexOf('.')
-    return if (index == -1) {
-        this
-    } else {
-        this.substring(0, index)
-    }
-}
