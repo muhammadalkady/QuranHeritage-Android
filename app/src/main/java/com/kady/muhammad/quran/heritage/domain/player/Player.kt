@@ -212,7 +212,7 @@ class Player(private val playerService: PlayerService) : Runnable,
                 ProgressiveMediaSource
                     .Factory(cacheDataSourceFactory)
                     .setLoadErrorHandlingPolicy(CustomLoadErrorLoadPolicy())
-                    .createMediaSource(Uri.parse(api.streamUrl(it.id)))
+                    .createMediaSource(Uri.parse(api.streamUrl(it.parentId, it.id)))
             }.toTypedArray()
         val contactingMediaSource = ConcatenatingMediaSource(*mediaSources)
         simpleExoPlayer.prepare(contactingMediaSource, true, true)

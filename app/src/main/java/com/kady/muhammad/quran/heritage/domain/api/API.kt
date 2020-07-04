@@ -5,10 +5,13 @@ import com.github.kittinunf.fuel.coroutines.awaitResult
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.domain.repo.MediaRepo
+import com.kady.muhammad.quran.heritage.entity.api_response.File
 import com.kady.muhammad.quran.heritage.entity.api_response.GetMediaResponse
+import com.kady.muhammad.quran.heritage.entity.api_response.GetMetadataResponse
 import com.kady.muhammad.quran.heritage.entity.api_response.Response
+import com.kady.muhammad.quran.heritage.entity.constant.Const.ARCHIVE_DOT_ORG_MP3_FORMAT
+import com.kady.muhammad.quran.heritage.entity.constant.Const.MAIN_MEDIA_ID
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.pref.Pref
 import kotlinx.coroutines.withContext
@@ -19,6 +22,8 @@ class API(private val cc: CoroutineContext, private val pref: Pref, private val 
 
     companion object {
         private const val BASE_URL = "https://quran25.herokuapp.com"
+        private const val ARCHIVE_DOT_ORG_METADATA_BASE_URL = "https://archive.org/metadata"
+        private const val ARCHIVE_DOT_ORG_DOWNLOAD_BASE_URL = "https://archive.org/download"
     }
 
     private suspend fun cacheAllMedia(media: List<Media>) =
@@ -27,23 +32,41 @@ class API(private val cc: CoroutineContext, private val pref: Pref, private val 
             pref.saveString("all_media", value)
         }
 
-    suspend fun allMedia(): Response {
-        return Uri.parse(BASE_URL)
-            .buildUpon()
-            .appendPath("get").appendPath("media")
-            .toString().httpGet()
-            .awaitResult(GetMediaResponse.Deserializer(), this)
-            .component1()
-            ?.apply { if (this is GetMediaResponse) cacheAllMedia(media) }
-            ?.apply { Logger.logI("Calling API", "all media = ${(this as GetMediaResponse).media.size}") }
-            ?: GetMediaResponse(mediaRepo.allCachedMedia())
-    }
+    suspend fun allMedia(id: String = "195000121950"): Response =
+        withContext(this) {
+            Uri
+                .parse(ARCHIVE_DOT_ORG_METADATA_BASE_URL)
+                .buildUpon()
+                .appendPath(id)
+                .toString()
+                .httpGet()
+                .awaitResult(GetMetadataResponse.Deserializer(), this@API)
+                .component1()
+                ?.run { this as GetMetadataResponse }
+                ?.run {
+                    val media: MutableList<Media> = files
+                        .filter { file: File -> file.format == ARCHIVE_DOT_ORG_MP3_FORMAT }
+                        .map { file: File ->
+                            Media(
+                                file.name, metadata.identifier,
+                                file.name.substring(0, file.name.lastIndexOf(".")),
+                                false
+                            )
+                        }.toMutableList()
+                    media.add(Media(metadata.identifier, MAIN_MEDIA_ID, metadata.title, true))
+                    media
+                }
+                ?.apply { cacheAllMedia(this) }
+                ?.run { GetMediaResponse(this) }
+                ?: GetMediaResponse(mediaRepo.allCachedMedia())
 
-    fun streamUrl(mediaId: String): String =
+        }
+
+    fun streamUrl(parentMediaId: String, mediaId: String): String =
         Uri
-            .parse(BASE_URL)
+            .parse(ARCHIVE_DOT_ORG_DOWNLOAD_BASE_URL)
             .buildUpon()
-            .appendPath("stream").appendPath("media")
+            .appendPath(parentMediaId).appendPath(mediaId)
             .appendQueryParameter("id", mediaId)
             .build()
             .toString()

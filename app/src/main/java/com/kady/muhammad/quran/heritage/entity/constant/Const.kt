@@ -6,4 +6,5 @@ object Const {
     const val PLAYER_ELAPSED_TIME = "elapsed.time"
     const val PLAYER_ELAPSED_TIME_EVENT = "elapsed.time.event"
     const val PLAYER_ACTION_SKIP_TO_MEDIA_ID = "skip.to.media.id"
+    const val ARCHIVE_DOT_ORG_MP3_FORMAT = "VBR MP3"
 }
