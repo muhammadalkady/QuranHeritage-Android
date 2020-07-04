@@ -42,7 +42,8 @@ class API(private val cc: CoroutineContext, private val pref: Pref, private val 
                         .awaitResult(GetMetadataResponse.Deserializer(), this@API)
                         .component1()
                 }
-                .mapNotNull { it as? GetMetadataResponse }
+                .map { it as? GetMetadataResponse }
+                .run { if (contains(null)) emptyList() else this.filterNotNull() }
                 .run {
                     map { Pair(it.metadata, it.files) }
                         .map { pair: Pair<Metadata, List<File>> ->
@@ -61,7 +62,8 @@ class API(private val cc: CoroutineContext, private val pref: Pref, private val 
                         }
 
                 }
-                .apply { cacheAllMedia(this) }
+                .apply { if (isNotEmpty()) cacheAllMedia(this) }
+                .run { if (isEmpty()) mediaRepo.allCachedMedia() else this }
                 .run { GetMediaResponse(this) }
                 .apply { Logger.logI("Calling API", "response $this") }
         }
