@@ -31,16 +31,18 @@ class API(private val cc: CoroutineContext, private val pref: Pref, private val 
 
     suspend fun allMedia(ids: List<String> = mediaRepo.parentMediaIds()): Response =
         withContext(this) {
-            ids.map { id ->
-                Uri
-                    .parse(ARCHIVE_DOT_ORG_METADATA_BASE_URL)
-                    .buildUpon()
-                    .appendPath(id)
-                    .toString()
-                    .httpGet()
-                    .awaitResult(GetMetadataResponse.Deserializer(), this@API)
-                    .component1()
-            }.mapNotNull { it as? GetMetadataResponse }
+            ids
+                .map { id ->
+                    Uri
+                        .parse(ARCHIVE_DOT_ORG_METADATA_BASE_URL)
+                        .buildUpon()
+                        .appendPath(id)
+                        .toString()
+                        .httpGet()
+                        .awaitResult(GetMetadataResponse.Deserializer(), this@API)
+                        .component1()
+                }
+                .mapNotNull { it as? GetMetadataResponse }
                 .run {
                     map { Pair(it.metadata, it.files) }
                         .map { pair: Pair<Metadata, List<File>> ->
