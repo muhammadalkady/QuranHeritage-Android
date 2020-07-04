@@ -7,7 +7,6 @@ import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMedia
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ParentMediaId
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -16,16 +15,20 @@ class MediaViewModel(val app: Application, parentMediaId: ParentMediaId) : Andro
 
     private val repo: MediaRepo by inject()
     private val _liveMedia: MutableLiveData<List<ChildMedia>> = MutableLiveData()
+    private val _liveLoading: MutableLiveData<Boolean> = MutableLiveData()
     val liveMedia: LiveData<List<ChildMedia>> get() = _liveMedia
+    val liveLoading: LiveData<Boolean> get() = _liveLoading
 
     init {
         mediaChildrenForParentId(false, parentMediaId)
     }
 
     fun mediaChildrenForParentId(fromCache: Boolean, parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID) {
-        GlobalScope.launch(Dispatchers.IO) {
-            val childMedia = repo.mediaChildrenForParentId(fromCache, parentMediaId)
-            _liveMedia.postValue(childMedia)
+        viewModelScope.launch(Dispatchers.IO) {
+            _liveLoading.postValue(true)
+            _liveMedia.postValue(repo.mediaChildrenForParentId(fromCache = true, parentMediaId = parentMediaId))
+            _liveMedia.postValue(repo.mediaChildrenForParentId(fromCache, parentMediaId))
+            _liveLoading.postValue(false)
         }
     }
 

@@ -41,6 +41,7 @@ class MediaFragment : Fragment() {
         setupToolbarLogo()
         initPullToRefresh()
         initList()
+        observeLoading()
         observeMediaList()
     }
 
@@ -70,10 +71,21 @@ class MediaFragment : Fragment() {
 
     private fun observeMediaList() {
         Logger.logI(logTag, "loadMediaList")
-        loading.show()
         vm.liveMedia
             .observe(viewLifecycleOwner,
                 Observer { updateAdapter(it);showNoContent(it.isEmpty()) })
+    }
+
+    private fun observeLoading() {
+        vm.liveLoading.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                loading.show()
+                srl.isRefreshing = true
+            } else {
+                loading.hide()
+                srl.isRefreshing = false
+            }
+        })
     }
 
     private fun showNoContent(isShown: Boolean) {
@@ -81,6 +93,6 @@ class MediaFragment : Fragment() {
     }
 
     private fun updateAdapter(childrenMedia: List<Media>) {
-        context?.let { adapter.updateMedia(childrenMedia);srl.isRefreshing = false;loading.hide() }
+        context?.let { adapter.updateMedia(childrenMedia) }
     }
 }
