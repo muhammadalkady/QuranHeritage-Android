@@ -24,12 +24,7 @@ class MediaFragment : Fragment() {
     private val parentMediaId: String by lazy { arguments?.getString("media-id")!! }
     private val mTitle: String by lazy { arguments?.getString("title") ?: getString(R.string.main_title) }
     private val vm by lazy {
-        ViewModelProvider(
-            this, MediaViewModelFactory(
-                requireActivity().application,
-                parentMediaId
-            )
-        ).get(MediaViewModel::class.java)
+        ViewModelProvider(this, MediaViewModelFactory(requireActivity().application, parentMediaId)).get(MediaViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
