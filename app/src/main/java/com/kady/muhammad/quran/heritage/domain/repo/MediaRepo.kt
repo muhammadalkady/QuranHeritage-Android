@@ -12,8 +12,6 @@ import com.kady.muhammad.quran.heritage.entity.api_response.GetMediaResponse
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.pref.Pref
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -21,15 +19,11 @@ import kotlin.coroutines.CoroutineContext
 
 class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : KoinComponent {
 
-    private val allMediaMutex = Mutex()
     private val api: API by inject()
 
     private suspend fun allMedia(fromCache: Boolean): List<Media> {
-        return allMediaMutex.withLock {
-            if (fromCache) return@withLock allCachedMedia()
-            (api.allMedia() as GetMediaResponse).media
-                .sorted()
-        }
+        return if (fromCache) allCachedMedia()
+        else (api.allMedia() as GetMediaResponse).media.sorted()
     }
 
     private suspend fun filterMedia(fromCache: Boolean, parentMediaId: ParentMediaId): List<Media> {
@@ -37,7 +31,7 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
     }
 
     fun parentMediaIds(): List<String> {
-        return listOf("20200704_20200704_1205", "20200704_20200704_1302","20200704_20200704_1325")
+        return listOf("20200704_20200704_1205", "20200704_20200704_1302", "20200704_20200704_1325")
     }
 
     suspend fun mediaChildrenForParentId(fromCache: Boolean, parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID): List<ChildMedia> {
