@@ -31,7 +31,7 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
     }
 
     fun parentMediaIds(): List<String> {
-        return listOf("20200704_20200704_1205", "20200704_20200704_1302", "20200704_20200704_1325")
+        return listOf("basit_1950", "basit_1951_", "basit_1952")
     }
 
     suspend fun mediaChildrenForParentId(fromCache: Boolean, parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID): List<ChildMedia> {
