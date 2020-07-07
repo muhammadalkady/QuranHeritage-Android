@@ -294,7 +294,7 @@ class Player(private val playerService: PlayerService) : Runnable,
 
     private suspend fun ensureChildrenCount(childMediaId: ChildMediaId) {
         if (allChildren(childMediaId).size.apply {
-                Logger.logI(tag, "ensureChildrenCount $this | $childrenCount")
+                Logger.logI(tag, "ensure children count $this | $childrenCount")
             } != childrenCount)
             internalPrepare(allChildren(childMediaId)).also { seekToChild(childMediaId) }
     }
@@ -331,7 +331,9 @@ class Player(private val playerService: PlayerService) : Runnable,
     fun play() {
         playerHandler.post {
             Logger.logI(tag, "play")
-            if (!::childMediaId.isInitialized) return@post
+            if (!::childMediaId.isInitialized) {
+                runBlocking { childMediaId = repo.allCachedMedia().first().id }
+            }
             runBlocking { ensureChildrenCount(childMediaId) }
             wifiLock.acquire()
             if (requestAudioFocus()) simpleExoPlayer.playWhenReady = true
