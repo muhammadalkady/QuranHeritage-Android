@@ -5,8 +5,8 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 
 data class GetMetadataResponse(
-    @SerializedName("files") val files: List<File>,
-    @SerializedName("metadata") val metadata: Metadata
+    @SerializedName("files") val files: List<File> = emptyList(),
+    @SerializedName("metadata") val metadata: Metadata = Metadata("", "")
 ) : Response {
     class Deserializer : ResponseDeserializable<Response> {
         override fun deserialize(content: String): Response {

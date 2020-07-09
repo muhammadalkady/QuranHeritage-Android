@@ -42,25 +42,23 @@ class API(private val cc: CoroutineContext, private val pref: Pref, private val 
                         .awaitResult(GetMetadataResponse.Deserializer(), this@API)
                         .component1()
                 }
-                .map { it as? GetMetadataResponse }
-                .run { if (contains(null)) emptyList() else this.filterNotNull() }
-                .run {
-                    map { Pair(it.metadata, it.files) }
-                        .map { pair: Pair<Metadata, List<File>> ->
-                            Pair(pair.first, pair.second
-                                .filter { file: File -> file.format == ARCHIVE_DOT_ORG_MP3_FORMAT })
-                        }.flatMap { pair: Pair<Metadata, List<File>> ->
-                            val media = pair.second.map { file ->
-                                Media(
-                                    file.name, pair.first.identifier,
-                                    file.name.substring(0, file.name.lastIndexOf(".")),
-                                    false
-                                )
-                            }.toMutableList()
-                            media.add(Media(pair.first.identifier, MAIN_MEDIA_ID, pair.first.title, true))
-                            media
-                        }
-
+                .map { it as GetMetadataResponse }
+                .filter { it.files.isNotEmpty() }
+                .map { Pair(it.metadata, it.files) }
+                .map { pair: Pair<Metadata, List<File>> ->
+                    Pair(pair.first, pair.second
+                        .filter { file: File -> file.format == ARCHIVE_DOT_ORG_MP3_FORMAT })
+                }
+                .toList().flatMap { pair: Pair<Metadata, List<File>> ->
+                    val media = pair.second.map { file ->
+                        Media(
+                            file.name, pair.first.identifier,
+                            file.name.substring(0, file.name.lastIndexOf(".")),
+                            false
+                        )
+                    }.toMutableList()
+                    media.add(Media(pair.first.identifier, MAIN_MEDIA_ID, pair.first.title, true))
+                    media
                 }
                 .apply { if (isNotEmpty()) cacheAllMedia(this) }
                 .run { if (isEmpty()) mediaRepo.allCachedMedia() else this }
