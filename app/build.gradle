@@ -16,15 +16,16 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file(System.getenv("KEYSTORE"))
-            storePassword System.getenv("KEYSTORE_PASSWORD")
-            keyAlias System.getenv("KEY_ALIAS")
-            keyPassword System.getenv("KEY_PASSWORD")
+            storeFile file('Quran Heritage Keystore')
+            storePassword '1*i-am-moslem*1'
+            keyAlias 'Muhammad Alkady'
+            keyPassword '1*i-am-moslem*1'
         }
     }
     buildTypes {
         debug {
             buildConfigField "Boolean", "IS_LOGGING_ENABLED", "true"
+            signingConfig signingConfigs.release
         }
         release {
             signingConfig signingConfigs.release
