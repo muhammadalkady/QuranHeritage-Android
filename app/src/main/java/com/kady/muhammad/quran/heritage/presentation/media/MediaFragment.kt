@@ -34,17 +34,17 @@ class MediaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setToolbarTitle(mTitle)
         setupToolbarLogo()
-        initPullToRefresh()
+        setupUpdate()
         initList()
         observeLoading()
         observeMediaList()
     }
 
-    private fun initPullToRefresh() {
-        srl.setOnRefreshListener { onRefresh() }
+    private fun setupUpdate() {
+        update.setOnClickListener { onUpdate() }
     }
 
-    private fun onRefresh() {
+    private fun onUpdate() {
         vm.mediaChildrenForParentId(false, parentMediaId)
     }
 
@@ -73,13 +73,8 @@ class MediaFragment : Fragment() {
 
     private fun observeLoading() {
         vm.liveLoading.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                loading.show()
-                srl.isRefreshing = true
-            } else {
-                loading.hide()
-                srl.isRefreshing = false
-            }
+            if (it) loading.show()
+            else loading.hide()
         })
     }
 

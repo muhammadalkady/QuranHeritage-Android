@@ -48,6 +48,21 @@
                     android:textStyle="bold"
                     tools:text="القرآن الكريم" />
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="16dp"
+                    android:background="?android:selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:fontFamily="@font/main_res"
+                    android:gravity="center"
+                    android:text="@string/update"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold" />
+
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
 
@@ -64,37 +79,30 @@
         app:mpb_useIntrinsicPadding="false"
         tools:alpha="1" />
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/srl"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mediaRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimaryDark"
+            tools:listitem="@layout/media_item" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/mediaRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark"
-                tools:listitem="@layout/media_item" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/noContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:alpha="0"
+            android:fontFamily="@font/main_res"
+            android:gravity="center"
+            android:text="@string/empty_title"
+            android:textColor="?attr/colorAccent"
+            tools:alpha="1"
+            tools:text="عفوا لا يوجد محتوي" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/noContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:alpha="0"
-                android:fontFamily="@font/main_res"
-                android:gravity="center"
-                android:text="@string/empty_title"
-                android:textColor="?attr/colorAccent"
-                tools:alpha="1"
-                tools:text="عفوا لا يوجد محتوي" />
-
-        </FrameLayout>
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </FrameLayout>
 
 </LinearLayout>
