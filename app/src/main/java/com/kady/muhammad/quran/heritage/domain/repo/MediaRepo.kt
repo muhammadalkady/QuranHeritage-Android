@@ -36,8 +36,14 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
             "basit_1951_",
             "basit_1952",
             "basit_1953",
-            "basit_1954"
+            "basit_1954",
+            "basit_1955",
+            "basit_1956"
         )
+    }
+
+    suspend fun count(): Int {
+        return allCachedMedia().filterNot { it.isList }.size
     }
 
     suspend fun mediaChildrenForParentId(fromCache: Boolean, parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID): List<ChildMedia> {

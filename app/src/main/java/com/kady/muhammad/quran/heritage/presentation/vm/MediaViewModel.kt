@@ -15,8 +15,10 @@ class MediaViewModel(val app: Application, parentMediaId: ParentMediaId) : Andro
 
     private val repo: MediaRepo by inject()
     private val _liveMedia: MutableLiveData<List<ChildMedia>> = MutableLiveData()
+    private val _liveMediaCount: MutableLiveData<Int> = MutableLiveData()
     private val _liveLoading: MutableLiveData<Boolean> = MutableLiveData()
     val liveMedia: LiveData<List<ChildMedia>> get() = _liveMedia
+    val liveMediaCount: LiveData<Int> get() = _liveMediaCount
     val liveLoading: LiveData<Boolean> get() = _liveLoading
 
     init {
@@ -27,7 +29,9 @@ class MediaViewModel(val app: Application, parentMediaId: ParentMediaId) : Andro
         viewModelScope.launch(Dispatchers.IO) {
             _liveLoading.postValue(true)
             _liveMedia.postValue(repo.mediaChildrenForParentId(fromCache = true, parentMediaId = parentMediaId))
+            _liveMediaCount.postValue(repo.count())
             _liveMedia.postValue(repo.mediaChildrenForParentId(fromCache, parentMediaId))
+            _liveMediaCount.postValue(repo.count())
             _liveLoading.postValue(false)
         }
     }

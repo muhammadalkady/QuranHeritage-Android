@@ -88,6 +88,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorPrimaryDark"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingBottom="32dp"
+            tools:itemCount="100"
             tools:listitem="@layout/media_item" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -102,6 +106,21 @@
             android:textColor="?attr/colorAccent"
             tools:alpha="1"
             tools:text="عفوا لا يوجد محتوي" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/mediaCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:background="@color/colorAccent"
+            android:fontFamily="@font/main_res"
+            android:gravity="center"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            tools:text="عدد التلاوات ١٠٠ تلاوه"
+            tools:visibility="visible" />
 
     </FrameLayout>
 
