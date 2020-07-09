@@ -41,8 +41,7 @@ class API(private val cc: CoroutineContext, private val pref: Pref, private val 
                         .httpGet()
                         .awaitResult(GetMetadataResponse.Deserializer(), this@API)
                         .component1()
-                }
-                .map { it as GetMetadataResponse }
+                }.mapNotNull { it as? GetMetadataResponse }
                 .filter { it.files.isNotEmpty() }
                 .map { Pair(it.metadata, it.files) }
                 .map { pair: Pair<Metadata, List<File>> ->
