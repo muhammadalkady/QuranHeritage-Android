@@ -16,6 +16,8 @@ import androidx.core.content.ContextCompat
 import androidx.media.session.MediaButtonReceiver
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
+import androidx.media.app.NotificationCompat as MediaNotificationCompat
+import androidx.media.app.NotificationCompat.MediaStyle as CompatMediaStyle
 
 object PlayerNotification {
 
@@ -85,8 +87,8 @@ object PlayerNotification {
             )
         /*
         * */
-        val style: androidx.media.app.NotificationCompat.MediaStyle =
-            androidx.media.app.NotificationCompat
+        val style: CompatMediaStyle =
+            MediaNotificationCompat
                 .MediaStyle()
 //                .setMediaSession(mediaSession.sessionToken)
                 .setShowCancelButton(false)
