@@ -38,7 +38,11 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
             "basit_1953",
             "basit_1954",
             "basit_1955",
-            "basit_1956"
+            "basit_1956",
+            "basit_1957",
+            "basit_1958",
+            "basit_1959",
+            "basit_1960"
         )
     }
 
