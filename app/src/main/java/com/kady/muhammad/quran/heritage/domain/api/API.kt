@@ -43,12 +43,8 @@ class API(private val cc: CoroutineContext, private val pref: Pref, private val 
                         .component1()
                 }.mapNotNull { it as? GetMetadataResponse }
                 .filter { it.files.isNotEmpty() }
-                .map { Pair(it.metadata, it.files) }
-                .map { pair: Pair<Metadata, List<File>> ->
-                    Pair(pair.first, pair.second
-                        .filter { file: File -> file.format == ARCHIVE_DOT_ORG_MP3_FORMAT })
-                }
-                .toList().flatMap { pair: Pair<Metadata, List<File>> ->
+                .map { Pair(it.metadata, it.files.filter { file: File -> file.format == ARCHIVE_DOT_ORG_MP3_FORMAT }) }
+                .flatMap { pair: Pair<Metadata, List<File>> ->
                     val media = pair.second.map { file ->
                         Media(
                             file.name, pair.first.identifier,
