@@ -44,13 +44,18 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 import com.kady.muhammad.quran.heritage.domain.player.Player as QuranPlayer
 
-class Player(private val playerService: PlayerService) : Runnable,
-    AudioManager.OnAudioFocusChangeListener, KoinComponent {
+object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent {
 
-    private val app: Application = playerService.applicationContext as App
-    private val tag = "Player"
-    private val elapsedTimeRefreshInterval = 1000L
-    private val userAgent = "Muhammad-Alkady"
+    operator fun invoke(playerService: PlayerService): QuranPlayer {
+        this.playerService = playerService
+        return this
+    }
+
+    private const val tag = "Player"
+    private const val elapsedTimeRefreshInterval = 1000L
+    private const val userAgent = "Muhammad-Alkady"
+
+    private val app: Application by lazy { playerService.applicationContext as App }
     private val playerHandlerThread = HandlerThread("player_handler_thread")
     private val playerHandler: Handler by lazy { Handler(playerHandlerThread.looper) }
     private val elapsedTimeHandler = Handler()
@@ -69,6 +74,7 @@ class Player(private val playerService: PlayerService) : Runnable,
     private var isNoisyReceiverRegistered: Boolean = false
     private var childrenCount: Int = 0
 
+    private lateinit var playerService: PlayerService
     private lateinit var simpleExoPlayer: SimpleExoPlayer
     private lateinit var cache: SimpleCache
     private lateinit var dataSourceFactory: DefaultHttpDataSourceFactory
@@ -356,7 +362,10 @@ class Player(private val playerService: PlayerService) : Runnable,
     }
 
     fun init() {
-        if (isInit) Logger.logE(tag, "an instance of player already exists")
+        if (isInit) {
+            Logger.logE(tag, "player is already initialized ... not initializing")
+            return
+        }
         Logger.logI(tag, "initializing")
         playerHandlerThread.start()
         playerHandler.post {
