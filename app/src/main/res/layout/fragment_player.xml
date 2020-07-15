@@ -24,7 +24,7 @@
             android:id="@+id/loading"
             style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="4dp"
+            android:layout_height="2dp"
             android:alpha="0"
             android:indeterminate="true"
             app:mpb_progressStyle="horizontal"
@@ -147,6 +147,7 @@
                     android:gravity="center"
                     android:text="@string/empty_title"
                     android:textColor="@android:color/white"
+                    android:textStyle="bold"
                     tools:text="ما تيسر من سوره ال عمران" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -157,6 +158,7 @@
                     android:gravity="center"
                     android:text="@string/empty_sub_title"
                     android:textColor="@color/colorAccent"
+                    android:textStyle="bold"
                     tools:text="عبدالباسط عبدالصمد" />
             </LinearLayout>
 

@@ -22,7 +22,7 @@
                 android:orientation="horizontal">
 
                 <com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
-                    android:id="@+id/logo"
+                    android:id="@+id/background"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/avatar_color_circle"
@@ -72,7 +72,7 @@
         android:id="@+id/loading"
         style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="2dp"
         android:alpha="0"
         android:indeterminate="true"
         app:mpb_progressStyle="horizontal"
@@ -112,12 +112,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
+            android:alpha=".9"
             android:background="@color/colorAccent"
             android:fontFamily="@font/main_res"
             android:gravity="center"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
             android:textColor="@android:color/white"
+            android:textSize="14sp"
             android:textStyle="bold"
             tools:text="عدد التلاوات ١٠٠ تلاوه"
             tools:visibility="visible" />

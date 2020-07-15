@@ -19,10 +19,12 @@
         android:layout_height="match_parent">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/logo"
+            android:id="@+id/background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
+            android:tint="@color/colorPrimary"
+            android:tintMode="multiply"
             app:srcCompat="@drawable/background" />
 
         <androidx.fragment.app.FragmentContainerView

@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
     private fun syncNavHostFragmentOffset(slideOffset: Float) {
         nav_host_fragment.translationY = -(nav_host_fragment.height * slideOffset)
         nav_host_fragment.alpha = 1 - slideOffset
-        logo.alpha = slideOffset
+        background.alpha = slideOffset
     }
 
     private fun setupSlidingPanel() {

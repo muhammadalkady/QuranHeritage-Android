@@ -91,7 +91,7 @@ class MediaFragment : Fragment() {
     }
 
     private fun setupToolbarLogo() {
-        logo.startAVDAnim()
+        background.startAVDAnim()
     }
 
     private fun observeMediaList() {

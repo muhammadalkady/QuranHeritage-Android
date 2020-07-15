@@ -31,9 +31,8 @@
         android:focusableInTouchMode="true"
         android:fontFamily="@font/main_res"
         android:gravity="center|start"
-        android:marqueeRepeatLimit="marquee_forever"
-        android:scrollHorizontally="true"
         android:textColor="?attr/colorAccent"
+        android:textStyle="bold"
         tools:text="ما تيسر من سورة الفاتحة" />
 
 </LinearLayout>
