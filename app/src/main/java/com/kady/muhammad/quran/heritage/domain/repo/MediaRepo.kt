@@ -1,5 +1,7 @@
 package com.kady.muhammad.quran.heritage.domain.repo
 
+import android.app.Application
+import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kady.muhammad.quran.heritage.domain.api.API
@@ -20,6 +22,9 @@ import kotlin.coroutines.CoroutineContext
 class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : KoinComponent {
 
     private val api: API by inject()
+    private val app: Application by inject()
+    private val res: Resources = app.resources
+    private val packageName: String = app.packageName
 
     private suspend fun allMedia(fromCache: Boolean): List<Media> {
         return if (fromCache) allCachedMedia()
@@ -30,20 +35,11 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
         return (allMedia(fromCache).filter { it.parentId == parentMediaId })
     }
 
-    fun parentMediaIds(): List<String> {
-        return listOf(
-            "basit_1950",
-            "basit_1951_",
-            "basit_1952",
-            "basit_1953",
-            "basit_1954",
-            "basit_1955",
-            "basit_1956",
-            "basit_1957",
-            "basit_1958",
-            "basit_1959",
-            "basit_1960"
-        )
+    suspend fun parentMediaIds(): List<String> = withContext(cc) {
+        val json: String = res.openRawResource(res.getIdentifier("media", "raw", packageName))
+            .bufferedReader()
+            .use { it.readText() }
+        return@withContext Gson().fromJson<List<String>>(json, object : TypeToken<List<String>>() {}.type)
     }
 
     suspend fun count(): Int {
@@ -55,14 +51,14 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
     }
 
     suspend fun parentMediaForChildId(fromCache: Boolean, childMediaId: ChildMediaId): ParentMedia {
-        val childMedia = allMedia(fromCache).first { it.id == childMediaId }
-        val parentMediaId = childMedia.parentId
+        val childMedia: Media = allMedia(fromCache).first { it.id == childMediaId }
+        val parentMediaId: String = childMedia.parentId
         return allMedia(fromCache).first { it.id == parentMediaId }
     }
 
     suspend fun otherChildren(fromCache: Boolean, childMediaId: ChildMediaId): List<ChildMedia> {
-        val childMedia = allMedia(fromCache).first { it.id == childMediaId }
-        val parentMediaId = childMedia.parentId
+        val childMedia: Media = allMedia(fromCache).first { it.id == childMediaId }
+        val parentMediaId: String = childMedia.parentId
         return allMedia(fromCache).filter { it.parentId == parentMediaId && !it.isList }
     }
 

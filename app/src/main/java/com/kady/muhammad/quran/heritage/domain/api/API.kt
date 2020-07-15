@@ -52,9 +52,9 @@ class API(private val cc: CoroutineContext, private val pref: Pref, private val 
         if (list.isNotEmpty()) api.cacheAllMedia(list)
     }
 
-    suspend fun allMedia(ids: List<String> = mediaRepo.parentMediaIds()): Response =
+    suspend fun allMedia(): Response =
         withContext(this) {
-            ids
+            mediaRepo.parentMediaIds()
                 .map { allMedia(it) }
                 .mapNotNull { it as? GetMetadataResponse }
                 .filter { it.files.isNotEmpty() }
