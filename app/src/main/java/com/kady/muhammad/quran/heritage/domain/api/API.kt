@@ -23,39 +23,49 @@ class API(private val cc: CoroutineContext, private val pref: Pref, private val 
         private const val ARCHIVE_DOT_ORG_DOWNLOAD_BASE_URL = "https://archive.org/download"
     }
 
-    private suspend fun cacheAllMedia(media: List<Media>) =
-        withContext(this) {
-            val value = Gson().toJson(media, object : TypeToken<List<Media>>() {}.type)
-            pref.saveString("all_media", value)
+    private suspend fun cacheAllMedia(media: List<Media>): Boolean =
+        withContext(context = this) {
+            val value: String = Gson().toJson(media, object : TypeToken<List<Media>>() {}.type)
+            return@withContext pref.saveString("all_media", value)
         }
+
+    private suspend fun allMedia(id: String): Response? = withContext(this) {
+        Uri
+            .parse(ARCHIVE_DOT_ORG_METADATA_BASE_URL)
+            .buildUpon()
+            .appendPath(id)
+            .toString()
+            .httpGet()
+            .awaitResult(GetMetadataResponse.Deserializer(), this@API)
+            .component1()
+    }
+
+    private fun File.toMedia(id: String): Media {
+        return Media(
+            name, id,
+            name.substring(0, name.lastIndexOf(".")),
+            isList = false
+        )
+    }
+
+    private suspend fun cacheIfNotEmpty(list: List<Media>, api: API) {
+        if (list.isNotEmpty()) api.cacheAllMedia(list)
+    }
 
     suspend fun allMedia(ids: List<String> = mediaRepo.parentMediaIds()): Response =
         withContext(this) {
             ids
-                .map { id ->
-                    Uri
-                        .parse(ARCHIVE_DOT_ORG_METADATA_BASE_URL)
-                        .buildUpon()
-                        .appendPath(id)
-                        .toString()
-                        .httpGet()
-                        .awaitResult(GetMetadataResponse.Deserializer(), this@API)
-                        .component1()
-                }.mapNotNull { it as? GetMetadataResponse }
+                .map { allMedia(it) }
+                .mapNotNull { it as? GetMetadataResponse }
                 .filter { it.files.isNotEmpty() }
                 .map { Pair(it.metadata, it.files.filter { file: File -> file.format == ARCHIVE_DOT_ORG_MP3_FORMAT }) }
                 .flatMap { pair: Pair<Metadata, List<File>> ->
-                    val media = pair.second.map { file ->
-                        Media(
-                            file.name, pair.first.identifier,
-                            file.name.substring(0, file.name.lastIndexOf(".")),
-                            false
-                        )
-                    }.toMutableList()
+                    val media: MutableList<Media> = pair.second
+                        .map { it.toMedia(pair.first.identifier) }.toMutableList()
                     media.add(Media(pair.first.identifier, MAIN_MEDIA_ID, pair.first.title, true))
-                    media
+                    return@flatMap media
                 }
-                .apply { if (isNotEmpty()) cacheAllMedia(this) }
+                .apply { cacheIfNotEmpty(this, this@API) }
                 .run { if (isEmpty()) mediaRepo.allCachedMedia() else this }
                 .run { GetMediaResponse(this) }
                 .apply { Logger.logI("Calling API", "response $this") }
