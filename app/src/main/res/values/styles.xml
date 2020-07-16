@@ -8,6 +8,12 @@
         <item name="android:fontFamily">@font/main</item>
     </style>
 
+    <style name="AppThemeTimeFont" parent="AppTheme">
+        <item name="fontFamily">@font/time</item>
+        <item name="android:fontFamily">@font/time</item>
+    </style>
+
+
     <style name="SplashTheme" parent="AppTheme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@null</item>

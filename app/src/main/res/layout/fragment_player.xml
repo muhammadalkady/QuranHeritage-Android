@@ -169,6 +169,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/elapsedDuration"
+                    style="@style/AppThemeTimeFont"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -190,6 +191,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/duration"
+                    style="@style/AppThemeTimeFont"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
