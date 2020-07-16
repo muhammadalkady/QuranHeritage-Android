@@ -24,11 +24,11 @@ class MediaFragment : Fragment() {
 
     private val logTag = "MediaFragment"
     private val animationDuration = 150L
-    private val adapter by lazy { MediaAdapter(requireContext(), resources.getInteger(R.integer.span_count), mTitle, mutableListOf()) }
-    private val parentMediaId: String by lazy { arguments?.getString("media-id")!! }
-    private val mTitle: String by lazy { arguments?.getString("title") ?: getString(R.string.main_title) }
+    private val adapter by lazy { MediaAdapter(requireContext(), resources.getInteger(R.integer.span_count), argTitle, mutableListOf()) }
+    private val argParentMediaId: String by lazy { arguments?.getString("media-id")!! }
+    private val argTitle: String by lazy { arguments?.getString("title") ?: getString(R.string.main_title) }
     private val vm by lazy {
-        ViewModelProvider(this, MediaViewModelFactory(requireActivity().application, parentMediaId)).get(MediaViewModel::class.java)
+        ViewModelProvider(this, MediaViewModelFactory(requireActivity().application, argParentMediaId)).get(MediaViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,7 +36,7 @@ class MediaFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setToolbarTitle(mTitle)
+        setToolbarTitle()
         setupToolbarLogo()
         setupMediaCount()
         setupUpdate()
@@ -51,14 +51,14 @@ class MediaFragment : Fragment() {
     }
 
     private fun onUpdate() {
-        vm.mediaChildrenForParentId(false, parentMediaId)
+        vm.mediaChildrenForParentId(false, argParentMediaId)
     }
 
     private fun setupMediaCount() {
         showMediaCount()
-        mediaRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        mediaList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val showMediaCount = (mediaRecyclerView.layoutManager as GridLayoutManager)
+                val showMediaCount = (mediaList.layoutManager as GridLayoutManager)
                     .findFirstCompletelyVisibleItemPosition() == 0
                 if (showMediaCount) showMediaCount() else hideMediaCount()
             }
@@ -80,13 +80,13 @@ class MediaFragment : Fragment() {
 
     private fun initList() {
         context?.let {
-            mediaRecyclerView.layoutManager = GridLayoutManager(it, resources.getInteger(R.integer.span_count))
-            mediaRecyclerView.adapter = adapter
+            mediaList.layoutManager = GridLayoutManager(it, resources.getInteger(R.integer.span_count))
+            mediaList.adapter = adapter
         }
     }
 
-    private fun setToolbarTitle(intTitle: String) {
-        title.text = intTitle
+    private fun setToolbarTitle() {
+        title.text = argTitle
         title.isSelected = true
     }
 
