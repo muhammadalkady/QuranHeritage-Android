@@ -4,6 +4,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="fontFamily">@font/main</item>
+        <item name="android:fontFamily">@font/main</item>
     </style>
 
     <style name="SplashTheme" parent="AppTheme">
