@@ -19,7 +19,6 @@ import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModel
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModelFactory
 import kotlinx.android.synthetic.main.fragment_media.*
 
-
 class MediaFragment : Fragment() {
 
     private val logTag = "MediaFragment"
@@ -36,6 +35,7 @@ class MediaFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupSwipe()
         setToolbarTitle()
         setupToolbarLogo()
         setupMediaCount()
@@ -44,6 +44,12 @@ class MediaFragment : Fragment() {
         observeLoading()
         observeMediaList()
         observeCount()
+    }
+
+    private fun setupSwipe() {
+        root.setDismissListener {
+            requireActivity().onBackPressed()
+        }
     }
 
     private fun setupUpdate() {
