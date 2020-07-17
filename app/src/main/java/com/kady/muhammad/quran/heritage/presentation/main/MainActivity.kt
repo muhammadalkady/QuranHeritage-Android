@@ -71,6 +71,12 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
 
     fun addFragmentToBackStack(f: Fragment) {
         val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.setCustomAnimations(
+            android.R.anim.slide_in_left,
+            android.R.anim.slide_out_right,
+            android.R.anim.slide_in_left,
+            android.R.anim.slide_out_right
+        )
         fragmentTransaction.add(R.id.fragmentContainer, f).addToBackStack(null).commit()
     }
 

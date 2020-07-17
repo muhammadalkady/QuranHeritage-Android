@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -30,6 +31,14 @@ class MediaFragment : Fragment() {
     private val vm by lazy {
         ViewModelProvider(this, MediaViewModelFactory(requireActivity().application, argParentMediaId)).get(MediaViewModel::class.java)
     }
+    private val mediaListScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val showMediaCount = (mediaList.layoutManager as GridLayoutManager)
+                .findFirstCompletelyVisibleItemPosition() == 0
+            if (showMediaCount) showMediaCount() else hideMediaCount()
+        }
+    }
+    private var animationEnabled = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_media, container, false)
@@ -47,9 +56,24 @@ class MediaFragment : Fragment() {
         observeCount()
     }
 
+    override fun onDestroyView() {
+        mediaList.removeOnScrollListener(mediaListScrollListener)
+        super.onDestroyView()
+    }
+
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        if (!animationEnabled) {
+            return object : Animation() {}.apply { duration = 0 }
+        }
+        return super.onCreateAnimation(transit, enter, nextAnim)
+    }
+
     private fun setupSwipe() {
+        if (argParentMediaId == Const.MAIN_MEDIA_ID) root.disableSwipe = true
         root.setDismissListener {
-            requireActivity().onBackPressed()
+            animationEnabled = false
+            requireActivity().supportFragmentManager.popBackStackImmediate()
+            animationEnabled = true
         }
     }
 
@@ -63,13 +87,7 @@ class MediaFragment : Fragment() {
 
     private fun setupMediaCount() {
         showMediaCount()
-        mediaList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val showMediaCount = (mediaList.layoutManager as GridLayoutManager)
-                    .findFirstCompletelyVisibleItemPosition() == 0
-                if (showMediaCount) showMediaCount() else hideMediaCount()
-            }
-        })
+        mediaList.addOnScrollListener(mediaListScrollListener)
     }
 
     private fun showMediaCount() {

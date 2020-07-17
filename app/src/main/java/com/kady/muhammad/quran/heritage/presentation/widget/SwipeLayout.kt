@@ -9,6 +9,8 @@ import com.kady.muhammad.quran.heritage.domain.log.Logger
 
 class SwipeLayout : FrameLayout {
 
+    var disableSwipe = false
+
     private val tag = "SwipeLayout"
     private val animationDuration = 150L
     private val swipeXThreshold = 100
@@ -54,15 +56,11 @@ class SwipeLayout : FrameLayout {
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         Logger.logI(tag, "dispatchTouchEvent")
-        gestureDetector.onTouchEvent(ev)
-        if (ev != null && ev.action == MotionEvent.ACTION_UP) onUpTouch()
+        if (!disableSwipe) {
+            gestureDetector.onTouchEvent(ev)
+            if (ev != null && ev.action == MotionEvent.ACTION_UP) onUpTouch()
+        }
         return super.dispatchTouchEvent(ev)
-    }
-
-    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-        Logger.logI(tag, "onInterceptTouchEvent")
-        gestureDetector.onTouchEvent(ev)
-        return false
     }
 
     fun setDismissListener(listener: () -> Unit) {
