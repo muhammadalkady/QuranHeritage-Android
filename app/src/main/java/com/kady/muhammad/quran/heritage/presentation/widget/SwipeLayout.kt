@@ -6,7 +6,6 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.FrameLayout
 import com.kady.muhammad.quran.heritage.domain.log.Logger
-import kotlin.math.abs
 
 class SwipeLayout : FrameLayout {
 
@@ -41,7 +40,7 @@ class SwipeLayout : FrameLayout {
             Logger.logI(tag, "onScroll e2.rawX = ${e2?.x} | distanceX = $distanceX")
             e1 ?: return false
             e2 ?: return false
-            if (e2.rawX > e1.rawX && abs((e2.rawY - e1.rawY)) < 300) {
+            if (e2.rawX > e1.rawX) {
                 x = e2.rawX - e1.rawX
             }
             return false
