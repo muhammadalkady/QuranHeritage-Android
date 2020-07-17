@@ -75,6 +75,10 @@ class MediaFragment : Fragment() {
             requireActivity().supportFragmentManager.popBackStackImmediate()
             animationEnabled = true
         }
+        root.setSwipeListener {
+            abl.alpha = 1F - it
+            Logger.logI(logTag, it.toString())
+        }
     }
 
     private fun setupUpdate() {
