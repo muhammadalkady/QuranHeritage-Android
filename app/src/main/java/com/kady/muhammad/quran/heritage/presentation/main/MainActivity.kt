@@ -3,10 +3,14 @@ package com.kady.muhammad.quran.heritage.presentation.main
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.kady.muhammad.quran.heritage.R
+import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.presentation.ext.PanelLayout
 import com.kady.muhammad.quran.heritage.presentation.ext.PanelSlideListener
 import com.kady.muhammad.quran.heritage.presentation.ext.PlayerUpClickListener
+import com.kady.muhammad.quran.heritage.presentation.media.MediaFragment
 import com.kady.muhammad.quran.heritage.presentation.player.PlayerFragment
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.android.synthetic.main.activity_main.*
@@ -15,14 +19,15 @@ import kotlinx.android.synthetic.main.fragment_player.*
 class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListener, PlayerUpClickListener, PanelLayout {
 
     private val playerFragment: PlayerFragment by lazy {
-        supportFragmentManager.findFragmentById(R.id.player) as PlayerFragment
+        supportFragmentManager.findFragmentByTag("player") as PlayerFragment
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setupSlidingPanel()
+        if (savedInstanceState == null) addMediaFragment()
         panel.post {
+            setupSlidingPanel()
             syncNavHostFragmentOffset(getPanelOffset())
             syncPlayerWithPanel(panel, getPanelOffset())
         }
@@ -39,6 +44,10 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
     override fun onPanelSlide(panel: View, slideOffset: Float) {
         syncNavHostFragmentOffset(slideOffset)
         syncPlayerWithPanel(panel, slideOffset)
+    }
+
+    private fun addMediaFragment() {
+        addFragmentToBackStack(MediaFragment.newInstance(Const.MAIN_MEDIA_ID, null, null))
     }
 
     private fun syncPlayerWithPanel(panel: View, slideOffset: Float) {
@@ -60,9 +69,14 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
         playerFragment.playPause(mediaId)
     }
 
+    fun addFragmentToBackStack(f: Fragment) {
+        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.fragmentContainer, f).addToBackStack(null).commit()
+    }
+
     private fun syncNavHostFragmentOffset(slideOffset: Float) {
-        nav_host_fragment.translationY = -(nav_host_fragment.height * slideOffset)
-        nav_host_fragment.alpha = 1 - slideOffset
+        fragmentContainer.translationY = -(fragmentContainer.height * slideOffset)
+        fragmentContainer.alpha = 1 - slideOffset
         background.alpha = slideOffset
     }
 
@@ -71,7 +85,7 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
         panel.setDragView(playerFragment.metaContainer)
     }
 
-    private fun getPanelOffset() =
+    private fun getPanelOffset(): Float =
         if (panel.panelState == SlidingUpPanelLayout.PanelState.EXPANDED) 1F else 0F
 
 

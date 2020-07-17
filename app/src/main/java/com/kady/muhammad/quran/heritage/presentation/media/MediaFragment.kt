@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.domain.log.Logger
+import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.presentation.ext.hide
 import com.kady.muhammad.quran.heritage.presentation.ext.show
@@ -126,5 +127,16 @@ class MediaFragment : Fragment() {
 
     private fun updateAdapter(childrenMedia: List<Media>) {
         context?.let { adapter.updateMedia(childrenMedia) }
+    }
+
+    companion object {
+        fun newInstance(id: String, parentTitle: String?, title: String?): MediaFragment {
+            val bundle = Bundle()
+            bundle.putString(Const.MEDIA_ID, id)
+            if (parentTitle != null && title != null) bundle.putString("title", "$parentTitle ● $title")
+            val fragment = MediaFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

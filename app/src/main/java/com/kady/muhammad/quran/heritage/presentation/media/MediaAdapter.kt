@@ -1,15 +1,12 @@
 package com.kady.muhammad.quran.heritage.presentation.media
 
 import android.content.Context
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
-import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
 import kotlinx.android.synthetic.main.media_item.view.*
@@ -44,10 +41,7 @@ class MediaAdapter(
             setOnClickListener {
                 val ma = holder.itemView.context as MainActivity
                 if (mediaItem.isList) {
-                    val bundle = Bundle()
-                    bundle.putString(Const.MEDIA_ID, mediaItem.id)
-                    bundle.putString("title", "$parentTitle ● ${mediaItem.title}")
-                    ma.findNavController(R.id.nav_host_fragment).navigate(R.id.action_global_mediaFragment, bundle)
+                    ma.addFragmentToBackStack(MediaFragment.newInstance(mediaItem.id, parentTitle, mediaItem.title))
                 } else {
                     ma.playPause(mediaItem.id)
                 }
