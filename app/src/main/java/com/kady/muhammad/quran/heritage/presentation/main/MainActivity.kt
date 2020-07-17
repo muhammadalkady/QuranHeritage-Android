@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
 
     private fun setupSlidingPanel() {
         panel.addPanelSlideListener(this)
-        panel.setDragView(playerFragment.metaContainer)
+        panel.setDragView(playerFragment.root)
     }
 
     private fun getPanelOffset(): Float =
