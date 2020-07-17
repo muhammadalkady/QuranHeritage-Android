@@ -13,7 +13,6 @@ class SwipeLayout : FrameLayout {
 
     private val tag = "SwipeLayout"
     private val animationDuration = 150L
-    private val swipeXThreshold = 100
     private var listener: (() -> Unit)? = null
     private val gestureDetector: GestureDetector by lazy { GestureDetector(context, gestureDetectorListener) }
     private val gestureDetectorListener: GestureDetector.OnGestureListener = object : GestureDetector.OnGestureListener {
@@ -37,10 +36,10 @@ class SwipeLayout : FrameLayout {
         }
 
         override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-            Logger.logI(tag, "onScroll")
+            Logger.logI(tag, "onScroll e2.rawX = ${e2?.x} | distanceX = $distanceX")
             e1 ?: return false
             e2 ?: return false
-            if (e1.rawX < swipeXThreshold) x = e2.rawX
+            if (e2.rawX > e1.rawX) x = e2.rawX - e1.rawX
             return false
         }
 
