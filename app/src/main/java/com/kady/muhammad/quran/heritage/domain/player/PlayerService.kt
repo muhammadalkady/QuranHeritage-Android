@@ -1,5 +1,6 @@
 package com.kady.muhammad.quran.heritage.domain.player
 
+import android.app.Service
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -92,7 +93,7 @@ class PlayerService : MediaBrowserServiceCompat() {
         Logger.logI(tag, "on start command ${intent?.action}")
         val keyEvent: KeyEvent? = MediaButtonReceiver.handleIntent(mediaSession, intent)
         Logger.logI(tag, "key event $keyEvent")
-        return super.onStartCommand(intent, flags, startId)
+        return Service.START_NOT_STICKY
     }
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
