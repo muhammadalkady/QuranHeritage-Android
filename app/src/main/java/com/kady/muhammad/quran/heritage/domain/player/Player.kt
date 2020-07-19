@@ -295,7 +295,10 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
 
     private fun onPositionDiscontinuity() {
         setMetadata(childMediaId)
-        PlayerNotification.notify(app, mediaSession, false)
+        playerService.startForeground(
+            PlayerNotification.NOTIFICATION_ID,
+            PlayerNotification.notify(app, mediaSession, false)
+        )
     }
 
     private suspend fun ensureChildrenCount(childMediaId: ChildMediaId) {
