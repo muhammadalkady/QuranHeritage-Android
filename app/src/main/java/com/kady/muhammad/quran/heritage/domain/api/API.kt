@@ -12,7 +12,7 @@ import com.kady.muhammad.quran.heritage.entity.constant.Const.ARCHIVE_DOT_ORG_MP
 import com.kady.muhammad.quran.heritage.entity.constant.Const.MAIN_MEDIA_ID
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.pref.Pref
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class API(private val cc: CoroutineContext, private val pref: Pref, private val mediaRepo: MediaRepo) :
@@ -29,7 +29,7 @@ class API(private val cc: CoroutineContext, private val pref: Pref, private val 
             return@withContext pref.saveString("all_media", value)
         }
 
-    private suspend fun allMedia(id: String): Response? = withContext(this) {
+    private suspend fun mediaForIdAsync(id: String): Deferred<Response?> = GlobalScope.async {
         Uri
             .parse(ARCHIVE_DOT_ORG_METADATA_BASE_URL)
             .buildUpon()
@@ -55,7 +55,8 @@ class API(private val cc: CoroutineContext, private val pref: Pref, private val 
     suspend fun allMedia(): Response =
         withContext(this) {
             mediaRepo.parentMediaIds()
-                .map { allMedia(it) }
+                .map { mediaForIdAsync(it) }
+                .run { awaitAll(*this.toTypedArray()) }
                 .mapNotNull { it as? GetMetadataResponse }
                 .filter { it.files.isNotEmpty() }
                 .map { Pair(it.metadata, it.files.filter { file: File -> file.format == ARCHIVE_DOT_ORG_MP3_FORMAT }) }
