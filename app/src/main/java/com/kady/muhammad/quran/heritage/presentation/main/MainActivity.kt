@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
     }
 
     private fun addMediaFragment() {
-        addFragmentToBackStack(MediaFragment.newInstance(Const.MAIN_MEDIA_ID, null, null))
+        replaceFragment(MediaFragment.newInstance(Const.MAIN_MEDIA_ID, null, null))
     }
 
     private fun syncPlayerWithPanel(panel: View, slideOffset: Float) {
@@ -67,6 +67,11 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
 
     fun playPause(mediaId: String) {
         playerFragment.playPause(mediaId)
+    }
+
+    fun replaceFragment(f: Fragment) {
+        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragmentContainer, f).commit()
     }
 
     fun addFragmentToBackStack(f: Fragment) {
