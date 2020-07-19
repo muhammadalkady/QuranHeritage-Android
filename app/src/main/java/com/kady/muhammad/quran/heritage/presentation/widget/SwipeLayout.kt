@@ -12,6 +12,7 @@ class SwipeLayout : FrameLayout {
     var disableSwipe = false
 
     private val tag = "SwipeLayout"
+    private val isLoggingEnabled = false
     private val animationDuration = 150L
     private val swipeXThreshold = 100
     private var dismissListener: (() -> Unit)? = null
@@ -23,22 +24,22 @@ class SwipeLayout : FrameLayout {
         }
 
         override fun onSingleTapUp(e: MotionEvent?): Boolean {
-            Logger.logI(tag, "onSingleTapUp")
+            Logger.logI(tag, "onSingleTapUp", isLoggingEnabled)
             return false
         }
 
         override fun onDown(e: MotionEvent?): Boolean {
-            Logger.logI(tag, "onDown")
+            Logger.logI(tag, "onDown", isLoggingEnabled)
             return false
         }
 
         override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
-            Logger.logI(tag, "onFling")
+            Logger.logI(tag, "onFling", isLoggingEnabled)
             return false
         }
 
         override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-            Logger.logI(tag, "onScroll e2.rawX = ${e2?.x} | distanceX = $distanceX")
+            Logger.logI(tag, "onScroll e2.rawX = ${e2?.x} | distanceX = $distanceX", isLoggingEnabled)
             e1 ?: return false
             e2 ?: return false
             if (e1.rawX < swipeXThreshold) x = e2.rawX
@@ -46,7 +47,7 @@ class SwipeLayout : FrameLayout {
         }
 
         override fun onLongPress(e: MotionEvent?) {
-            Logger.logI(tag, "onLongPress")
+            Logger.logI(tag, "onLongPress", isLoggingEnabled)
         }
 
     }
@@ -56,7 +57,7 @@ class SwipeLayout : FrameLayout {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        Logger.logI(tag, "dispatchTouchEvent")
+        Logger.logI(tag, "dispatchTouchEvent", isLoggingEnabled)
         if (!disableSwipe) {
             gestureDetector.onTouchEvent(ev)
             if (ev != null && ev.action == MotionEvent.ACTION_UP) onUpTouch()

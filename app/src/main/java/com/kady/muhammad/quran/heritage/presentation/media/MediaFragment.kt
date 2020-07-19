@@ -77,7 +77,7 @@ class MediaFragment : Fragment() {
         }
         root.setSwipeListener {
             abl.alpha = 1F - it
-            Logger.logI(logTag, it.toString())
+            Logger.logI(logTag, it.toString(), false)
         }
     }
 
