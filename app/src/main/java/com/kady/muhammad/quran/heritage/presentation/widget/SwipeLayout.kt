@@ -13,6 +13,7 @@ class SwipeLayout : FrameLayout {
 
     private val tag = "SwipeLayout"
     private val animationDuration = 150L
+    private val swipeXThreshold = 100
     private var dismissListener: (() -> Unit)? = null
     private var swipeListener: ((fraction: Float) -> Unit)? = null
     private val gestureDetector: GestureDetector by lazy { GestureDetector(context, gestureDetectorListener) }
@@ -40,9 +41,7 @@ class SwipeLayout : FrameLayout {
             Logger.logI(tag, "onScroll e2.rawX = ${e2?.x} | distanceX = $distanceX")
             e1 ?: return false
             e2 ?: return false
-            if (e2.rawX > e1.rawX) {
-                x = e2.rawX - e1.rawX
-            }
+            if (e1.rawX < swipeXThreshold) x = e2.rawX
             return false
         }
 
@@ -79,7 +78,7 @@ class SwipeLayout : FrameLayout {
     }
 
     private fun onUpTouch() {
-        val dismissPoint: Float = width.div(other = 4F)
+        val dismissPoint: Float = width.div(other = 2F)
         if (x >= dismissPoint) {
             animate()
                 .x(width.toFloat())
