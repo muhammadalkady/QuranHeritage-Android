@@ -465,7 +465,6 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     fun release() {
         playerHandler.post {
             Logger.logI(tag, "release")
-            playerHandlerThread.quit()
             simpleExoPlayer.release()
             cache.release()
         }
