@@ -18,7 +18,6 @@
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
         tools:context=".presentation.player.PlayerFragment">
 
         <me.zhanghai.android.materialprogressbar.MaterialProgressBar
@@ -60,9 +59,9 @@
             <com.kady.muhammad.quran.heritage.presentation.widget.TwoStatesAVDImageView
                 android:id="@+id/repeatOne"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:background="@color/colorPrimary"
                 android:clickable="true"
                 android:focusable="true"
                 android:onClick="@{()->vm.toggleRepeatOne()}"
@@ -73,9 +72,9 @@
             <com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
                 android:id="@+id/previous"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:background="@color/colorPrimary"
                 android:clickable="true"
                 android:focusable="true"
                 android:onClick="@{()->fm.previous()}"
@@ -85,9 +84,9 @@
             <com.kady.muhammad.quran.heritage.presentation.widget.TwoStatesAVDImageView
                 android:id="@+id/playPause"
                 android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:background="@color/colorPrimary"
                 android:clickable="true"
                 android:focusable="true"
                 android:onClick="@{()->vm.playPause()}"
@@ -98,9 +97,9 @@
             <com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
                 android:id="@+id/next"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:background="@color/colorPrimary"
                 android:clickable="true"
                 android:focusable="true"
                 android:onClick="@{()->fm.next()}"
@@ -110,9 +109,9 @@
             <com.kady.muhammad.quran.heritage.presentation.widget.TwoStatesAVDImageView
                 android:id="@+id/shuffle"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:background="@color/colorPrimary"
                 android:clickable="true"
                 android:focusable="true"
                 android:onClick="@{()->vm.toggleShuffle()}"
@@ -125,7 +124,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="64dp"
-            android:background="@color/colorPrimaryDark"
             android:orientation="vertical">
 
             <LinearLayout

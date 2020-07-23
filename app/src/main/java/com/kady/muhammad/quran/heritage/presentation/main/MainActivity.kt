@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
         if (savedInstanceState == null) addMediaFragment()
         panel.post {
             setupSlidingPanel()
-            syncNavHostFragmentOffset(getPanelOffset())
             syncPlayerWithPanel(panel, getPanelOffset())
         }
     }
@@ -42,12 +41,16 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
     }
 
     override fun onPanelSlide(panel: View, slideOffset: Float) {
-        syncNavHostFragmentOffset(slideOffset)
         syncPlayerWithPanel(panel, slideOffset)
     }
 
     private fun addMediaFragment() {
         replaceFragment(MediaFragment.newInstance(Const.MAIN_MEDIA_ID, null, null))
+    }
+
+    private fun replaceFragment(f: Fragment) {
+        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragmentContainer, f).commit()
     }
 
     private fun syncPlayerWithPanel(panel: View, slideOffset: Float) {
@@ -69,11 +72,6 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
         playerFragment.playPause(mediaId)
     }
 
-    fun replaceFragment(f: Fragment) {
-        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragmentContainer, f).commit()
-    }
-
     fun addFragmentToBackStack(f: Fragment) {
         val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.setCustomAnimations(
@@ -85,11 +83,6 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
         fragmentTransaction.add(R.id.fragmentContainer, f).addToBackStack(null).commit()
     }
 
-    private fun syncNavHostFragmentOffset(slideOffset: Float) {
-        fragmentContainer.translationY = -(fragmentContainer.height * slideOffset)
-        fragmentContainer.alpha = 1 - slideOffset
-        background.alpha = slideOffset
-    }
 
     private fun setupSlidingPanel() {
         panel.addPanelSlideListener(this)

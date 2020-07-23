@@ -25,7 +25,7 @@ class MediaFragment : Fragment() {
 
     private val logTag = "MediaFragment"
     private val animationDuration = 150L
-    private val adapter by lazy { MediaAdapter(requireContext(), resources.getInteger(R.integer.span_count), argTitle, mutableListOf()) }
+    private val adapter by lazy { MediaAdapter(argTitle, mutableListOf()) }
     private val argParentMediaId: String by lazy { arguments?.getString("media-id")!! }
     private val argTitle: String by lazy { arguments?.getString("title") ?: getString(R.string.main_title) }
     private val vm by lazy {
