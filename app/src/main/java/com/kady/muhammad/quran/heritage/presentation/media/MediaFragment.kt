@@ -17,6 +17,7 @@ import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.presentation.ext.hide
 import com.kady.muhammad.quran.heritage.presentation.ext.show
+import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModel
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModelFactory
 import kotlinx.android.synthetic.main.fragment_media.*
@@ -25,7 +26,7 @@ class MediaFragment : Fragment() {
 
     private val logTag = "MediaFragment"
     private val animationDuration = 150L
-    private val adapter by lazy { MediaAdapter(argTitle, mutableListOf()) }
+    private val adapter by lazy { MediaAdapter(requireActivity() as MainActivity, argTitle, mutableListOf()) }
     private val argParentMediaId: String by lazy { arguments?.getString("media-id")!! }
     private val argTitle: String by lazy { arguments?.getString("title") ?: getString(R.string.main_title) }
     private val vm by lazy {
