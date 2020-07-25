@@ -43,10 +43,4 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="ما تيسر من سورة الفاتحة" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorSeparator"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
