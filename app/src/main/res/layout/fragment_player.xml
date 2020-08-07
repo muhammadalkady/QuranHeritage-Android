@@ -18,6 +18,7 @@
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
         tools:context=".presentation.player.PlayerFragment">
 
         <me.zhanghai.android.materialprogressbar.MaterialProgressBar
@@ -36,7 +37,6 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_gravity="top"
-            android:background="@color/colorPrimary"
             android:gravity="center">
 
             <FrameLayout

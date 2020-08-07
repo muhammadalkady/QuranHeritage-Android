@@ -26,7 +26,12 @@ class MediaFragment : Fragment() {
 
     private val logTag = "MediaFragment"
     private val animationDuration = 150L
-    private val adapter by lazy { MediaAdapter(requireActivity() as MainActivity, argTitle, mutableListOf()) }
+    private val adapter by lazy {
+        MediaAdapter(
+            requireContext(), resources.getInteger(R.integer.span_count),
+            requireActivity() as MainActivity, argTitle, mutableListOf()
+        )
+    }
     private val argParentMediaId: String by lazy { arguments?.getString("media-id")!! }
     private val argTitle: String by lazy { arguments?.getString("title") ?: getString(R.string.main_title) }
     private val vm by lazy {
@@ -77,7 +82,8 @@ class MediaFragment : Fragment() {
             animationEnabled = true
         }
         root.setSwipeListener {
-            abl.alpha = 1F - it
+            title.alpha = 1F - it
+            update.alpha = 1F - it
             Logger.logI(logTag, it.toString(), false)
         }
     }

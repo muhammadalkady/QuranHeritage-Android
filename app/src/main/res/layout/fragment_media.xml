@@ -88,6 +88,7 @@
                 android:background="@color/colorPrimary"
                 android:clipChildren="false"
                 android:clipToPadding="false"
+                android:elevation="12dp"
                 android:paddingBottom="32dp"
                 tools:itemCount="100"
                 tools:listitem="@layout/media_item" />
