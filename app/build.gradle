@@ -56,7 +56,7 @@ def koin_version = '2.0.1'
 def preference = "1.1.1"
 def circle_image_view = "4.2.0"
 def lingver = "1.3.0"
-def material = "1.1.0"
+def material = "1.2.0"
 def constraint_layout = "1.1.3"
 
 dependencies {
