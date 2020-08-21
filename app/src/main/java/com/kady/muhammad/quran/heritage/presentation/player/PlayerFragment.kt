@@ -31,7 +31,11 @@ class PlayerFragment : Fragment(), PanelSlideListener {
         vm.connectMediaBrowser()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_player, container, false)
         setBindingVariables()
         return binding.root
@@ -68,7 +72,10 @@ class PlayerFragment : Fragment(), PanelSlideListener {
     private fun syncWithPanelLayout() {
         (activity as? PanelLayout)?.let {
             val panel: SlidingUpPanelLayout = it.getPanel()
-            onPanelSlide(panel, if (panel.panelState == SlidingUpPanelLayout.PanelState.EXPANDED) 1F else 0F)
+            onPanelSlide(
+                panel,
+                if (panel.panelState == SlidingUpPanelLayout.PanelState.EXPANDED) 1F else 0F
+            )
         }
     }
 

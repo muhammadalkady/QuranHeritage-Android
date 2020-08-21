@@ -118,8 +118,10 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
         Logger.logI(tag, "initializing audio focus request")
         val audioAttr = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build()
-        audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).setAudioAttributes(audioAttr)
-            .setAcceptsDelayedFocusGain(true).setOnAudioFocusChangeListener(this@Player, audioFocusHandler).build()
+        audioFocusRequest =
+            AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).setAudioAttributes(audioAttr)
+                .setAcceptsDelayedFocusGain(true)
+                .setOnAudioFocusChangeListener(this@Player, audioFocusHandler).build()
     }
 
     private fun onAudioFocusLossTransientCanDuck() {
@@ -146,7 +148,9 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
         Logger.logI(tag, "requesting audio focus")
         val audioManager = playerService.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val result =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) audioManager.requestAudioFocus(audioFocusRequest) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) audioManager.requestAudioFocus(
+                audioFocusRequest
+            ) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
             else audioManager.requestAudioFocus(
                 this,
                 AudioManager.STREAM_MUSIC,
@@ -160,7 +164,9 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     private fun abandonAudioFocus() {
         Logger.logI(tag, "abandon audio focus")
         val audioManager = playerService.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) audioManager.abandonAudioFocusRequest(audioFocusRequest)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) audioManager.abandonAudioFocusRequest(
+            audioFocusRequest
+        )
         else audioManager.abandonAudioFocus(this)
     }
 
@@ -415,7 +421,10 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
                 runBlocking { ensureChildrenCount(childMediaId) }
                 with(simpleExoPlayer) {
                     val allChildren = runBlocking { repo.otherChildren(true, childMediaId) }
-                    if (currentWindowIndex < allChildren.lastIndex) seekTo(simpleExoPlayer.currentWindowIndex + 1, 0)
+                    if (currentWindowIndex < allChildren.lastIndex) seekTo(
+                        simpleExoPlayer.currentWindowIndex + 1,
+                        0
+                    )
                     else seekTo(0, 0)
                     if (!playWhenReady) play()
                 }

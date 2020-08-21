@@ -33,9 +33,14 @@ class MediaFragment : Fragment() {
         )
     }
     private val argParentMediaId: String by lazy { arguments?.getString("media-id")!! }
-    private val argTitle: String by lazy { arguments?.getString("title") ?: getString(R.string.main_title) }
+    private val argTitle: String by lazy {
+        arguments?.getString("title") ?: getString(R.string.main_title)
+    }
     private val vm by lazy {
-        ViewModelProvider(this, MediaViewModelFactory(requireActivity().application, argParentMediaId)).get(MediaViewModel::class.java)
+        ViewModelProvider(
+            this,
+            MediaViewModelFactory(requireActivity().application, argParentMediaId)
+        ).get(MediaViewModel::class.java)
     }
     private val mediaListScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -46,7 +51,11 @@ class MediaFragment : Fragment() {
     }
     private var animationEnabled = true
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_media, container, false)
     }
 
@@ -104,19 +113,22 @@ class MediaFragment : Fragment() {
     private fun showMediaCount() {
         mediaCount.doOnLayout {
             mediaCount.translationY = mediaCount.height.toFloat()
-            mediaCount.animate().translationYBy(-mediaCount.height.toFloat()).setDuration(animationDuration).start()
+            mediaCount.animate().translationYBy(-mediaCount.height.toFloat())
+                .setDuration(animationDuration).start()
         }
     }
 
     private fun hideMediaCount() {
         mediaCount.doOnLayout {
-            mediaCount.animate().translationYBy(mediaCount.height.toFloat()).setDuration(animationDuration).start()
+            mediaCount.animate().translationYBy(mediaCount.height.toFloat())
+                .setDuration(animationDuration).start()
         }
     }
 
     private fun initList() {
         context?.let {
-            mediaList.layoutManager = GridLayoutManager(it, resources.getInteger(R.integer.span_count))
+            mediaList.layoutManager =
+                GridLayoutManager(it, resources.getInteger(R.integer.span_count))
             mediaList.adapter = adapter
         }
     }
@@ -162,7 +174,10 @@ class MediaFragment : Fragment() {
         fun newInstance(id: String, parentTitle: String?, title: String?): MediaFragment {
             val bundle = Bundle()
             bundle.putString(Const.MEDIA_ID, id)
-            if (parentTitle != null && title != null) bundle.putString("title", "$parentTitle ● $title")
+            if (parentTitle != null && title != null) bundle.putString(
+                "title",
+                "$parentTitle ● $title"
+            )
             val fragment = MediaFragment()
             fragment.arguments = bundle
             return fragment

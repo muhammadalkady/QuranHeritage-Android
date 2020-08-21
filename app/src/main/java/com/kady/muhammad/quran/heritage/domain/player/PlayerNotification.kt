@@ -27,11 +27,13 @@ object PlayerNotification {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createChannel(context: Context) {
         with(context) {
-            val notificationManager: NotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager: NotificationManager =
+                getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             val name: String = getString(R.string.user_notification_channel_name)
             val description: String = context.getString(R.string.user_notification_channel_desc)
             val importance: Int = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(NOTIFICATION_PLAYER_NOTIFICATION_CHANNEL_ID, name, importance)
+            val channel =
+                NotificationChannel(NOTIFICATION_PLAYER_NOTIFICATION_CHANNEL_ID, name, importance)
             channel.description = description
             channel.setShowBadge(false)
             channel.setSound(null, null)
@@ -50,40 +52,55 @@ object PlayerNotification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) createChannel(app)
         /*
         * */
-        val contentIntent: PendingIntent = PendingIntent.getActivity(app, 0, Intent(app, MainActivity::class.java), 0)
+        val contentIntent: PendingIntent =
+            PendingIntent.getActivity(app, 0, Intent(app, MainActivity::class.java), 0)
         /*
         * */
         val builder = NotificationCompat.Builder(app, NOTIFICATION_PLAYER_NOTIFICATION_CHANNEL_ID)
         /*
         * */
-        val contentText: String = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
-        val contentTitle: String = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE)
+        val contentText: String =
+            mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
+        val contentTitle: String =
+            mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE)
         /*
         * */
         val playPauseAction: NotificationCompat.Action = if (paused) {
             NotificationCompat.Action(
                 R.drawable.ic_play_arrow,
                 app.getString(R.string.play),
-                MediaButtonReceiver.buildMediaButtonPendingIntent(app, PlaybackStateCompat.ACTION_PLAY)
+                MediaButtonReceiver.buildMediaButtonPendingIntent(
+                    app,
+                    PlaybackStateCompat.ACTION_PLAY
+                )
             )
         } else {
             NotificationCompat.Action(
                 R.drawable.ic_pause,
                 app.getString(R.string.pause),
-                MediaButtonReceiver.buildMediaButtonPendingIntent(app, PlaybackStateCompat.ACTION_PAUSE)
+                MediaButtonReceiver.buildMediaButtonPendingIntent(
+                    app,
+                    PlaybackStateCompat.ACTION_PAUSE
+                )
             )
         }
         val nextAction: NotificationCompat.Action =
             NotificationCompat.Action(
                 R.drawable.ic_skip_next,
                 app.getString(R.string.next),
-                MediaButtonReceiver.buildMediaButtonPendingIntent(app, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
+                MediaButtonReceiver.buildMediaButtonPendingIntent(
+                    app,
+                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                )
             )
         val previousAction: NotificationCompat.Action =
             NotificationCompat.Action(
                 R.drawable.ic_skip_previous,
                 app.getString(R.string.previous),
-                MediaButtonReceiver.buildMediaButtonPendingIntent(app, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
+                MediaButtonReceiver.buildMediaButtonPendingIntent(
+                    app,
+                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                )
             )
         /*
         * */
@@ -101,7 +118,12 @@ object PlayerNotification {
         builder.setOnlyAlertOnce(true)
         /*
         * */
-        builder.setLargeIcon(BitmapFactory.decodeResource(app.resources, R.drawable.notification_large_icon))
+        builder.setLargeIcon(
+            BitmapFactory.decodeResource(
+                app.resources,
+                R.drawable.notification_large_icon
+            )
+        )
         builder.setSmallIcon(R.drawable.ic_notification)
         /*
         * */
@@ -118,7 +140,8 @@ object PlayerNotification {
         /*
         * */
         val notification: Notification = builder.build()
-        val notificationManager: NotificationManager = app.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager: NotificationManager =
+            app.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(NOTIFICATION_ID, notification)
         return notification
     }

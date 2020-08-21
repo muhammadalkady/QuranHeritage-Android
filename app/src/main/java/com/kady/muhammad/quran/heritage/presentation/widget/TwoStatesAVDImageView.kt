@@ -28,8 +28,10 @@ class TwoStatesAVDImageView : AppCompatImageView {
     private fun resolveAttrs(attrs: AttributeSet?) {
         attrs?.let {
             val typedArray = context.obtainStyledAttributes(it, R.styleable.TwoStatesAVDImageView)
-            state1Avd = typedArray.getDrawable(R.styleable.TwoStatesAVDImageView_avd1) as AnimatedVectorDrawable
-            state2Avd = typedArray.getDrawable(R.styleable.TwoStatesAVDImageView_avd2) as AnimatedVectorDrawable
+            state1Avd =
+                typedArray.getDrawable(R.styleable.TwoStatesAVDImageView_avd1) as AnimatedVectorDrawable
+            state2Avd =
+                typedArray.getDrawable(R.styleable.TwoStatesAVDImageView_avd2) as AnimatedVectorDrawable
             //
             toState2()
             //

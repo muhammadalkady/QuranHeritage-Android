@@ -11,7 +11,8 @@ import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class MediaViewModel(val app: Application, parentMediaId: ParentMediaId) : AndroidViewModel(app), KoinComponent {
+class MediaViewModel(val app: Application, parentMediaId: ParentMediaId) : AndroidViewModel(app),
+    KoinComponent {
 
     private val repo: MediaRepo by inject()
     private val _liveMedia: MutableLiveData<List<ChildMedia>> = MutableLiveData()
@@ -25,10 +26,18 @@ class MediaViewModel(val app: Application, parentMediaId: ParentMediaId) : Andro
         mediaChildrenForParentId(false, parentMediaId)
     }
 
-    fun mediaChildrenForParentId(fromCache: Boolean, parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID) {
+    fun mediaChildrenForParentId(
+        fromCache: Boolean,
+        parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             _liveLoading.postValue(true)
-            _liveMedia.postValue(repo.mediaChildrenForParentId(fromCache = true, parentMediaId = parentMediaId))
+            _liveMedia.postValue(
+                repo.mediaChildrenForParentId(
+                    fromCache = true,
+                    parentMediaId = parentMediaId
+                )
+            )
             _liveMediaCount.postValue(repo.count())
             _liveMedia.postValue(repo.mediaChildrenForParentId(fromCache, parentMediaId))
             _liveMediaCount.postValue(repo.count())

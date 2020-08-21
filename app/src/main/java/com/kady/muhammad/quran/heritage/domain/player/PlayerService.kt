@@ -23,71 +23,76 @@ class PlayerService : MediaBrowserServiceCompat() {
     private val playbackStateCompat = PlaybackStateCompat.Builder()
         .setActions(PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PAUSE)
         .build()
-    private val mediaSessionCallback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
+    private val mediaSessionCallback: MediaSessionCompat.Callback =
+        object : MediaSessionCompat.Callback() {
 
-        override fun onCustomAction(action: String, extras: Bundle) {
-            Logger.logI(tag, "on custom action")
-            when (action) {
-                Const.PLAYER_ACTION_SKIP_TO_MEDIA_ID -> player.seekToChild(extras.getString(Const.MEDIA_ID)!!)
+            override fun onCustomAction(action: String, extras: Bundle) {
+                Logger.logI(tag, "on custom action")
+                when (action) {
+                    Const.PLAYER_ACTION_SKIP_TO_MEDIA_ID -> player.seekToChild(
+                        extras.getString(
+                            Const.MEDIA_ID
+                        )!!
+                    )
+                }
+            }
+
+            override fun onPlay() {
+                Logger.logI(tag, "on play")
+                player.play()
+            }
+
+            override fun onPause() {
+                Logger.logI(tag, "on pause")
+                player.pause()
+            }
+
+            override fun onSkipToNext() {
+                Logger.logI(tag, "on skip to next")
+                player.next()
+            }
+
+            override fun onSkipToPrevious() {
+                Logger.logI(tag, "on skip to previous")
+                player.previous()
+            }
+
+            override fun onSeekTo(pos: Long) {
+                Logger.logI(tag, "on seek to")
+                player.seekTo(pos)
+            }
+
+            override fun onSetRepeatMode(repeatMode: Int) {
+                Logger.logI(tag, "on set repeat mode")
+                player.setRepeatMode(repeatMode)
+            }
+
+            override fun onSetShuffleMode(shuffleMode: Int) {
+                Logger.logI(tag, "on set shuffle mode")
+                player.setShuffleMode(shuffleMode)
+            }
+
+            override fun onPrepareFromMediaId(mediaId: String, extras: Bundle?) {
+                Logger.logI(tag, "on prepare from media id")
+                player.setChildMediaId(mediaId).also { player.prepare() }
+            }
+
+            override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+                Logger.logI(tag, "on play from media id")
+            }
+
+            override fun onPrepare() {
+                Logger.logI(tag, "on prepare")
+            }
+
+            override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+                Logger.logI(tag, "on play from search")
+            }
+
+            override fun onPlayFromUri(uri: Uri?, extras: Bundle?) {
+                Logger.logI(tag, "on play from uri")
             }
         }
-
-        override fun onPlay() {
-            Logger.logI(tag, "on play")
-            player.play()
-        }
-
-        override fun onPause() {
-            Logger.logI(tag, "on pause")
-            player.pause()
-        }
-
-        override fun onSkipToNext() {
-            Logger.logI(tag, "on skip to next")
-            player.next()
-        }
-
-        override fun onSkipToPrevious() {
-            Logger.logI(tag, "on skip to previous")
-            player.previous()
-        }
-
-        override fun onSeekTo(pos: Long) {
-            Logger.logI(tag, "on seek to")
-            player.seekTo(pos)
-        }
-
-        override fun onSetRepeatMode(repeatMode: Int) {
-            Logger.logI(tag, "on set repeat mode")
-            player.setRepeatMode(repeatMode)
-        }
-
-        override fun onSetShuffleMode(shuffleMode: Int) {
-            Logger.logI(tag, "on set shuffle mode")
-            player.setShuffleMode(shuffleMode)
-        }
-
-        override fun onPrepareFromMediaId(mediaId: String, extras: Bundle?) {
-            Logger.logI(tag, "on prepare from media id")
-            player.setChildMediaId(mediaId).also { player.prepare() }
-        }
-
-        override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-            Logger.logI(tag, "on play from media id")
-        }
-
-        override fun onPrepare() {
-            Logger.logI(tag, "on prepare")
-        }
-
-        override fun onPlayFromSearch(query: String?, extras: Bundle?) {
-            Logger.logI(tag, "on play from search")
-        }
-
-        override fun onPlayFromUri(uri: Uri?, extras: Bundle?) {
-            Logger.logI(tag, "on play from uri")
-        }
-    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Logger.logI(tag, "on start command ${intent?.action}")
@@ -96,12 +101,19 @@ class PlayerService : MediaBrowserServiceCompat() {
         return Service.START_NOT_STICKY
     }
 
-    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+    override fun onLoadChildren(
+        parentId: String,
+        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
+    ) {
         Logger.logI(tag, "on load children")
         result.sendResult(null)
     }
 
-    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot =
+    override fun onGetRoot(
+        clientPackageName: String,
+        clientUid: Int,
+        rootHints: Bundle?
+    ): BrowserRoot =
         BrowserRoot("Root", null)
 
     override fun onCreate() {

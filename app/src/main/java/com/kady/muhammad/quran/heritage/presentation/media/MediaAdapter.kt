@@ -23,7 +23,12 @@ class MediaAdapter(
     RecyclerView.Adapter<MediaAdapter.MediaHolder>() {
 
     private val primaryColor by lazy { ContextCompat.getColor(context, R.color.colorPrimary) }
-    private val primaryColorDark by lazy { ContextCompat.getColor(context, R.color.colorPrimaryDark) }
+    private val primaryColorDark by lazy {
+        ContextCompat.getColor(
+            context,
+            R.color.colorPrimaryDark
+        )
+    }
 
     override fun getItemCount(): Int = mediaList.size
 

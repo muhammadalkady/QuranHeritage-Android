@@ -15,7 +15,11 @@ import com.kady.muhammad.quran.heritage.pref.Pref
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class API(private val cc: CoroutineContext, private val pref: Pref, private val mediaRepo: MediaRepo) :
+class API(
+    private val cc: CoroutineContext,
+    private val pref: Pref,
+    private val mediaRepo: MediaRepo
+) :
     CoroutineContext by cc {
 
     companion object {
@@ -59,7 +63,11 @@ class API(private val cc: CoroutineContext, private val pref: Pref, private val 
                 .run { awaitAll(*this.toTypedArray()) }
                 .mapNotNull { it as? GetMetadataResponse }
                 .filter { it.files.isNotEmpty() }
-                .map { Pair(it.metadata, it.files.filter { file: File -> file.format == ARCHIVE_DOT_ORG_MP3_FORMAT }) }
+                .map {
+                    Pair(
+                        it.metadata,
+                        it.files.filter { file: File -> file.format == ARCHIVE_DOT_ORG_MP3_FORMAT })
+                }
                 .flatMap { pair: Pair<Metadata, List<File>> ->
                     val media: MutableList<Media> = pair.second
                         .map { it.toMedia(pair.first.identifier) }.toMutableList()

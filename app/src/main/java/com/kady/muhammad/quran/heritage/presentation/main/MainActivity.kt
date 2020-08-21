@@ -16,7 +16,8 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_player.*
 
-class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListener, PlayerUpClickListener, PanelLayout {
+class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListener,
+    PlayerUpClickListener, PanelLayout {
 
     private val playerFragment: PlayerFragment by lazy {
         supportFragmentManager.findFragmentByTag("player") as PlayerFragment
@@ -57,7 +58,11 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
         (playerFragment as? PanelSlideListener)?.onPanelSlide(panel, slideOffset)
     }
 
-    override fun onPanelStateChanged(panel: View, previousState: SlidingUpPanelLayout.PanelState, newState: SlidingUpPanelLayout.PanelState) {
+    override fun onPanelStateChanged(
+        panel: View,
+        previousState: SlidingUpPanelLayout.PanelState,
+        newState: SlidingUpPanelLayout.PanelState
+    ) {
     }
 
     override fun onUp() {

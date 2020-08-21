@@ -39,14 +39,20 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
         val json: String = res.openRawResource(res.getIdentifier("media", "raw", packageName))
             .bufferedReader()
             .use { it.readText() }
-        return@withContext Gson().fromJson<List<String>>(json, object : TypeToken<List<String>>() {}.type)
+        return@withContext Gson().fromJson<List<String>>(
+            json,
+            object : TypeToken<List<String>>() {}.type
+        )
     }
 
     suspend fun count(): Int {
         return allCachedMedia().filterNot { it.isList }.size
     }
 
-    suspend fun mediaChildrenForParentId(fromCache: Boolean, parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID): List<ChildMedia> {
+    suspend fun mediaChildrenForParentId(
+        fromCache: Boolean,
+        parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID
+    ): List<ChildMedia> {
         return filterMedia(fromCache, parentMediaId)
     }
 

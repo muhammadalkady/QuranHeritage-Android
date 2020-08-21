@@ -19,51 +19,79 @@ class SwipeLayout : FrameLayout {
     private var swipeListener: ((fraction: Float) -> Unit)? = null
     private var firstDistanceX: Float = Float.MIN_VALUE
     private var firstDistanceY: Float = Float.MIN_VALUE
-    private val gestureDetector: GestureDetector by lazy { GestureDetector(context, gestureDetectorListener) }
-    private val gestureDetectorListener: GestureDetector.OnGestureListener = object : GestureDetector.OnGestureListener {
-        override fun onShowPress(e: MotionEvent?) {
-            Logger.logI(tag, "onShowPress")
-        }
-
-        override fun onSingleTapUp(e: MotionEvent?): Boolean {
-            Logger.logI(tag, "onSingleTapUp", isLoggingEnabled)
-            return false
-        }
-
-        override fun onDown(e: MotionEvent?): Boolean {
-            Logger.logI(tag, "onDown", isLoggingEnabled)
-            return false
-        }
-
-        override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
-            Logger.logI(tag, "onFling", isLoggingEnabled)
-            return false
-        }
-
-        override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-            Logger.logI(tag, "onScroll e2.rawX = ${e2?.x} | distanceX = $firstDistanceX |  distanceY = $firstDistanceY", true)
-            e1 ?: return false
-            e2 ?: return false
-            if (firstDistanceX == Float.MIN_VALUE && firstDistanceY == Float.MIN_VALUE) {
-                firstDistanceX = distanceX
-                firstDistanceY = distanceY
-            }
-            if (abs(firstDistanceY) > abs(firstDistanceX)) return false
-            val newX: Float = e2.rawX - e1.rawX
-            x = if (newX < 0F) 0F else newX
-            Logger.logI(tag, "onScroll x = $x , e1.rawX = ${e1.rawX} , e2.rawX = ${e2.rawX}", false)
-            return false
-        }
-
-        override fun onLongPress(e: MotionEvent?) {
-            Logger.logI(tag, "onLongPress", isLoggingEnabled)
-        }
-
+    private val gestureDetector: GestureDetector by lazy {
+        GestureDetector(
+            context,
+            gestureDetectorListener
+        )
     }
+    private val gestureDetectorListener: GestureDetector.OnGestureListener =
+        object : GestureDetector.OnGestureListener {
+            override fun onShowPress(e: MotionEvent?) {
+                Logger.logI(tag, "onShowPress")
+            }
+
+            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                Logger.logI(tag, "onSingleTapUp", isLoggingEnabled)
+                return false
+            }
+
+            override fun onDown(e: MotionEvent?): Boolean {
+                Logger.logI(tag, "onDown", isLoggingEnabled)
+                return false
+            }
+
+            override fun onFling(
+                e1: MotionEvent?,
+                e2: MotionEvent?,
+                velocityX: Float,
+                velocityY: Float
+            ): Boolean {
+                Logger.logI(tag, "onFling", isLoggingEnabled)
+                return false
+            }
+
+            override fun onScroll(
+                e1: MotionEvent?,
+                e2: MotionEvent?,
+                distanceX: Float,
+                distanceY: Float
+            ): Boolean {
+                Logger.logI(
+                    tag,
+                    "onScroll e2.rawX = ${e2?.x} | distanceX = $firstDistanceX |  distanceY = $firstDistanceY",
+                    true
+                )
+                e1 ?: return false
+                e2 ?: return false
+                if (firstDistanceX == Float.MIN_VALUE && firstDistanceY == Float.MIN_VALUE) {
+                    firstDistanceX = distanceX
+                    firstDistanceY = distanceY
+                }
+                if (abs(firstDistanceY) > abs(firstDistanceX)) return false
+                val newX: Float = e2.rawX - e1.rawX
+                x = if (newX < 0F) 0F else newX
+                Logger.logI(
+                    tag,
+                    "onScroll x = $x , e1.rawX = ${e1.rawX} , e2.rawX = ${e2.rawX}",
+                    false
+                )
+                return false
+            }
+
+            override fun onLongPress(e: MotionEvent?) {
+                Logger.logI(tag, "onLongPress", isLoggingEnabled)
+            }
+
+        }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         Logger.logI(tag, "dispatchTouchEvent", isLoggingEnabled)
