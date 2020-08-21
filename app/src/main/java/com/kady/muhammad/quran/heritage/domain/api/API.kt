@@ -64,9 +64,8 @@ class API(
                 .mapNotNull { it as? GetMetadataResponse }
                 .filter { it.files.isNotEmpty() }
                 .map {
-                    Pair(
-                        it.metadata,
-                        it.files.filter { file: File -> file.format == ARCHIVE_DOT_ORG_MP3_FORMAT })
+                    it.metadata to
+                            it.files.filter { file: File -> file.format == ARCHIVE_DOT_ORG_MP3_FORMAT }
                 }
                 .flatMap { pair: Pair<Metadata, List<File>> ->
                     val media: MutableList<Media> = pair.second
