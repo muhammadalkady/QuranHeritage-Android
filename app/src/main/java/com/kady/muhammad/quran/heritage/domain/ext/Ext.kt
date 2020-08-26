@@ -5,8 +5,8 @@ import com.kady.muhammad.quran.heritage.entity.media.Media
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-
 const val UI_PLAYER_PROGRESS_DURATION_TIME_FORMAT = "%02d:%02d:%02d"
+
 fun Long.millisToPlayerDuration(): String =
     if (this <= 0) String.format(
         Locale(LANGUAGE_ARABIC),
