@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.FragmentPlayerBinding
@@ -85,7 +84,7 @@ class PlayerFragment : Fragment(), PanelSlideListener {
     }
 
     private fun observerPlayerState() {
-        vm.playerState.observe(viewLifecycleOwner, Observer {
+        vm.playerState.observe(viewLifecycleOwner, {
             when (it) {
                 PlaybackStateCompat.STATE_BUFFERING -> onBuffering()
                 PlaybackStateCompat.STATE_ERROR -> onError()
@@ -97,7 +96,7 @@ class PlayerFragment : Fragment(), PanelSlideListener {
     }
 
     private fun observerPlayerMetadata() {
-        vm.playerMetadata.observe(viewLifecycleOwner, Observer {
+        vm.playerMetadata.observe(viewLifecycleOwner, {
             setTitle(it.mediaTitle);setSubTitle(it.mediaItemTitle)
             setDuration(it.mediaItemDuration);setSeekBarMax(it.mediaItemDurationMillis)
         })
@@ -121,7 +120,7 @@ class PlayerFragment : Fragment(), PanelSlideListener {
     }
 
     private fun observerElapsedTime() {
-        vm.elapsedTime.observe(viewLifecycleOwner, Observer {
+        vm.elapsedTime.observe(viewLifecycleOwner, {
             if (!isUserSeeking) {
                 elapsedDuration.text = it.first
                 seekBar.setProgressCompat(it.second)
@@ -130,13 +129,13 @@ class PlayerFragment : Fragment(), PanelSlideListener {
     }
 
     private fun observerRepeatOneMode() {
-        vm.repeatOne.observe(viewLifecycleOwner, Observer {
+        vm.repeatOne.observe(viewLifecycleOwner, {
             if (it) repeatOne.toState1() else repeatOne.toState2()
         })
     }
 
     private fun observerShuffleMode() {
-        vm.shuffle.observe(viewLifecycleOwner, Observer {
+        vm.shuffle.observe(viewLifecycleOwner, {
             if (it) shuffle.toState1() else shuffle.toState2()
         })
     }

@@ -146,17 +146,17 @@ class MediaFragment : Fragment() {
         Logger.logI(logTag, "loadMediaList")
         vm.liveMedia
             .observe(viewLifecycleOwner,
-                Observer { updateAdapter(it);showNoContent(it.isEmpty()) })
+                { updateAdapter(it);showNoContent(it.isEmpty()) })
     }
 
     private fun observeCount() {
-        vm.liveMediaCount.observe(viewLifecycleOwner, Observer {
+        vm.liveMediaCount.observe(viewLifecycleOwner, {
             mediaCount.text = getString(R.string.media_count, it)
         })
     }
 
     private fun observeLoading() {
-        vm.liveLoading.observe(viewLifecycleOwner, Observer {
+        vm.liveLoading.observe(viewLifecycleOwner, {
             if (it) loading.show()
             else loading.hide()
         })
