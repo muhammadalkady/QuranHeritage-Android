@@ -22,3 +22,4 @@ app/src/main/res/drawable-v24/
 *.apk
 /app/release/output.json
 /.idea/jarRepositories.xml
+/.idea/compiler.xml
