@@ -11,10 +11,7 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.net.Uri
 import android.net.wifi.WifiManager
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
+import android.os.*
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -58,7 +55,7 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     private val app: Application by lazy { playerService.applicationContext as App }
     private val playerHandlerThread = HandlerThread("player_handler_thread")
     private val playerHandler: Handler by lazy { Handler(playerHandlerThread.looper) }
-    private val elapsedTimeHandler = Handler()
+    private val elapsedTimeHandler = Handler(Looper.myLooper()!!)
     private val audioFocusHandler: Handler by lazy { Handler(playerHandlerThread.looper) }
     private val playbackStateBuilder: PlaybackStateCompat.Builder = PlaybackStateCompat.Builder()
     private val noisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {

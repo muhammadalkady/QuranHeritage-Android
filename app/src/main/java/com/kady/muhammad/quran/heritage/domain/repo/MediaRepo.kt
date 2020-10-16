@@ -70,7 +70,7 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
 
     suspend fun allCachedMedia(): List<Media> =
         withContext(cc) {
-            Gson().fromJson<List<Media>>(
+            Gson().fromJson(
                 pref.getString("all_media", "[]"),
                 object : TypeToken<List<Media>>() {}.type
             )
