@@ -5,15 +5,12 @@ import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.FrameLayout
-import com.kady.muhammad.quran.heritage.domain.log.Logger
 import kotlin.math.abs
 
 class SwipeLayout : FrameLayout {
 
     var disableSwipe = false
 
-    private val tag = "SwipeLayout"
-    private val isLoggingEnabled = true
     private val animationDuration = 150L
     private var dismissListener: (() -> Unit)? = null
     private var swipeListener: ((fraction: Float) -> Unit)? = null
@@ -27,17 +24,14 @@ class SwipeLayout : FrameLayout {
     }
     private val gestureDetectorListener: GestureDetector.OnGestureListener =
         object : GestureDetector.OnGestureListener {
-            override fun onShowPress(e: MotionEvent?) {
-                Logger.logI(tag, "onShowPress")
-            }
+
+            override fun onShowPress(e: MotionEvent?) {}
 
             override fun onSingleTapUp(e: MotionEvent?): Boolean {
-                Logger.logI(tag, "onSingleTapUp", isLoggingEnabled)
                 return false
             }
 
             override fun onDown(e: MotionEvent?): Boolean {
-                Logger.logI(tag, "onDown", isLoggingEnabled)
                 return false
             }
 
@@ -47,7 +41,6 @@ class SwipeLayout : FrameLayout {
                 velocityX: Float,
                 velocityY: Float
             ): Boolean {
-                Logger.logI(tag, "onFling", isLoggingEnabled)
                 return false
             }
 
@@ -57,11 +50,6 @@ class SwipeLayout : FrameLayout {
                 distanceX: Float,
                 distanceY: Float
             ): Boolean {
-                Logger.logI(
-                    tag,
-                    "onScroll e2.rawX = ${e2?.x} | distanceX = $firstDistanceX |  distanceY = $firstDistanceY",
-                    true
-                )
                 e1 ?: return false
                 e2 ?: return false
                 if (firstDistanceX == Float.MIN_VALUE && firstDistanceY == Float.MIN_VALUE) {
@@ -71,16 +59,10 @@ class SwipeLayout : FrameLayout {
                 if (abs(firstDistanceY) > abs(firstDistanceX)) return false
                 val newX: Float = e2.rawX - e1.rawX
                 x = if (newX < 0F) 0F else newX
-                Logger.logI(
-                    tag,
-                    "onScroll x = $x , e1.rawX = ${e1.rawX} , e2.rawX = ${e2.rawX}",
-                    false
-                )
                 return false
             }
 
             override fun onLongPress(e: MotionEvent?) {
-                Logger.logI(tag, "onLongPress", isLoggingEnabled)
             }
 
         }
@@ -94,7 +76,6 @@ class SwipeLayout : FrameLayout {
     )
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        Logger.logI(tag, "dispatchTouchEvent", isLoggingEnabled)
         if (!disableSwipe) {
             gestureDetector.onTouchEvent(ev)
             if (ev != null && ev.action == MotionEvent.ACTION_UP) onUpTouch()
