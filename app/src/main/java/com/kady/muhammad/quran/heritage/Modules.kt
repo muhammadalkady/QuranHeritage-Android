@@ -3,7 +3,7 @@ package com.kady.muhammad.quran.heritage
 import android.app.Application
 import com.kady.muhammad.quran.heritage.domain.api.API
 import com.kady.muhammad.quran.heritage.domain.repo.MediaRepo
-import com.kady.muhammad.quran.heritage.pref.Pref
+import com.kady.muhammad.quran.heritage.domain.pref.Pref
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.Module
 import org.koin.dsl.module

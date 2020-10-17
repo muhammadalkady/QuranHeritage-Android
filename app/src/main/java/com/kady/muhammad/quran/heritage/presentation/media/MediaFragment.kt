@@ -28,8 +28,8 @@ class MediaFragment : Fragment() {
     private val animationDuration = 150L
     private val adapter by lazy {
         MediaAdapter(
-            requireContext(), resources.getInteger(R.integer.span_count),
-            requireActivity() as MainActivity, argTitle, mutableListOf()
+            requireContext(),
+            resources.getInteger(R.integer.span_count), mutableListOf()
         )
     }
     private val argParentMediaId: String by lazy { arguments?.getString("media-id")!! }
@@ -42,6 +42,9 @@ class MediaFragment : Fragment() {
             MediaViewModelFactory(requireActivity().application, argParentMediaId)
         ).get(MediaViewModel::class.java)
     }
+
+    private val mainActivity: MainActivity by lazy { requireActivity() as MainActivity }
+
     private val mediaListScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             val showMediaCount = (mediaList.layoutManager as GridLayoutManager)
@@ -130,6 +133,11 @@ class MediaFragment : Fragment() {
             mediaList.layoutManager =
                 GridLayoutManager(it, resources.getInteger(R.integer.span_count))
             mediaList.adapter = adapter
+        }
+        adapter.setOnItemClickListener { mediaItem ->
+            if (mediaItem.isList) mainActivity
+                .addFragmentToBackStack(newInstance(mediaItem.id, argTitle, mediaItem.title))
+            else mainActivity.playPause(mediaItem.id)
         }
     }
 

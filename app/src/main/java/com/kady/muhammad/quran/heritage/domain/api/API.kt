@@ -11,7 +11,7 @@ import com.kady.muhammad.quran.heritage.entity.api_response.*
 import com.kady.muhammad.quran.heritage.entity.constant.Const.ARCHIVE_DOT_ORG_MP3_FORMAT
 import com.kady.muhammad.quran.heritage.entity.constant.Const.MAIN_MEDIA_ID
 import com.kady.muhammad.quran.heritage.entity.media.Media
-import com.kady.muhammad.quran.heritage.pref.Pref
+import com.kady.muhammad.quran.heritage.domain.pref.Pref
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

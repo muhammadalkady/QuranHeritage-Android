@@ -13,7 +13,7 @@ import com.kady.muhammad.quran.heritage.entity.`typealias`.ParentMediaId
 import com.kady.muhammad.quran.heritage.entity.api_response.GetMediaResponse
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
-import com.kady.muhammad.quran.heritage.pref.Pref
+import com.kady.muhammad.quran.heritage.domain.pref.Pref
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import org.koin.core.inject

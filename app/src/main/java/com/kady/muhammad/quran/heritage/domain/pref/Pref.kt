@@ -1,4 +1,4 @@
-package com.kady.muhammad.quran.heritage.pref
+package com.kady.muhammad.quran.heritage.domain.pref
 
 import android.annotation.SuppressLint
 import android.app.Application

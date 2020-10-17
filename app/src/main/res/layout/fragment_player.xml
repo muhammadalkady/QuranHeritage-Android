@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="fm"
+            name="fragment"
             type="com.kady.muhammad.quran.heritage.presentation.player.PlayerFragment" />
 
         <variable
@@ -45,7 +45,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@color/colorPrimaryDark"
-                android:onClick="@{()->fm.up()}"
+                android:onClick="@{()->fragment.up()}"
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp">
 
@@ -76,7 +76,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:onClick="@{()->fm.previous()}"
+                android:onClick="@{()->fragment.previous()}"
                 android:scaleType="center"
                 app:avd="@drawable/skip_previous_avd_anim" />
 
@@ -99,7 +99,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:onClick="@{()->fm.next()}"
+                android:onClick="@{()->fragment.next()}"
                 android:scaleType="center"
                 app:avd="@drawable/skip_next_avd_anim" />
 

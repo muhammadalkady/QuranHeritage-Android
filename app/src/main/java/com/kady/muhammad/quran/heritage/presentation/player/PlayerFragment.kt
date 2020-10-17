@@ -79,7 +79,7 @@ class PlayerFragment : Fragment(), PanelSlideListener {
     }
 
     private fun setBindingVariables() {
-        binding.fm = this
+        binding.fragment = this
         binding.vm = vm
     }
 
