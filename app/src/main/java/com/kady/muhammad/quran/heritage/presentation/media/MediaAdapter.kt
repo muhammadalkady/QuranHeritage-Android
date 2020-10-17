@@ -61,6 +61,7 @@ class MediaAdapter(
         fun bind(mediaItem: Media, position: Int) {
             binding.mediaItem = mediaItem
             binding.position = position
+            binding.executePendingBindings()
             binding.root.setOnClickListener { listener?.invoke(mediaItem) }
         }
 

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -165,8 +164,13 @@ class MediaFragment : Fragment() {
 
     private fun observeLoading() {
         vm.liveLoading.observe(viewLifecycleOwner, {
-            if (it) loading.show()
-            else loading.hide()
+            if (it) {
+                loading.show()
+                update.isEnabled = false
+            } else {
+                loading.hide()
+                update.isEnabled = true
+            }
         })
     }
 

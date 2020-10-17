@@ -80,7 +80,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/mediaList"
                 android:layout_width="match_parent"
@@ -88,7 +87,6 @@
                 android:background="@color/colorPrimary"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:elevation="12dp"
                 android:paddingBottom="32dp"
                 tools:itemCount="100"
                 tools:listitem="@layout/media_item" />
@@ -97,12 +95,11 @@
                 android:id="@+id/loading"
                 style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:alpha="0"
+                android:layout_height="4dp"
                 android:indeterminate="true"
+                android:visibility="visible"
                 app:mpb_progressStyle="horizontal"
-                app:mpb_useIntrinsicPadding="false"
-                tools:alpha="1" />
+                app:mpb_useIntrinsicPadding="false" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/noContent"
