@@ -22,10 +22,7 @@ class API(
 ) :
     CoroutineContext by cc {
 
-    companion object {
-        private const val ARCHIVE_DOT_ORG_METADATA_BASE_URL = "https://archive.org/metadata"
-        private const val ARCHIVE_DOT_ORG_DOWNLOAD_BASE_URL = "https://archive.org/download"
-    }
+    private val allMediaJob = Job()
 
     private suspend fun cacheAllMedia(media: List<Media>): Boolean =
         withContext(context = this) {
@@ -33,16 +30,17 @@ class API(
             return@withContext pref.saveString("all_media", value)
         }
 
-    private suspend fun mediaForIdAsync(id: String): Deferred<Response?> = GlobalScope.async {
-        Uri
-            .parse(ARCHIVE_DOT_ORG_METADATA_BASE_URL)
-            .buildUpon()
-            .appendPath(id)
-            .toString()
-            .httpGet()
-            .awaitResult(GetMetadataResponse.Deserializer(), this@API)
-            .component1()
-    }
+    private suspend fun mediaForIdAsync(id: String, job: Job = Job()): Deferred<Response?> =
+        GlobalScope.async(cc + job) {
+            Uri
+                .parse(ARCHIVE_DOT_ORG_METADATA_BASE_URL)
+                .buildUpon()
+                .appendPath(id)
+                .toString()
+                .httpGet()
+                .awaitResult(GetMetadataResponse.Deserializer(), this@API)
+                .component1()
+        }
 
     private fun File.toMedia(id: String): Media {
         return Media(
@@ -59,7 +57,7 @@ class API(
     suspend fun allMedia(): Response =
         withContext(this) {
             mediaRepo.parentMediaIds()
-                .map { mediaForIdAsync(it) }
+                .map { mediaForIdAsync(it, allMediaJob) }
                 .run { awaitAll(*this.toTypedArray()) }
                 .mapNotNull { it as? GetMetadataResponse }
                 .filter { it.files.isNotEmpty() }
@@ -87,4 +85,10 @@ class API(
             .appendQueryParameter("id", mediaId)
             .build()
             .toString()
+
+
+    companion object {
+        private const val ARCHIVE_DOT_ORG_METADATA_BASE_URL = "https://archive.org/metadata"
+        private const val ARCHIVE_DOT_ORG_DOWNLOAD_BASE_URL = "https://archive.org/download"
+    }
 }
