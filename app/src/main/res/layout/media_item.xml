@@ -31,27 +31,34 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:clickable="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:elevation="12dp"
         android:focusable="true"
         app:color1="@{color1}"
         app:color2="@{color2}"
         app:position="@{position}"
-        app:spanCount="@{spanCount}">
+        app:spanCount="@{spanCount}"
+        tools:background="@color/colorPrimaryDark">
 
-        <com.mikhaellopez.circularimageview.CircularImageView
-            android:id="@+id/avatar"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            app:civ_border_color="@android:color/white"
-            app:civ_border_width="1dp"
+            app:cardBackgroundColor="@color/colorAvatar"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@{mediaItem.list ? @drawable/ic_playlist : @drawable/ic_track }"
-            tools:src="@drawable/ic_track" />
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.cardview.widget.CardView>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title"
@@ -70,7 +77,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/avatar"
+            app:layout_constraintStart_toEndOf="@+id/cardView"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="ما تيسر من سورة الفاتحة" />
 

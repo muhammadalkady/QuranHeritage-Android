@@ -25,7 +25,7 @@
                 android:duration="750"
                 android:interpolator="@android:interpolator/fast_out_slow_in"
                 android:propertyName="fillColor"
-                android:valueFrom="#ffffff"
+                android:valueFrom="@color/colorPrimaryDark"
                 android:valueTo="@color/colorAccent"
                 android:valueType="colorType" />
         </aapt:attr>

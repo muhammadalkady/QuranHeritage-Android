@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#5D4037</color>
-    <color name="colorPrimaryDark">#3E2723</color>
-    <color name="colorSeparator">#403E2723</color>
-    <color name="colorAccent">#FFA726</color>
-    <color name="colorAvatar">#3E2723</color>
+    <color name="colorPrimaryDark">#BDBDBD</color>
+    <color name="colorPrimary">#EEEEEE</color>
+    <color name="colorAccent">#212121</color>
+    <color name="colorAvatar">#FFFFFF</color>
 </resources>

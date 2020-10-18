@@ -170,7 +170,7 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/time_res"
                     android:text="@string/zero_time"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
                     tools:text="00:00:00" />
 
@@ -192,7 +192,7 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/time_res"
                     android:text="@string/zero_time"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/colorAccent"
                     android:textStyle="bold"
                     tools:text="00:00:00" />
 
