@@ -9,7 +9,6 @@ import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.domain.repo.MediaRepo
 import com.kady.muhammad.quran.heritage.entity.api_response.*
 import com.kady.muhammad.quran.heritage.entity.constant.Const.ARCHIVE_DOT_ORG_MP3_FORMAT
-import com.kady.muhammad.quran.heritage.entity.constant.Const.MAIN_MEDIA_ID
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.domain.pref.Pref
 import kotlinx.coroutines.*
@@ -68,7 +67,8 @@ class API(
                 .flatMap { pair: Pair<Metadata, List<File>> ->
                     val media: MutableList<Media> = pair.second
                         .map { it.toMedia(pair.first.identifier) }.toMutableList()
-                    media.add(Media(pair.first.identifier, MAIN_MEDIA_ID, pair.first.title, true))
+                    val parentMediaId = pair.first.identifier.split("_").first()
+                    media.add(Media(pair.first.identifier, parentMediaId, pair.first.title, true))
                     return@flatMap media
                 }
                 .apply { cacheIfNotEmpty(this, this@API) }

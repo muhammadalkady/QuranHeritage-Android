@@ -14,6 +14,7 @@ import com.kady.muhammad.quran.heritage.entity.api_response.GetMediaResponse
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.domain.pref.Pref
+import com.kady.muhammad.quran.heritage.entity.reciter.Reciter
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -27,12 +28,29 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
     private val packageName: String = app.packageName
 
     private suspend fun allMedia(fromCache: Boolean): List<Media> {
-        return if (fromCache) allCachedMedia()
+        val allMedia: List<Media> = if (fromCache) allCachedMedia()
         else (api.allMedia() as GetMediaResponse).media.sorted()
+        return allMedia + recitersToMedia()
     }
 
     private suspend fun filterMedia(fromCache: Boolean, parentMediaId: ParentMediaId): List<Media> {
         return (allMedia(fromCache).filter { it.parentId == parentMediaId })
+    }
+
+    private suspend fun recitersToMedia(): List<Media> {
+        return reciters().map {
+            Media(it.id, Const.MAIN_MEDIA_ID, it.name, true)
+        }
+    }
+
+    private suspend fun reciters(): List<Reciter> = withContext(cc) {
+        val json: String = res.openRawResource(res.getIdentifier("reciters", "raw", packageName))
+            .bufferedReader()
+            .use { it.readText() }
+        return@withContext Gson().fromJson<List<Reciter>>(
+            json,
+            object : TypeToken<List<Reciter>>() {}.type
+        )
     }
 
     suspend fun parentMediaIds(): List<String> = withContext(cc) {
