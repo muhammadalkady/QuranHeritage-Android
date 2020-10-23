@@ -19,12 +19,13 @@ import com.kady.muhammad.quran.heritage.presentation.ext.show
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModel
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModelFactory
+import jp.wasabeef.recyclerview.animators.SlideInDownAnimator
 import kotlinx.android.synthetic.main.fragment_media.*
 
 class MediaFragment : Fragment() {
 
     private val logTag = "MediaFragment"
-    private val animationDuration = 150L
+    private val mediaCountAnimationDuration = 150L
     private val adapter by lazy {
         MediaAdapter(
             requireContext(),
@@ -116,14 +117,14 @@ class MediaFragment : Fragment() {
         mediaCountTextView.doOnLayout {
             mediaCountTextView.translationY = mediaCountTextView.height.toFloat()
             mediaCountTextView.animate().translationYBy(-mediaCountTextView.height.toFloat())
-                .setDuration(animationDuration).start()
+                .setDuration(mediaCountAnimationDuration).start()
         }
     }
 
     private fun hideMediaCount() {
         mediaCountTextView.doOnLayout {
             mediaCountTextView.animate().translationYBy(mediaCountTextView.height.toFloat())
-                .setDuration(animationDuration).start()
+                .setDuration(mediaCountAnimationDuration).start()
         }
     }
 
@@ -132,6 +133,7 @@ class MediaFragment : Fragment() {
             mediaRecyclerView.layoutManager =
                 GridLayoutManager(it, resources.getInteger(R.integer.span_count))
             mediaRecyclerView.adapter = adapter
+            mediaRecyclerView.itemAnimator = SlideInDownAnimator()
         }
         adapter.setOnItemClickListener { mediaItem ->
             if (mediaItem.isList) mainActivity

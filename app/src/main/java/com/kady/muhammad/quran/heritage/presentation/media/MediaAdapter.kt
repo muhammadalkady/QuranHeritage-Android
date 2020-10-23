@@ -35,7 +35,7 @@ class MediaAdapter(
     fun updateMedia(mediaList: List<Media>) {
         if (this.mediaList.isNotEmpty()) this.mediaList.clear()
         this.mediaList.addAll(mediaList)
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0, mediaList.size)
     }
 
     fun setOnItemClickListener(listener: (mediaItem: Media) -> Unit) {
