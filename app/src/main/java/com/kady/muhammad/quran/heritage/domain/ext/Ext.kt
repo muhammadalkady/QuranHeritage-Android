@@ -30,8 +30,3 @@ fun Long.millisToPlayerDuration(): String =
             )
         )
     )
-
-
-fun List<Media>.sorted(): List<Media> {
-    return this.sortedBy { !it.isList }
-}

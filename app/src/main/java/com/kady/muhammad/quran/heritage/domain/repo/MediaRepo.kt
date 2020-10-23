@@ -5,7 +5,6 @@ import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kady.muhammad.quran.heritage.domain.api.API
-import com.kady.muhammad.quran.heritage.domain.ext.sorted
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMedia
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMediaId
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ParentMedia
@@ -29,7 +28,7 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
 
     private suspend fun allMedia(fromCache: Boolean): List<Media> {
         val allMedia: List<Media> = if (fromCache) allCachedMedia()
-        else (api.allMedia() as GetMediaResponse).media.sorted()
+        else (api.allMedia() as GetMediaResponse).media
         return allMedia + recitersToMedia()
     }
 
