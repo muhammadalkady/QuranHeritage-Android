@@ -4,18 +4,18 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
-import android.widget.FrameLayout
+import androidx.annotation.AttrRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import kotlin.math.abs
 
-class SwipeLayout : FrameLayout {
+class SwipeLayout : ConstraintLayout {
 
     var disableSwipe = false
-
-    private val animationDuration = 150L
     private var dismissListener: (() -> Unit)? = null
     private var swipeListener: ((fraction: Float) -> Unit)? = null
     private var firstDistanceX: Float = Float.MIN_VALUE
     private var firstDistanceY: Float = Float.MIN_VALUE
+    private val animationDuration = 150L
     private val gestureDetector: GestureDetector by lazy {
         GestureDetector(
             context,
@@ -69,11 +69,10 @@ class SwipeLayout : FrameLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    )
+    constructor(
+        context: Context, attrs: AttributeSet?,
+        @AttrRes defStyleAttr: Int
+    ) : super(context, attrs, defStyleAttr)
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (!disableSwipe) {

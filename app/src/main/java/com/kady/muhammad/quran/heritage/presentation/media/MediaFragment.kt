@@ -46,7 +46,7 @@ class MediaFragment : Fragment() {
 
     private val mediaListScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            val showMediaCount = (mediaList.layoutManager as GridLayoutManager)
+            val showMediaCount = (mediaRecyclerView.layoutManager as GridLayoutManager)
                 .findFirstCompletelyVisibleItemPosition() == 0
             if (showMediaCount) showMediaCount() else hideMediaCount()
         }
@@ -74,7 +74,7 @@ class MediaFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        mediaList.removeOnScrollListener(mediaListScrollListener)
+        mediaRecyclerView.removeOnScrollListener(mediaListScrollListener)
         super.onDestroyView()
     }
 
@@ -86,21 +86,21 @@ class MediaFragment : Fragment() {
     }
 
     private fun setupSwipe() {
-        if (argParentMediaId == Const.MAIN_MEDIA_ID) root.disableSwipe = true
-        root.setDismissListener {
+        if (argParentMediaId == Const.MAIN_MEDIA_ID) rootConstraintLayout.disableSwipe = true
+        rootConstraintLayout.setDismissListener {
             animationEnabled = false
             requireActivity().supportFragmentManager.popBackStackImmediate()
             animationEnabled = true
         }
-        root.setSwipeListener {
-            title.alpha = 1F - it
-            update.alpha = 1F - it
+        rootConstraintLayout.setSwipeListener {
+            toolbarTitleTextView.alpha = 1F - it
+            updateTextView.alpha = 1F - it
             Logger.logI(logTag, it.toString(), false)
         }
     }
 
     private fun setupUpdate() {
-        update.setOnClickListener { onUpdate() }
+        updateTextView.setOnClickListener { onUpdate() }
     }
 
     private fun onUpdate() {
@@ -109,29 +109,29 @@ class MediaFragment : Fragment() {
 
     private fun setupMediaCount() {
         showMediaCount()
-        mediaList.addOnScrollListener(mediaListScrollListener)
+        mediaRecyclerView.addOnScrollListener(mediaListScrollListener)
     }
 
     private fun showMediaCount() {
-        mediaCount.doOnLayout {
-            mediaCount.translationY = mediaCount.height.toFloat()
-            mediaCount.animate().translationYBy(-mediaCount.height.toFloat())
+        mediaCountTextView.doOnLayout {
+            mediaCountTextView.translationY = mediaCountTextView.height.toFloat()
+            mediaCountTextView.animate().translationYBy(-mediaCountTextView.height.toFloat())
                 .setDuration(animationDuration).start()
         }
     }
 
     private fun hideMediaCount() {
-        mediaCount.doOnLayout {
-            mediaCount.animate().translationYBy(mediaCount.height.toFloat())
+        mediaCountTextView.doOnLayout {
+            mediaCountTextView.animate().translationYBy(mediaCountTextView.height.toFloat())
                 .setDuration(animationDuration).start()
         }
     }
 
     private fun initList() {
         context?.let {
-            mediaList.layoutManager =
+            mediaRecyclerView.layoutManager =
                 GridLayoutManager(it, resources.getInteger(R.integer.span_count))
-            mediaList.adapter = adapter
+            mediaRecyclerView.adapter = adapter
         }
         adapter.setOnItemClickListener { mediaItem ->
             if (mediaItem.isList) mainActivity
@@ -141,12 +141,12 @@ class MediaFragment : Fragment() {
     }
 
     private fun setToolbarTitle() {
-        title.text = argTitle
-        title.isSelected = true
+        toolbarTitleTextView.text = argTitle
+        toolbarTitleTextView.isSelected = true
     }
 
     private fun setupToolbarLogo() {
-        background.startAVDAnim()
+        appIconImageView.startAVDAnim()
     }
 
     private fun observeMediaList() {
@@ -158,24 +158,24 @@ class MediaFragment : Fragment() {
 
     private fun observeCount() {
         vm.liveMediaCount.observe(viewLifecycleOwner, {
-            mediaCount.text = getString(R.string.media_count, it)
+            mediaCountTextView.text = getString(R.string.media_count, it)
         })
     }
 
     private fun observeLoading() {
         vm.liveLoading.observe(viewLifecycleOwner, {
             if (it) {
-                loading.show()
-                update.isEnabled = false
+                loadingProgressBar.show()
+                updateTextView.isEnabled = false
             } else {
-                loading.hide()
-                update.isEnabled = true
+                loadingProgressBar.hide()
+                updateTextView.isEnabled = true
             }
         })
     }
 
     private fun showNoContent(isShown: Boolean) {
-        if (isShown) noContent.show() else noContent.hide()
+        if (isShown) noContentTextView.show() else noContentTextView.hide()
     }
 
     private fun updateAdapter(childrenMedia: List<Media>) {

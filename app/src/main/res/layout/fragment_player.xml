@@ -15,14 +15,14 @@
     </data>
 
     <FrameLayout
-        android:id="@+id/root"
+        android:id="@+id/rootFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         tools:context=".presentation.player.PlayerFragment">
 
         <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-            android:id="@+id/loading"
+            android:id="@+id/loadingProgressBar"
             style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="2dp"

@@ -141,27 +141,27 @@ class PlayerFragment : Fragment(), PanelSlideListener {
     }
 
     private fun onPlaying() {
-        loading.hide()
+        loadingProgressBar.hide()
         playPause.toState1()
     }
 
     private fun onPaused() {
-        loading.hide()
+        loadingProgressBar.hide()
         playPause.toState2()
     }
 
     private fun onError() {
-        loading.hide()
+        loadingProgressBar.hide()
         playPause.toState2()
     }
 
     private fun onBuffering() {
-        loading.show()
+        loadingProgressBar.show()
         playPause.toState1()
     }
 
     private fun onStopped() {
-        loading.hide()
+        loadingProgressBar.hide()
         playPause.toState2()
     }
 
