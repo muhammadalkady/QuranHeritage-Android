@@ -18,13 +18,6 @@ class MediaAdapter(
     RecyclerView.Adapter<MediaAdapter.MediaHolder>() {
 
     var listener: ((mediaItem: Media) -> Unit)? = null
-    private val primaryColor by lazy { ContextCompat.getColor(context, R.color.colorPrimary) }
-    private val primaryColorDark by lazy {
-        ContextCompat.getColor(
-            context,
-            R.color.colorPrimaryDark
-        )
-    }
 
     override fun getItemCount(): Int = mediaList.size
 
@@ -54,8 +47,10 @@ class MediaAdapter(
 
         init {
             binding.spanCount = spanCount
-            binding.color1 = primaryColorDark
-            binding.color2 = primaryColor
+            binding.drawable1 =
+                ContextCompat.getDrawable(context, R.drawable.media_item_background_1)
+            binding.drawable2 =
+                ContextCompat.getDrawable(context, R.drawable.media_item_background_2)
         }
 
         fun bind(mediaItem: Media, position: Int) {

@@ -18,12 +18,12 @@
             type="int" />
 
         <variable
-            name="color1"
-            type="int" />
+            name="drawable1"
+            type="android.graphics.drawable.Drawable" />
 
         <variable
-            name="color2"
-            type="int" />
+            name="drawable2"
+            type="android.graphics.drawable.Drawable" />
 
     </data>
 
@@ -35,8 +35,8 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:focusable="true"
-        app:color1="@{color1}"
-        app:color2="@{color2}"
+        app:drawable1="@{drawable1}"
+        app:drawable2="@{drawable2}"
         app:position="@{position}"
         app:spanCount="@{spanCount}"
         tools:background="@color/colorPrimaryDark">
