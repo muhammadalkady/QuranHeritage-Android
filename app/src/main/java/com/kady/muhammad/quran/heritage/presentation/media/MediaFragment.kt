@@ -32,7 +32,7 @@ class MediaFragment : Fragment() {
             resources.getInteger(R.integer.span_count), mutableListOf()
         )
     }
-    private val argParentMediaId: String by lazy { arguments?.getString("media-id")!! }
+    private val argParentMediaId: String by lazy { requireArguments().getString("media-id")!! }
     private val argTitle: String by lazy {
         arguments?.getString("title") ?: getString(R.string.main_title)
     }
