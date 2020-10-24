@@ -22,11 +22,13 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null">
+            android:background="@null"
+            android:clipChildren="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipChildren="false"
                 android:orientation="horizontal">
 
                 <com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
@@ -35,6 +37,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:background="@drawable/avatar_color_circle"
+                    android:elevation="12dp"
                     android:scaleType="center"
                     app:avd="@drawable/logo_avd_anim" />
 
