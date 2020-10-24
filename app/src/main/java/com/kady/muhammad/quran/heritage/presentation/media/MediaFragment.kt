@@ -18,6 +18,7 @@ import com.kady.muhammad.quran.heritage.databinding.FragmentMediaBinding
 import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
+import com.kady.muhammad.quran.heritage.presentation.ext.animateHeight
 import com.kady.muhammad.quran.heritage.presentation.ext.hide
 import com.kady.muhammad.quran.heritage.presentation.ext.show
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
@@ -93,6 +94,7 @@ class MediaFragment : Fragment() {
         observeLoading()
         observeMediaList()
         observeCount()
+        animateAppBarLayoutHeight()
     }
 
     override fun onDestroyView() {
@@ -105,6 +107,10 @@ class MediaFragment : Fragment() {
             return object : Animation() {}.apply { duration = 0 }
         }
         return super.onCreateAnimation(transit, enter, nextAnim)
+    }
+
+    private fun animateAppBarLayoutHeight() {
+        binding.appBarLayout.animateHeight()
     }
 
     private fun setupSwipe() {
