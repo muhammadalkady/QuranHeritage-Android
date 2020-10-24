@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
             setupSlidingPanel()
             syncPlayerWithPanel(panel, getPanelOffset())
         }
-        player.animateHeight(3_000L)
-        fragmentContainer.animateHeight(2_000L)
+        player.animateHeight(1_500L)
+        fragmentContainer.animateHeight(1_000L)
     }
 
     override fun onBackPressed() {
