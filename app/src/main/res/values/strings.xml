@@ -10,6 +10,5 @@
     <string name="pause">pause</string>
     <string name="next">next</string>
     <string name="previous">previous</string>
-    <string name="update">update</string>
     <string name="media_count">%1$d recitation(s)</string>
 </resources>

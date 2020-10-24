@@ -9,11 +9,8 @@ object Adapter {
     @BindingAdapter("position", "spanCount", "drawable1", "drawable2", requireAll = true)
     @JvmStatic
     fun setMediaBackground(
-        view: View,
-        position: Int,
-        spanCount: Int,
-        drawable1: Drawable,
-        drawable2: Drawable
+        view: View, position: Int, spanCount: Int,
+        drawable1: Drawable, drawable2: Drawable
     ) {
         val background = if (spanCount.rem(2) != 0) {
             if (position.rem(2) == 0) drawable1 else drawable2

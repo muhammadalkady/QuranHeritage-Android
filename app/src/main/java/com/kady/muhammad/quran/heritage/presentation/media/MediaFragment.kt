@@ -1,16 +1,19 @@
 package com.kady.muhammad.quran.heritage.presentation.media
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import androidx.core.view.doOnLayout
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
+import com.kady.muhammad.quran.heritage.databinding.FragmentMediaBinding
 import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
@@ -52,6 +55,18 @@ class MediaFragment : Fragment() {
             if (showMediaCount) showMediaCount() else hideMediaCount()
         }
     }
+
+    private val updateImageViewRotateObjectAnimator: ObjectAnimator by lazy {
+        ObjectAnimator
+            .ofFloat(binding.updateImageView, "rotation", 0F, 360F)
+            .apply {
+                duration = 750
+                repeatMode = ObjectAnimator.RESTART
+                repeatCount = ObjectAnimator.INFINITE
+            }
+    }
+
+    private lateinit var binding: FragmentMediaBinding
     private var animationEnabled = true
 
     override fun onCreateView(
@@ -59,7 +74,11 @@ class MediaFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_media, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_media, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.vm = vm
+        binding.fragment = this
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,7 +94,7 @@ class MediaFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        mediaRecyclerView.removeOnScrollListener(mediaListScrollListener)
+        binding.mediaRecyclerView.removeOnScrollListener(mediaListScrollListener)
         super.onDestroyView()
     }
 
@@ -88,20 +107,20 @@ class MediaFragment : Fragment() {
 
     private fun setupSwipe() {
         if (argParentMediaId == Const.MAIN_MEDIA_ID) rootConstraintLayout.disableSwipe = true
-        rootConstraintLayout.setDismissListener {
+        binding.rootConstraintLayout.setDismissListener {
             animationEnabled = false
             requireActivity().supportFragmentManager.popBackStackImmediate()
             animationEnabled = true
         }
-        rootConstraintLayout.setSwipeListener {
-            toolbarTitleTextView.alpha = 1F - it
-            updateTextView.alpha = 1F - it
+        binding.rootConstraintLayout.setSwipeListener {
+            binding.toolbarTitleTextView.alpha = 1F - it
+            updateImageView.alpha = 1F - it
             Logger.logI(logTag, it.toString(), false)
         }
     }
 
     private fun setupUpdate() {
-        updateTextView.setOnClickListener { onUpdate() }
+        binding.updateImageView.setOnClickListener { onUpdate() }
     }
 
     private fun onUpdate() {
@@ -110,30 +129,31 @@ class MediaFragment : Fragment() {
 
     private fun setupMediaCount() {
         showMediaCount()
-        mediaRecyclerView.addOnScrollListener(mediaListScrollListener)
+        binding.mediaRecyclerView.addOnScrollListener(mediaListScrollListener)
     }
 
     private fun showMediaCount() {
-        mediaCountTextView.doOnLayout {
-            mediaCountTextView.translationY = mediaCountTextView.height.toFloat()
-            mediaCountTextView.animate().translationYBy(-mediaCountTextView.height.toFloat())
+        binding.mediaCountTextView.doOnLayout {
+            binding.mediaCountTextView.translationY = binding.mediaCountTextView.height.toFloat()
+            binding.mediaCountTextView.animate()
+                .translationYBy(-binding.mediaCountTextView.height.toFloat())
                 .setDuration(mediaCountAnimationDuration).start()
         }
     }
 
     private fun hideMediaCount() {
-        mediaCountTextView.doOnLayout {
-            mediaCountTextView.animate().translationYBy(mediaCountTextView.height.toFloat())
+        binding.mediaCountTextView.doOnLayout {
+            binding.mediaCountTextView.animate().translationYBy(mediaCountTextView.height.toFloat())
                 .setDuration(mediaCountAnimationDuration).start()
         }
     }
 
     private fun initList() {
         context?.let {
-            mediaRecyclerView.layoutManager =
+            binding.mediaRecyclerView.layoutManager =
                 GridLayoutManager(it, resources.getInteger(R.integer.span_count))
-            mediaRecyclerView.adapter = adapter
-            mediaRecyclerView.itemAnimator = SlideInDownAnimator()
+            binding.mediaRecyclerView.adapter = adapter
+            binding.mediaRecyclerView.itemAnimator = SlideInDownAnimator()
         }
         adapter.setOnItemClickListener { mediaItem ->
             if (mediaItem.isList) mainActivity
@@ -143,12 +163,12 @@ class MediaFragment : Fragment() {
     }
 
     private fun setToolbarTitle() {
-        toolbarTitleTextView.text = argTitle
-        toolbarTitleTextView.isSelected = true
+        binding.toolbarTitleTextView.text = argTitle
+        binding.toolbarTitleTextView.isSelected = true
     }
 
     private fun setupToolbarLogo() {
-        appIconImageView.startAVDAnim()
+        binding.appIconImageView.startAVDAnim()
     }
 
     private fun observeMediaList() {
@@ -160,24 +180,20 @@ class MediaFragment : Fragment() {
 
     private fun observeCount() {
         vm.liveMediaCount.observe(viewLifecycleOwner, {
-            mediaCountTextView.text = getString(R.string.media_count, it)
+            binding.mediaCountTextView.text = getString(R.string.media_count, it)
         })
     }
 
     private fun observeLoading() {
         vm.liveLoading.observe(viewLifecycleOwner, {
-            if (it) {
-                loadingProgressBar.show()
-                updateTextView.isEnabled = false
-            } else {
-                loadingProgressBar.hide()
-                updateTextView.isEnabled = true
-            }
+            binding.updateImageView.isEnabled = !it
+            if (it) updateImageViewRotateObjectAnimator.start()
+            else updateImageViewRotateObjectAnimator.cancel()
         })
     }
 
     private fun showNoContent(isShown: Boolean) {
-        if (isShown) noContentTextView.show() else noContentTextView.hide()
+        if (isShown) binding.noContentTextView.show() else binding.noContentTextView.hide()
     }
 
     private fun updateAdapter(childrenMedia: List<Media>) {
