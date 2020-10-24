@@ -343,12 +343,16 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     fun play() {
         playerHandler.post {
             Logger.logI(tag, "play")
-            if (!::childMediaId.isInitialized) {
-                runBlocking { childMediaId = repo.allCachedMedia().first().id }
+            runBlocking {
+                val allCachedMedia = repo.allCachedMedia()
+                if (allCachedMedia.isEmpty()) return@runBlocking
+                if (!::childMediaId.isInitialized) {
+                    runBlocking { childMediaId = allCachedMedia.first().id }
+                }
+                runBlocking { ensureChildrenCount(childMediaId) }
+                wifiLock.acquire()
+                if (requestAudioFocus()) simpleExoPlayer.playWhenReady = true
             }
-            runBlocking { ensureChildrenCount(childMediaId) }
-            wifiLock.acquire()
-            if (requestAudioFocus()) simpleExoPlayer.playWhenReady = true
         }
     }
 
