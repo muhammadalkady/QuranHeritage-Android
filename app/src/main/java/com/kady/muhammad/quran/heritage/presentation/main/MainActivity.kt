@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
             setupSlidingPanel()
             syncPlayerWithPanel(panel, getPanelOffset())
         }
-        player.animateHeight(1_500L)
         fragmentContainer.animateHeight(1_000L)
     }
 
