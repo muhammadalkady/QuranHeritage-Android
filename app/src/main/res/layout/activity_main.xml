@@ -5,7 +5,6 @@
     android:id="@+id/panel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="false"
     android:gravity="bottom"
     sothree:umanoPanelHeight="64dp"
     sothree:umanoShadowHeight="4dp"

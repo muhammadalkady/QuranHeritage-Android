@@ -3,7 +3,12 @@ package com.kady.muhammad.quran.heritage.presentation.ext
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.view.View
+import androidx.core.view.doOnLayout
+import com.kady.muhammad.quran.heritage.presentation.player.PlayerFragment
+
+private const val HEIGHT_ANIMATION_DURATION = 1_000L
 
 fun View.show(onEnd: () -> Unit = {}) {
     animate().alpha(1F).setDuration(300).setListener(object : AnimatorListenerAdapter() {
@@ -31,4 +36,20 @@ fun View.upAnimation(): ObjectAnimator {
     objectAnimator.duration = 1000L
     objectAnimator.start()
     return objectAnimator
+}
+
+fun View.animateHeight(duration: Long = HEIGHT_ANIMATION_DURATION) {
+    this.doOnLayout {
+        val rootViewOldHeight = 0
+        val rootViewNewHeight = this.height
+        val rootViewValueAnimator =
+            ValueAnimator.ofInt(rootViewOldHeight, rootViewNewHeight)
+        rootViewValueAnimator.addUpdateListener {
+            val lp = this.layoutParams
+            lp.height = it.animatedValue as Int
+            this.layoutParams = lp
+        }
+        rootViewValueAnimator.duration = duration
+        rootViewValueAnimator.start()
+    }
 }

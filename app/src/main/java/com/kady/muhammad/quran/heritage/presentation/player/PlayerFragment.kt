@@ -61,7 +61,7 @@ class PlayerFragment : Fragment(), PanelSlideListener {
             weight = 1 - slideOffset
         }
         up.translationX = slideOffset * up.width
-        metaContainer.alpha = slideOffset
+        metadataContainerLinearLayout.alpha = slideOffset
     }
 
     private fun setupUp() {
@@ -205,5 +205,4 @@ class PlayerFragment : Fragment(), PanelSlideListener {
     fun up() {
         (activity as? PlayerUpClickListener)?.onUp()
     }
-
 }

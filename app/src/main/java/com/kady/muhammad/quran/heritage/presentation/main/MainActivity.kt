@@ -10,6 +10,7 @@ import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.presentation.ext.PanelLayout
 import com.kady.muhammad.quran.heritage.presentation.ext.PanelSlideListener
 import com.kady.muhammad.quran.heritage.presentation.ext.PlayerUpClickListener
+import com.kady.muhammad.quran.heritage.presentation.ext.animateHeight
 import com.kady.muhammad.quran.heritage.presentation.media.MediaFragment
 import com.kady.muhammad.quran.heritage.presentation.player.PlayerFragment
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
@@ -31,6 +32,8 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
             setupSlidingPanel()
             syncPlayerWithPanel(panel, getPanelOffset())
         }
+        player.animateHeight(3_000L)
+        fragmentContainer.animateHeight(2_000L)
     }
 
     override fun onBackPressed() {
