@@ -41,9 +41,9 @@ class API(
                 .component1()
         }
 
-    private fun File.toMedia(id: String): Media {
+    private fun File.toMedia(parentId: String): Media {
         return Media(
-            name, id,
+            "${parentId}_$name", parentId,
             name.substring(0, name.lastIndexOf(".")),
             isList = false
         )
@@ -65,10 +65,12 @@ class API(
                             it.files.filter { file: File -> file.format == ARCHIVE_DOT_ORG_MP3_FORMAT }
                 }
                 .flatMap { pair: Pair<Metadata, List<File>> ->
-                    val media: MutableList<Media> = pair.second
-                        .map { it.toMedia(pair.first.identifier) }.toMutableList()
-                    val parentMediaId = pair.first.identifier.split("_").first()
-                    media.add(Media(pair.first.identifier, parentMediaId, pair.first.title, true))
+                    val metadata = pair.first
+                    val files = pair.second
+                    val media: MutableList<Media> =
+                        files.map { it.toMedia(metadata.identifier) }.toMutableList()
+                    val parentMediaId = parentMediaId(metadata)
+                    media.add(createParentMedia(metadata, parentMediaId))
                     return@flatMap media
                 }
                 .apply { cacheIfNotEmpty(this, this@API) }
@@ -77,11 +79,18 @@ class API(
                 .apply { Logger.logI("Calling API", "response $this") }
         }
 
+    private fun createParentMedia(metadata: Metadata, parentMediaId: String): Media {
+        return Media(metadata.identifier, parentMediaId, metadata.title, true)
+    }
+
+    private fun parentMediaId(metadata: Metadata) =
+        metadata.identifier.split("_").first()
+
     fun streamUrl(parentMediaId: String, mediaId: String): String =
         Uri
             .parse(ARCHIVE_DOT_ORG_DOWNLOAD_BASE_URL)
             .buildUpon()
-            .appendPath(parentMediaId).appendPath(mediaId)
+            .appendPath(parentMediaId).appendPath(mediaId.split("_").last())
             .appendQueryParameter("id", mediaId)
             .build()
             .toString()
