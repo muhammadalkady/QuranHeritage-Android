@@ -51,12 +51,8 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     private const val tag = "Player"
     private const val elapsedTimeRefreshInterval = 1000L
     private const val userAgent = "Muhammad-Alkady"
-
     private val app: Application by lazy { playerService.applicationContext as App }
-    private val playerHandlerThread = HandlerThread("player_handler_thread")
-    private val playerHandler: Handler by lazy { Handler(playerHandlerThread.looper) }
-    private val elapsedTimeHandler = Handler(Looper.myLooper()!!)
-    private val audioFocusHandler: Handler by lazy { Handler(playerHandlerThread.looper) }
+    private val elapsedTimeHandler = Handler(Looper.getMainLooper())
     private val playbackStateBuilder: PlaybackStateCompat.Builder = PlaybackStateCompat.Builder()
     private val noisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -79,11 +75,8 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     private lateinit var defaultTrackSelector: DefaultTrackSelector
     private lateinit var defaultLoadControl: DefaultLoadControl
     private lateinit var defaultRendererFactory: RenderersFactory
-
     private lateinit var childMediaId: ChildMediaId
-
     private lateinit var mediaSession: MediaSessionCompat
-
     private lateinit var audioFocusRequest: AudioFocusRequest
 
     private val metadataBuilder: MediaMetadataCompat.Builder by lazy { MediaMetadataCompat.Builder() }
@@ -118,11 +111,11 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
         audioFocusRequest =
             AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).setAudioAttributes(audioAttr)
                 .setAcceptsDelayedFocusGain(true)
-                .setOnAudioFocusChangeListener(this@Player, audioFocusHandler).build()
+                .setOnAudioFocusChangeListener(this@Player).build()
     }
 
     private fun onAudioFocusLossTransientCanDuck() {
-        playerHandler.post { simpleExoPlayer.volume = .3F }
+        simpleExoPlayer.volume = .3F
     }
 
     private fun onAudioFocusLossTransient() {
@@ -134,10 +127,8 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     }
 
     private fun onAudioFocusGain() {
-        playerHandler.post {
-            if (isPlaying()) simpleExoPlayer.volume = 1F
-            if (playOnFocus && !isPlaying()) play();playOnFocus = false
-        }
+        if (isPlaying()) simpleExoPlayer.volume = 1F
+        if (playOnFocus && !isPlaying()) play();playOnFocus = false
     }
 
     @Suppress("DEPRECATION")
@@ -321,50 +312,42 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     }
 
     override fun run() {
-        playerHandler.post {
-            elapsedTimeHandler.postDelayed(this, elapsedTimeRefreshInterval)
-            playerBundle.putLong(Const.PLAYER_ELAPSED_TIME, simpleExoPlayer.currentPosition)
-            mediaSession.sendSessionEvent(Const.PLAYER_ELAPSED_TIME_EVENT, playerBundle)
-        }
+        elapsedTimeHandler.postDelayed(this, elapsedTimeRefreshInterval)
+        playerBundle.putLong(Const.PLAYER_ELAPSED_TIME, simpleExoPlayer.currentPosition)
+        mediaSession.sendSessionEvent(Const.PLAYER_ELAPSED_TIME_EVENT, playerBundle)
     }
 
     fun seekToChild(childMediaId: ChildMediaId) {
-        playerHandler.post {
-            runBlocking {
-                ensureChildrenCount(childMediaId)
-                simpleExoPlayer.seekTo(
-                    allChildren(childMediaId).indexOfFirst { it.id == childMediaId },
-                    0
-                )
-            }
+        runBlocking {
+            ensureChildrenCount(childMediaId)
+            simpleExoPlayer.seekTo(
+                allChildren(childMediaId).indexOfFirst { it.id == childMediaId },
+                0
+            )
         }
     }
 
     fun play() {
-        playerHandler.post {
-            Logger.logI(tag, "play")
-            runBlocking {
-                val allCachedMedia = repo.allCachedMedia()
-                if (allCachedMedia.isEmpty()) return@runBlocking
-                if (!::childMediaId.isInitialized) {
-                    runBlocking { childMediaId = allCachedMedia.first().id }
-                }
-                runBlocking { ensureChildrenCount(childMediaId) }
-                wifiLock.acquire()
-                if (requestAudioFocus()) simpleExoPlayer.playWhenReady = true
+        Logger.logI(tag, "play")
+        runBlocking {
+            val allCachedMedia = repo.allCachedMedia()
+            if (allCachedMedia.isEmpty()) return@runBlocking
+            if (!::childMediaId.isInitialized) {
+                runBlocking { childMediaId = allCachedMedia.first().id }
             }
+            runBlocking { ensureChildrenCount(childMediaId) }
+            wifiLock.acquire()
+            if (requestAudioFocus()) simpleExoPlayer.playWhenReady = true
         }
     }
 
     fun pause() {
-        playerHandler.post {
-            Logger.logI(tag, "pause")
-            runBlocking { ensureChildrenCount(childMediaId) }
-            if (wifiLock.isHeld) wifiLock.release()
-            simpleExoPlayer.playWhenReady = false
-            if (!playOnFocus) abandonAudioFocus()
-            onPause()
-        }
+        Logger.logI(tag, "pause")
+        runBlocking { ensureChildrenCount(childMediaId) }
+        if (wifiLock.isHeld) wifiLock.release()
+        simpleExoPlayer.playWhenReady = false
+        if (!playOnFocus) abandonAudioFocus()
+        onPause()
     }
 
     fun setChildMediaId(childMediaId: ChildMediaId) {
@@ -377,21 +360,16 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
             return
         }
         Logger.logI(tag, "initializing")
-        playerHandlerThread.start()
-        playerHandler.post {
-            initComponents()
-            simpleExoPlayer = SimpleExoPlayer
-                .Builder(app, defaultRendererFactory)
-                .setTrackSelector(defaultTrackSelector)
-                .setLoadControl(defaultLoadControl)
-                .setBandwidthMeter(DefaultBandwidthMeter.Builder(app).build())
-                .setLooper(playerHandler.looper)
-                .build()
-            simpleExoPlayer.addListener(Listener(this))
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) initAudioFocusRequest()
-            isInit = true
-        }
-
+        initComponents()
+        simpleExoPlayer = SimpleExoPlayer
+            .Builder(app, defaultRendererFactory)
+            .setTrackSelector(defaultTrackSelector)
+            .setLoadControl(defaultLoadControl)
+            .setBandwidthMeter(DefaultBandwidthMeter.Builder(app).build())
+            .build()
+        simpleExoPlayer.addListener(Listener(this))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) initAudioFocusRequest()
+        isInit = true
     }
 
     fun setMediaSession(mediaSessionCompat: MediaSessionCompat) {
@@ -399,85 +377,69 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     }
 
     fun seekTo(pos: Long) {
-        playerHandler.post {
-            if (!::childMediaId.isInitialized) return@post
-            runBlocking { ensureChildrenCount(childMediaId) }
-            simpleExoPlayer.seekTo(pos)
-        }
+        if (!::childMediaId.isInitialized) return
+        runBlocking { ensureChildrenCount(childMediaId) }
+        simpleExoPlayer.seekTo(pos)
     }
 
     fun prepare() {
-        playerHandler.post {
-            runBlocking {
-                Logger.logI(tag, "prepare")
-                internalPrepare(allChildren(childMediaId)).also { seekToChild(childMediaId) }
-            }
+        runBlocking {
+            Logger.logI(tag, "prepare")
+            internalPrepare(allChildren(childMediaId)).also { seekToChild(childMediaId) }
         }
     }
 
     fun next() {
-        playerHandler.post {
-            Logger.logI(tag, "next")
-            if (::childMediaId.isInitialized) {
-                runBlocking { ensureChildrenCount(childMediaId) }
-                with(simpleExoPlayer) {
-                    val allChildren = runBlocking { repo.otherChildren(true, childMediaId) }
-                    if (currentWindowIndex < allChildren.lastIndex) seekTo(
-                        simpleExoPlayer.currentWindowIndex + 1,
-                        0
-                    )
-                    else seekTo(0, 0)
-                    if (!playWhenReady) play()
-                }
+        Logger.logI(tag, "next")
+        if (::childMediaId.isInitialized) {
+            runBlocking { ensureChildrenCount(childMediaId) }
+            with(simpleExoPlayer) {
+                val allChildren = runBlocking { repo.otherChildren(true, childMediaId) }
+                if (currentWindowIndex < allChildren.lastIndex) seekTo(
+                    simpleExoPlayer.currentWindowIndex + 1,
+                    0
+                )
+                else seekTo(0, 0)
+                if (!playWhenReady) play()
             }
         }
     }
 
     fun previous() {
-        playerHandler.post {
-            Logger.logI(tag, "previous")
-            if (::childMediaId.isInitialized) {
-                runBlocking { ensureChildrenCount(childMediaId) }
-                with(simpleExoPlayer) {
-                    val allChildren = runBlocking { repo.otherChildren(true, childMediaId) }
-                    if (currentWindowIndex == 0) seekTo(allChildren.lastIndex, 0)
-                    else seekTo(currentWindowIndex - 1, 0)
-                    if (!playWhenReady) play()
-                }
+        Logger.logI(tag, "previous")
+        if (::childMediaId.isInitialized) {
+            runBlocking { ensureChildrenCount(childMediaId) }
+            with(simpleExoPlayer) {
+                val allChildren = runBlocking { repo.otherChildren(true, childMediaId) }
+                if (currentWindowIndex == 0) seekTo(allChildren.lastIndex, 0)
+                else seekTo(currentWindowIndex - 1, 0)
+                if (!playWhenReady) play()
             }
         }
     }
 
     fun setRepeatMode(repeatMode: Int) {
-        playerHandler.post {
-            Logger.logI(tag, "set repeat mode")
-            simpleExoPlayer.repeatMode =
-                if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
-            mediaSession.setRepeatMode(repeatMode)
-        }
+        Logger.logI(tag, "set repeat mode")
+        simpleExoPlayer.repeatMode =
+            if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
+        mediaSession.setRepeatMode(repeatMode)
     }
 
     fun setShuffleMode(shuffleMode: Int) {
-        playerHandler.post {
-            Logger.logI(tag, "set shuffle mode")
-            simpleExoPlayer.shuffleModeEnabled = shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL
-            mediaSession.setShuffleMode(shuffleMode)
-        }
+        Logger.logI(tag, "set shuffle mode")
+        simpleExoPlayer.shuffleModeEnabled = shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL
+        mediaSession.setShuffleMode(shuffleMode)
     }
 
     fun stop() {
-        playerHandler.post {
-            Logger.logI(tag, "stop")
-            simpleExoPlayer.stop()
-        }
+        Logger.logI(tag, "stop")
+        simpleExoPlayer.stop()
     }
 
     fun release() {
-        playerHandler.post {
-            Logger.logI(tag, "release")
-            simpleExoPlayer.release()
-            cache.release()
-        }
+        Logger.logI(tag, "release")
+        simpleExoPlayer.release()
+        cache.release()
     }
 
     class CustomLoadErrorLoadPolicy : DefaultLoadErrorHandlingPolicy() {
