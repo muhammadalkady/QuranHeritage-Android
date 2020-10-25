@@ -71,6 +71,7 @@
             android:gravity="center|start"
             android:text="@{mediaItem.title}"
             android:textColor="?attr/colorAccent"
+            android:textDirection="locale"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
