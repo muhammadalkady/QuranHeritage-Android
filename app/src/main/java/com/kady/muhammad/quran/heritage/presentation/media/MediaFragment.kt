@@ -18,6 +18,7 @@ import com.kady.muhammad.quran.heritage.databinding.FragmentMediaBinding
 import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
+import com.kady.muhammad.quran.heritage.presentation.SearchFragment
 import com.kady.muhammad.quran.heritage.presentation.ext.animateHeight
 import com.kady.muhammad.quran.heritage.presentation.ext.hide
 import com.kady.muhammad.quran.heritage.presentation.ext.show
@@ -107,6 +108,12 @@ class MediaFragment : Fragment() {
             return object : Animation() {}.apply { duration = 0 }
         }
         return super.onCreateAnimation(transit, enter, nextAnim)
+    }
+
+    fun openSearchFragment() {
+        //
+        val searchFragment = SearchFragment.newInstance(searchImageView.x, searchImageView.y)
+        mainActivity.addFragmentToBackStack(searchFragment)
     }
 
     private fun animateAppBarLayoutHeight() {

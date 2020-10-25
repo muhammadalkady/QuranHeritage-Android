@@ -23,3 +23,4 @@ app/src/main/res/drawable-v24/
 /app/release/output.json
 /.idea/jarRepositories.xml
 /.idea/compiler.xml
+/.idea/render.experimental.xml

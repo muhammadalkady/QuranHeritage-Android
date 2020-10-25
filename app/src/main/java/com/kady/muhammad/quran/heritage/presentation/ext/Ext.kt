@@ -4,9 +4,9 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.content.res.Resources
 import android.view.View
 import androidx.core.view.doOnLayout
-import com.kady.muhammad.quran.heritage.presentation.player.PlayerFragment
 
 private const val HEIGHT_ANIMATION_DURATION = 1_000L
 
@@ -53,3 +53,15 @@ fun View.animateHeight(duration: Long = HEIGHT_ANIMATION_DURATION) {
         rootViewValueAnimator.start()
     }
 }
+
+val Float.px: Float
+    get() {
+        val res: Resources = Resources.getSystem()
+        return this * res.displayMetrics.density
+    }
+
+val Float.dp: Float
+    get() {
+        val res: Resources = Resources.getSystem()
+        return this / res.displayMetrics.density
+    }

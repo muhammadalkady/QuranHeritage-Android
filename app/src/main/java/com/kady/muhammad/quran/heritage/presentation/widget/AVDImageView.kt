@@ -8,7 +8,11 @@ import com.kady.muhammad.quran.heritage.R
 
 class AVDImageView : AppCompatImageView {
 
-    private lateinit var avd: AnimatedVectorDrawable
+    var avd: AnimatedVectorDrawable? = null
+    set(value) {
+        field = value
+        setImageDrawable(value)
+    }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -35,7 +39,7 @@ class AVDImageView : AppCompatImageView {
     }
 
     fun startAVDAnim() {
-        avd.start()
+        avd?.start()
     }
 
 }

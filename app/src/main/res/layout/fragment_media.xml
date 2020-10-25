@@ -74,8 +74,19 @@
                         tools:text="القرآن الكريم" />
 
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/searchImageView"
+                        android:layout_width="56dp"
+                        android:layout_height="match_parent"
+                        android:background="?android:selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="@{()->fragment.openSearchFragment()}"
+                        android:scaleType="center"
+                        app:srcCompat="@drawable/ic_baseline_search_24" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/updateImageView"
-                        android:layout_width="48dp"
+                        android:layout_width="56dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_marginEnd="16dp"
