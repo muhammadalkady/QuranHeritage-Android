@@ -23,16 +23,19 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
     private val playerFragment: PlayerFragment by lazy {
         supportFragmentManager.findFragmentByTag("player") as PlayerFragment
     }
+    private var isRestarted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isRestarted = savedInstanceState != null
         setContentView(R.layout.activity_main)
         if (savedInstanceState == null) addMediaFragment()
         panel.post {
             setupSlidingPanel()
             syncPlayerWithPanel(panel, getPanelOffset())
         }
-        fragmentContainer.animateHeight(1_000L)
+        if (!isRestarted)
+            fragmentContainer.animateHeight(1_000L)
     }
 
     override fun onBackPressed() {

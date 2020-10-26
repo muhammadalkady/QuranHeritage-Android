@@ -5,6 +5,10 @@
 
     <data>
 
+        <variable
+            name="fragment"
+            type="com.kady.muhammad.quran.heritage.presentation.SearchFragment" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,6 +47,7 @@
                         android:background="?android:selectableItemBackgroundBorderless"
                         android:clickable="true"
                         android:focusable="true"
+                        android:onClick="@{()-> fragment.dismiss()}"
                         android:scaleType="center"
                         app:srcCompat="@drawable/ic_baseline_close_24"
                         tools:alpha="1" />

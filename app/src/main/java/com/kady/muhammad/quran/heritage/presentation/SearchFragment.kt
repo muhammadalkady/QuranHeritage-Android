@@ -16,6 +16,7 @@ import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.FragmentSearchBinding
+import com.kady.muhammad.quran.heritage.presentation.ext.animateHeight
 import com.kady.muhammad.quran.heritage.presentation.ext.px
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
 import com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
@@ -34,6 +35,12 @@ class SearchFragment : Fragment() {
     }
     private val mainActivity: MainActivity by lazy { requireActivity() as MainActivity }
     private lateinit var binding: FragmentSearchBinding
+    private var isRestarted = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isRestarted = savedInstanceState != null
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,11 +48,25 @@ class SearchFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+        binding.fragment = this
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        animateSearchToCloseIcon()
+        if (!isRestarted) {
+            animateSearchToCloseIcon()
+            animateHeight()
+        } else {
+            showCloseImageView()
+        }
+    }
+
+    fun dismiss() {
+        requireActivity().supportFragmentManager.popBackStackImmediate()
+    }
+
+    private fun animateHeight() {
+        requireView().animateHeight()
     }
 
     private fun getContentView(): FrameLayout {
@@ -82,11 +103,15 @@ class SearchFragment : Fragment() {
             animatorSet.start()
             searchToCloseImageViewCopy.startAVDAnim()
             animatorSet.doOnEnd {
-                binding.closeImageView.alpha = 1F
+                showCloseImageView()
                 getContentView().removeView(searchToCloseImageViewCopy)
             }
         }
         //
+    }
+
+    private fun showCloseImageView() {
+        binding.closeImageView.alpha = 1F
     }
 
     companion object {

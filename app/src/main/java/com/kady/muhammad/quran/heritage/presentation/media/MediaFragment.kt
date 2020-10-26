@@ -71,7 +71,13 @@ class MediaFragment : Fragment() {
     }
 
     private lateinit var binding: FragmentMediaBinding
+    private var isRestarted = false
     private var animationEnabled = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isRestarted = savedInstanceState != null
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,7 +101,7 @@ class MediaFragment : Fragment() {
         observeLoading()
         observeMediaList()
         observeCount()
-        animateAppBarLayoutHeight()
+        if (!isRestarted) animateAppBarLayoutHeight()
     }
 
     override fun onDestroyView() {
