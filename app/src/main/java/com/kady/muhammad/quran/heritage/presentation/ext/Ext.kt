@@ -39,18 +39,18 @@ fun View.upAnimation(): ObjectAnimator {
 }
 
 fun View.animateHeight(duration: Long = HEIGHT_ANIMATION_DURATION) {
-    this.doOnLayout {
-        val rootViewOldHeight = 0
-        val rootViewNewHeight = this.height
-        val rootViewValueAnimator =
-            ValueAnimator.ofInt(rootViewOldHeight, rootViewNewHeight)
-        rootViewValueAnimator.addUpdateListener {
-            val lp = this.layoutParams
+    doOnLayout {
+        val oldHeight = 0
+        val newHeight = height
+        val valueAnimator =
+            ValueAnimator.ofInt(oldHeight, newHeight)
+        valueAnimator.addUpdateListener {
+            val lp = layoutParams
             lp.height = it.animatedValue as Int
             this.layoutParams = lp
         }
-        rootViewValueAnimator.duration = duration
-        rootViewValueAnimator.start()
+        valueAnimator.duration = duration
+        valueAnimator.start()
     }
 }
 
