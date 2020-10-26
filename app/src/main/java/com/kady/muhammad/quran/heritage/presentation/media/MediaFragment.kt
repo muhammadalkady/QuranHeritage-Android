@@ -119,7 +119,7 @@ class MediaFragment : Fragment() {
     fun openSearchFragment() {
         //
         val searchFragment = SearchFragment.newInstance(searchImageView.x, searchImageView.y)
-        mainActivity.addFragmentToBackStack(searchFragment)
+        mainActivity.addSearchFragment(searchFragment)
     }
 
     private fun animateAppBarLayoutHeight() {

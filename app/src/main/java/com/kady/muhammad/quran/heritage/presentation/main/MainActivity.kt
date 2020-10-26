@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.entity.constant.Const
+import com.kady.muhammad.quran.heritage.presentation.SearchFragment
 import com.kady.muhammad.quran.heritage.presentation.ext.PanelLayout
 import com.kady.muhammad.quran.heritage.presentation.ext.PanelSlideListener
 import com.kady.muhammad.quran.heritage.presentation.ext.PlayerUpClickListener
@@ -30,17 +31,17 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
         isRestarted = savedInstanceState != null
         setContentView(R.layout.activity_main)
         if (savedInstanceState == null) addMediaFragment()
-        panel.post {
+        slidingUpPanelLayout.post {
             setupSlidingPanel()
-            syncPlayerWithPanel(panel, getPanelOffset())
+            syncPlayerWithPanel(slidingUpPanelLayout, getPanelOffset())
         }
         if (!isRestarted)
-            fragmentContainer.animateHeight(1_000L)
+            fragmentContainerView.animateHeight(1_000L)
     }
 
     override fun onBackPressed() {
-        if (panel.panelState == SlidingUpPanelLayout.PanelState.EXPANDED) {
-            panel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
+        if (slidingUpPanelLayout.panelState == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            slidingUpPanelLayout.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
         } else {
             super.onBackPressed()
         }
@@ -48,19 +49,6 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
 
     override fun onPanelSlide(panel: View, slideOffset: Float) {
         syncPlayerWithPanel(panel, slideOffset)
-    }
-
-    private fun addMediaFragment() {
-        replaceFragment(MediaFragment.newInstance(Const.MAIN_MEDIA_ID, null, null))
-    }
-
-    private fun replaceFragment(f: Fragment) {
-        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragmentContainer, f).commit()
-    }
-
-    private fun syncPlayerWithPanel(panel: View, slideOffset: Float) {
-        (playerFragment as? PanelSlideListener)?.onPanelSlide(panel, slideOffset)
     }
 
     override fun onPanelStateChanged(
@@ -71,18 +59,39 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
     }
 
     override fun onUp() {
-        panel.panelState = SlidingUpPanelLayout.PanelState.EXPANDED
+        slidingUpPanelLayout.panelState = SlidingUpPanelLayout.PanelState.EXPANDED
     }
 
     override fun getPanel(): SlidingUpPanelLayout {
-        return panel
+        return slidingUpPanelLayout
     }
+
+    private fun addMediaFragment() {
+        replaceFragment(MediaFragment.newInstance(Const.MAIN_MEDIA_ID, null, null))
+    }
+
+    private fun replaceFragment(f: Fragment) {
+        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragmentContainerView, f).commit()
+    }
+
+    private fun syncPlayerWithPanel(panel: View, slideOffset: Float) {
+        (playerFragment as? PanelSlideListener)?.onPanelSlide(panel, slideOffset)
+    }
+
+    private fun setupSlidingPanel() {
+        slidingUpPanelLayout.addPanelSlideListener(this)
+        slidingUpPanelLayout.setDragView(playerFragment.rootFrameLayout)
+    }
+
+    private fun getPanelOffset(): Float =
+        if (slidingUpPanelLayout.panelState == SlidingUpPanelLayout.PanelState.EXPANDED) 1F else 0F
 
     fun playPause(mediaId: String) {
         playerFragment.playPause(mediaId)
     }
 
-    fun addFragmentToBackStack(f: Fragment) {
+    fun addFragmentToBackStack(f: Fragment, containerId: Int = R.id.fragmentContainerView) {
         val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.setCustomAnimations(
             android.R.anim.slide_in_left,
@@ -90,17 +99,15 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
             android.R.anim.slide_in_left,
             android.R.anim.slide_out_right
         )
-        fragmentTransaction.add(R.id.fragmentContainer, f).addToBackStack(null).commit()
+        fragmentTransaction.add(containerId, f).addToBackStack(null).commit()
     }
 
-
-    private fun setupSlidingPanel() {
-        panel.addPanelSlideListener(this)
-        panel.setDragView(playerFragment.rootFrameLayout)
+    fun addSearchFragment(searchFragment: SearchFragment) {
+        addFragmentToBackStack(searchFragment, R.id.searchFragmentContainer)
     }
 
-    private fun getPanelOffset(): Float =
-        if (panel.panelState == SlidingUpPanelLayout.PanelState.EXPANDED) 1F else 0F
-
+    fun popSearchFragment() {
+        supportFragmentManager.popBackStackImmediate()
+    }
 
 }

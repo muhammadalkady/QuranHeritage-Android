@@ -62,7 +62,7 @@ class SearchFragment : Fragment() {
     }
 
     fun dismiss() {
-        requireActivity().supportFragmentManager.popBackStackImmediate()
+        mainActivity.popSearchFragment()
     }
 
     private fun animateHeight() {
