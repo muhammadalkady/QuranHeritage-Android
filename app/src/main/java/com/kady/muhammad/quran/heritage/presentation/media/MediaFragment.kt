@@ -19,7 +19,8 @@ import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.presentation.SearchFragment
-import com.kady.muhammad.quran.heritage.presentation.ext.animateHeight
+import com.kady.muhammad.quran.heritage.presentation.ext.ViewProperty
+import com.kady.muhammad.quran.heritage.presentation.ext.animateProperty
 import com.kady.muhammad.quran.heritage.presentation.ext.hide
 import com.kady.muhammad.quran.heritage.presentation.ext.show
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
@@ -123,7 +124,7 @@ class MediaFragment : Fragment() {
     }
 
     private fun animateAppBarLayoutHeight() {
-        binding.appBarLayout.animateHeight()
+        binding.appBarLayout.animateProperty(ViewProperty.HEIGHT)
     }
 
     private fun setupSwipe() {

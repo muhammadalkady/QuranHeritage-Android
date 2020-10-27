@@ -12,7 +12,7 @@ import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 
-private const val HEIGHT_ANIMATION_DURATION = 1_000L
+private const val PROPERTY_ANIMATION_DURATION = 1_000L
 
 fun View.show(onEnd: () -> Unit = {}) {
     animate().alpha(1F).setDuration(300).setListener(object : AnimatorListenerAdapter() {
@@ -42,15 +42,25 @@ fun View.upAnimation(): ObjectAnimator {
     return objectAnimator
 }
 
-fun View.animateHeight(duration: Long = HEIGHT_ANIMATION_DURATION) {
+enum class ViewProperty {
+    WIDTH, HEIGHT
+}
+
+fun View.animateProperty(viewProperty: ViewProperty, duration: Long = PROPERTY_ANIMATION_DURATION) {
     doOnLayout {
-        val oldHeight = 0
-        val newHeight = height
+        val oldProperty = 0
+        val newPropertyValue = when (viewProperty) {
+            ViewProperty.HEIGHT -> height
+            ViewProperty.WIDTH -> width
+        }
         val valueAnimator =
-            ValueAnimator.ofInt(oldHeight, newHeight)
+            ValueAnimator.ofInt(oldProperty, newPropertyValue)
         valueAnimator.addUpdateListener {
             val lp = layoutParams
-            lp.height = it.animatedValue as Int
+            when (viewProperty) {
+                ViewProperty.HEIGHT -> lp.height = it.animatedValue as Int
+                ViewProperty.WIDTH -> lp.width = it.animatedValue as Int
+            }
             this.layoutParams = lp
         }
         valueAnimator.duration = duration

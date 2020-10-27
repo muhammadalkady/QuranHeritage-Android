@@ -8,10 +8,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.presentation.SearchFragment
-import com.kady.muhammad.quran.heritage.presentation.ext.PanelLayout
-import com.kady.muhammad.quran.heritage.presentation.ext.PanelSlideListener
-import com.kady.muhammad.quran.heritage.presentation.ext.PlayerUpClickListener
-import com.kady.muhammad.quran.heritage.presentation.ext.animateHeight
+import com.kady.muhammad.quran.heritage.presentation.ext.*
 import com.kady.muhammad.quran.heritage.presentation.media.MediaFragment
 import com.kady.muhammad.quran.heritage.presentation.player.PlayerFragment
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
@@ -35,8 +32,9 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
             setupSlidingPanel()
             syncPlayerWithPanel(slidingUpPanelLayout, getPanelOffset())
         }
-        if (!isRestarted)
-            fragmentContainerView.animateHeight(1_000L)
+        if (!isRestarted) {
+            fragmentContainerView.animateProperty(ViewProperty.HEIGHT, 1_000L)
+        }
     }
 
     override fun onBackPressed() {

@@ -18,7 +18,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.FragmentSearchBinding
-import com.kady.muhammad.quran.heritage.presentation.ext.animateHeight
+import com.kady.muhammad.quran.heritage.presentation.ext.ViewProperty
+import com.kady.muhammad.quran.heritage.presentation.ext.animateProperty
 import com.kady.muhammad.quran.heritage.presentation.ext.px
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
 import com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
@@ -78,7 +79,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun animateHeight() {
-        requireView().animateHeight()
+        requireView().animateProperty(ViewProperty.HEIGHT)
     }
 
     private fun getContentView(): FrameLayout {
