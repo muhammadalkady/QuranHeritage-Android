@@ -4,7 +4,8 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.FragmentSearchBinding
 import com.kady.muhammad.quran.heritage.presentation.ext.animateHeight
@@ -34,6 +36,7 @@ class SearchFragment : Fragment() {
         )
     }
     private val mainActivity: MainActivity by lazy { requireActivity() as MainActivity }
+    private val viewHandler = Handler(Looper.getMainLooper())
     private lateinit var binding: FragmentSearchBinding
     private var isRestarted = false
 
@@ -53,16 +56,25 @@ class SearchFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupViews()
+    }
+
+    override fun onDestroyView() {
+        viewHandler.removeCallbacksAndMessages(null)
+        super.onDestroyView()
+    }
+
+    fun dismiss() {
+        mainActivity.popSearchFragment()
+    }
+
+    private fun setupViews() {
         if (!isRestarted) {
             animateSearchToCloseIcon()
             animateHeight()
         } else {
             showCloseImageView()
         }
-    }
-
-    fun dismiss() {
-        mainActivity.popSearchFragment()
     }
 
     private fun animateHeight() {
@@ -98,7 +110,8 @@ class SearchFragment : Fragment() {
             val yObjectAnimator: ObjectAnimator = ObjectAnimator
                 .ofFloat(searchToCloseImageViewCopy, "y", binding.closeImageView.y)
             //
-            val animatorSet: AnimatorSet = AnimatorSet().setDuration(7_00)
+            val animatorSet: AnimatorSet =
+                AnimatorSet().setDuration(SEARCH_ICON_TO_CLOSE_ANIMATION_DURATION)
             animatorSet.playTogether(xObjectAnimator, yObjectAnimator)
             animatorSet.start()
             searchToCloseImageViewCopy.startAVDAnim()
@@ -116,6 +129,7 @@ class SearchFragment : Fragment() {
 
     companion object {
         val searchToCloseImageViewId = View.generateViewId()
+        private const val SEARCH_ICON_TO_CLOSE_ANIMATION_DURATION = 700L
         private const val SEARCH_ICON_IMAGE_VIEW_X_POSITION = "x"
         private const val SEARCH_ICON_IMAGE_VIEW_Y_POSITION = "y"
         fun newInstance(
