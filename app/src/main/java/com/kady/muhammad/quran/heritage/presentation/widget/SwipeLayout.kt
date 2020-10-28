@@ -87,6 +87,11 @@ class SwipeLayout : ConstraintLayout {
         swipeListener?.invoke(x.div(width.toFloat()))
     }
 
+    override fun performClick(): Boolean {
+         super.performClick()
+        return true
+    }
+
     fun setDismissListener(dismissListener: (() -> Unit)?) {
         this.dismissListener = dismissListener
     }

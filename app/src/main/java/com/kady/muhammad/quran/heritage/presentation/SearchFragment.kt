@@ -4,7 +4,10 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -33,6 +36,7 @@ class SearchFragment : Fragment() {
         )
     }
     private val mainActivity: MainActivity by lazy { requireActivity() as MainActivity }
+    private val viewHandler = Handler(Looper.getMainLooper())
     private lateinit var binding: FragmentSearchBinding
     private var isRestarted = false
 
@@ -55,29 +59,45 @@ class SearchFragment : Fragment() {
         setupViews()
     }
 
+    override fun onDestroyView() {
+        viewHandler.removeCallbacksAndMessages(null)
+        super.onDestroyView()
+    }
+
     fun onCloseImageViewClicked() {
         hideKeyboard()
         mainActivity.popSearchFragment()
     }
 
     private fun setupViews() {
-        binding.rootSwipeLayout.disableSwipe = true
         if (!isRestarted) {
             animateSearchToCloseIcon()
             animateHeight()
             showKeyboard()
+            binding.searchEditText.alpha = 0F
+            binding.searchEditText.animate().alpha(1F)
+                .setDuration(SEARCH_ICON_TO_CLOSE_ANIMATION_DURATION * 2).start()
         } else {
             showCloseImageView()
         }
         binding.rootSwipeLayout.setDismissListener { hideKeyboard() }
-        binding.searchEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) hideKeyboard()
+        binding.rootSwipeLayout.setOnTouchListener { v, event ->
+            v.performClick()
+            event?.run {
+                if (action == MotionEvent.ACTION_DOWN) {
+                    hideKeyboard()
+                }
+            }
+            false
         }
+        binding.searchEditText.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) hideKeyboard() }
     }
 
     private fun showKeyboard() {
-        binding.searchEditText.requestFocus()
-        binding.searchEditText.showKeyboard()
+        viewHandler.postDelayed({
+            binding.searchEditText.requestFocus()
+            binding.searchEditText.showKeyboard()
+        }, 700)
     }
 
     private fun hideKeyboard() {
