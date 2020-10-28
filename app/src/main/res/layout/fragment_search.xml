@@ -51,10 +51,24 @@
                         android:background="?android:selectableItemBackgroundBorderless"
                         android:clickable="true"
                         android:focusable="true"
-                        android:onClick="@{()-> fragment.dismiss()}"
+                        android:onClick="@{()-> fragment.onCloseImageViewClicked()}"
                         android:scaleType="center"
                         app:srcCompat="@drawable/ic_baseline_close_24"
                         tools:alpha="1" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/searchEditText"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="start|center"
+                        android:hint="@string/search"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:textDirection="locale" />
 
                 </LinearLayout>
             </androidx.appcompat.widget.Toolbar>

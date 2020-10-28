@@ -7,7 +7,7 @@ import androidx.databinding.BindingMethods
 @BindingMethods(
     BindingMethod(
         type = ImageView::class,
-        attribute = "app:srcCompat",
+        attribute = "srcCompat",
         method = "setImageDrawable"
     )
 )

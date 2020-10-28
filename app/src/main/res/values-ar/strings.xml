@@ -11,4 +11,5 @@
     <string name="next">التالي</string>
     <string name="previous">السابق</string>
     <string name="media_count">عدد التلاوات %1$d تلاوة</string>
+    <string name="search">ابحث عن تلاوة…</string>
 </resources>
