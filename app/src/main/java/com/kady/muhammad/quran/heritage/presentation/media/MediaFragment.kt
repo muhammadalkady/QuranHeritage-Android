@@ -197,7 +197,15 @@ class MediaFragment : Fragment() {
         Logger.logI(logTag, "loadMediaList")
         vm.liveMedia
             .observe(viewLifecycleOwner,
-                { updateAdapter(it);showNoContent(it.isEmpty()) })
+                {
+                    updateAdapter(it)
+                    hideShowMediaRecyclerView(it.isNotEmpty())
+                    showHideNoContent(it.isEmpty())
+                })
+    }
+
+    private fun hideShowMediaRecyclerView(isShown: Boolean) {
+        if (isShown) binding.mediaRecyclerView.show() else binding.mediaRecyclerView.hide()
     }
 
     private fun observeCount() {
@@ -214,7 +222,7 @@ class MediaFragment : Fragment() {
         })
     }
 
-    private fun showNoContent(isShown: Boolean) {
+    private fun showHideNoContent(isShown: Boolean) {
         if (isShown) binding.noContentTextView.show() else binding.noContentTextView.hide()
     }
 
