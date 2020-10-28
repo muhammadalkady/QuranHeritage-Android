@@ -103,7 +103,7 @@ class SwipeLayout : ConstraintLayout {
     private fun onUpTouch() {
         firstDistanceX = Float.MIN_VALUE
         firstDistanceY = Float.MIN_VALUE
-        val dismissPoint: Float = width.div(other = 2F)
+        val dismissPoint: Float = width.div(other = 3F)
         if (x >= dismissPoint) {
             animate()
                 .x(width.toFloat())

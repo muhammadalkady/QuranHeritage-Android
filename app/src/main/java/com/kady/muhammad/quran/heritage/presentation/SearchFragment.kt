@@ -76,7 +76,7 @@ class SearchFragment : Fragment() {
             showKeyboard()
             binding.searchEditText.alpha = 0F
             binding.searchEditText.animate().alpha(1F)
-                .setDuration(SEARCH_ICON_TO_CLOSE_ANIMATION_DURATION * 2).start()
+                .setDuration(SEARCH_ICON_TO_CLOSE_ANIMATION_DURATION * 3).start()
         } else {
             showCloseImageView()
         }
