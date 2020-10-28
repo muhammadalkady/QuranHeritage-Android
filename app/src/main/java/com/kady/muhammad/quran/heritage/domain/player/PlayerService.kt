@@ -12,12 +12,16 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.entity.constant.Const
+import kotlinx.coroutines.*
+import java.util.concurrent.Executors
 
 class PlayerService : MediaBrowserServiceCompat() {
 
     private val tag = "Player-Service"
 
     private lateinit var player: Player
+    private val serviceCoroutineScope: CoroutineScope =
+        CoroutineScope(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
     private lateinit var mutableMediaSession: MediaSessionCompat
     private val mediaSession by lazy { mutableMediaSession }
     private val playbackStateCompat = PlaybackStateCompat.Builder()
@@ -131,7 +135,7 @@ class PlayerService : MediaBrowserServiceCompat() {
     }
 
     private fun initPlayer() {
-        player = Player(this)
+        player = Player(this, serviceCoroutineScope)
         player.init()
     }
 
@@ -140,6 +144,7 @@ class PlayerService : MediaBrowserServiceCompat() {
         player.stop()
         player.release()
         mediaSession.release()
+        serviceCoroutineScope.cancel()
     }
 
     private fun initMediaSession() {
