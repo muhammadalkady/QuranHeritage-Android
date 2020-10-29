@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import kotlin.math.abs
+import kotlin.math.log
 
 class SwipeLayout : ConstraintLayout {
 
@@ -75,20 +76,18 @@ class SwipeLayout : ConstraintLayout {
     ) : super(context, attrs, defStyleAttr)
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        if (!disableSwipe) {
-            gestureDetector.onTouchEvent(ev)
-            if (ev != null && ev.action == MotionEvent.ACTION_UP) onUpTouch()
-        }
+        gestureDetector.onTouchEvent(ev)
+        if (ev != null && ev.action == MotionEvent.ACTION_UP) onUpTouch()
         return super.dispatchTouchEvent(ev)
     }
 
     override fun setX(x: Float) {
-        super.setX(x)
+        super.setX(if (disableSwipe) log(x, base = 1.05F) else x)
         swipeListener?.invoke(x.div(width.toFloat()))
     }
 
     override fun performClick(): Boolean {
-         super.performClick()
+        super.performClick()
         return true
     }
 
