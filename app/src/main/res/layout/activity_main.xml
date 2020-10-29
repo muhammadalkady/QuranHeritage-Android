@@ -4,12 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     tools:context="com.kady.muhammad.quran.heritage.presentation.main.MainActivity">
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
         android:id="@+id/slidingUpPanelLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:gravity="bottom"
         sothree:umanoPanelHeight="64dp"
         sothree:umanoShadowHeight="4dp">
@@ -17,7 +21,9 @@
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/playerFragment"
@@ -34,6 +40,8 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/searchFragmentContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false" />
 
 </FrameLayout>

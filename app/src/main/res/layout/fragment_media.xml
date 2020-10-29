@@ -25,7 +25,6 @@
         android:clickable="true"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:elevation="12dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         tools:context="com.kady.muhammad.quran.heritage.presentation.media.MediaFragment">
@@ -110,20 +109,28 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/mediaRecyclerView"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:paddingBottom="32dp"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-            tools:itemCount="100"
-            tools:listitem="@layout/media_item" />
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mediaRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:paddingBottom="32dp"
+                tools:itemCount="100"
+                tools:listitem="@layout/media_item" />
+
+        </androidx.cardview.widget.CardView>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/noContentTextView"
