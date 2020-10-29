@@ -17,14 +17,24 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.FragmentSearchBinding
 import com.kady.muhammad.quran.heritage.presentation.ext.*
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
+import com.kady.muhammad.quran.heritage.presentation.media.MediaFragment
 import com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
+import jp.wasabeef.recyclerview.animators.SlideInDownAnimator
 
 class SearchFragment : Fragment() {
 
+    private val adapter by lazy {
+        SearchAdapter(
+            requireContext(),
+            resources.getInteger(R.integer.span_count), mutableListOf()
+        )
+    }
     private val searchImageViewXPosition: Float by lazy {
         requireArguments().getFloat(
             SEARCH_ICON_IMAGE_VIEW_X_POSITION
@@ -35,6 +45,7 @@ class SearchFragment : Fragment() {
             SEARCH_ICON_IMAGE_VIEW_Y_POSITION
         )
     }
+    private val vm by lazy { ViewModelProvider(this).get(SearchViewModel::class.java) }
     private val mainActivity: MainActivity by lazy { requireActivity() as MainActivity }
     private val viewHandler = Handler(Looper.getMainLooper())
     private lateinit var binding: FragmentSearchBinding
@@ -52,11 +63,14 @@ class SearchFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.fragment = this
+        binding.vm = vm
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupViews()
+        observeSearch()
+        observeSearchResult()
     }
 
     override fun onDestroyView() {
@@ -69,17 +83,48 @@ class SearchFragment : Fragment() {
         mainActivity.popSearchFragment()
     }
 
+    private fun observeSearchResult() {
+        vm.searchResult.observe(viewLifecycleOwner, { adapter.updateMedia(it) })
+    }
+
+    private fun observeSearch() {
+        vm.searchQuery.observe(viewLifecycleOwner, { vm.search(it) })
+    }
+
     private fun setupViews() {
-        if (!isRestarted) {
-            animateSearchToCloseIcon()
-            animateHeight()
-            showKeyboard()
-            binding.searchEditText.alpha = 0F
-            binding.searchEditText.animate().alpha(1F)
-                .setDuration(SEARCH_ICON_TO_CLOSE_ANIMATION_DURATION * 3).start()
-        } else {
-            showCloseImageView()
+        setupSearchResultRecyclerView()
+        if (!isRestarted) handleFragmentFirstCreation() else showCloseImageView()
+        setupSwipeLayout()
+        hideKeyboardOnLossFocus()
+    }
+
+    private fun setupSearchResultRecyclerView() {
+        context?.let {
+            binding.searchResultRecyclerView.layoutManager =
+                GridLayoutManager(it, resources.getInteger(R.integer.span_count))
+            binding.searchResultRecyclerView.adapter = adapter
+            binding.searchResultRecyclerView.itemAnimator = SlideInDownAnimator()
         }
+        adapter.setOnItemClickListener { mediaItem ->
+            if (mediaItem.isList) mainActivity
+                .addFragmentToBackStack(
+                    MediaFragment
+                        .newInstance(mediaItem.id, "", mediaItem.title)
+                )
+            else mainActivity.playPause(mediaItem.id)
+        }
+    }
+
+    private fun handleFragmentFirstCreation() {
+        animateSearchToCloseIcon()
+        animateHeight()
+        showKeyboard()
+        binding.searchEditText.alpha = 0F
+        binding.searchEditText.animate().alpha(1F)
+            .setDuration(SEARCH_ICON_TO_CLOSE_ANIMATION_DURATION * 3).start()
+    }
+
+    private fun setupSwipeLayout() {
         binding.rootSwipeLayout.setDismissListener { hideKeyboard() }
         binding.rootSwipeLayout.setOnTouchListener { v, event ->
             v.performClick()
@@ -90,6 +135,9 @@ class SearchFragment : Fragment() {
             }
             false
         }
+    }
+
+    private fun hideKeyboardOnLossFocus() {
         binding.searchEditText.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) hideKeyboard() }
     }
 

@@ -41,10 +41,11 @@ class API(
                 .component1()
         }
 
-    private fun File.toMedia(parentId: String): Media {
+    private fun File.toMedia(parentId: String, parentTitle: String): Media {
         return Media(
             "${parentId}_$name", parentId,
             name.substring(0, name.lastIndexOf(".")),
+            parentTitle,
             isList = false
         )
     }
@@ -68,7 +69,8 @@ class API(
                     val metadata = pair.first
                     val files = pair.second
                     val media: MutableList<Media> =
-                        files.map { it.toMedia(metadata.identifier) }.toMutableList()
+                        files.map { it.toMedia(metadata.identifier, metadata.title) }
+                            .toMutableList()
                     val parentMediaId = parentMediaId(metadata)
                     media.add(createParentMedia(metadata, parentMediaId))
                     return@flatMap media
@@ -80,7 +82,7 @@ class API(
         }
 
     private fun createParentMedia(metadata: Metadata, parentMediaId: String): Media {
-        return Media(metadata.identifier, parentMediaId, metadata.title, true)
+        return Media(metadata.identifier, parentMediaId, metadata.title, "", true)
     }
 
     private fun parentMediaId(metadata: Metadata) =

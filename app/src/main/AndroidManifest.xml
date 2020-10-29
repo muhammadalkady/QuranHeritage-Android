@@ -29,7 +29,8 @@
 
         <activity
             android:name=".presentation.main.MainActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan" />
 
         <service
             android:name=".domain.player.PlayerService"

@@ -38,7 +38,7 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
 
     private suspend fun recitersToMedia(): List<Media> {
         return reciters().map {
-            Media(it.id, Const.MAIN_MEDIA_ID, it.name, true)
+            Media(it.id, Const.MAIN_MEDIA_ID, it.name, "", true)
         }
     }
 

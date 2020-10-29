@@ -9,6 +9,10 @@
             name="fragment"
             type="com.kady.muhammad.quran.heritage.presentation.search.SearchFragment" />
 
+        <variable
+            name="vm"
+            type="com.kady.muhammad.quran.heritage.presentation.search.SearchViewModel" />
+
     </data>
 
     <com.kady.muhammad.quran.heritage.presentation.widget.SwipeLayout
@@ -68,6 +72,7 @@
                         android:hint="@string/search"
                         android:inputType="text"
                         android:singleLine="true"
+                        android:text="@={vm.searchQuery}"
                         android:textDirection="locale" />
 
                 </LinearLayout>

@@ -98,7 +98,7 @@ class MediaFragment : Fragment() {
         setupToolbarLogo()
         setupMediaCount()
         setupUpdate()
-        initList()
+        initRecyclerView()
         observeLoading()
         observeMediaList()
         observeCount()
@@ -170,7 +170,7 @@ class MediaFragment : Fragment() {
         }
     }
 
-    private fun initList() {
+    private fun initRecyclerView() {
         context?.let {
             binding.mediaRecyclerView.layoutManager =
                 GridLayoutManager(it, resources.getInteger(R.integer.span_count))
