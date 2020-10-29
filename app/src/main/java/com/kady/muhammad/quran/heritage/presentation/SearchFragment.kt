@@ -124,9 +124,11 @@ class SearchFragment : Fragment() {
             ) as AnimatedVectorDrawable
             getContentView().addView(searchToCloseImageViewCopy)
             searchToCloseImageViewCopy.apply {
-                elevation = 20F.px
-                layoutParams = layoutParams.apply {
-                    width = binding.closeImageView.width;height = binding.closeImageView.height
+                post {
+                    elevation = 20F.px
+                    layoutParams = layoutParams.apply {
+                        width = binding.closeImageView.width;height = binding.closeImageView.height
+                    }
                 }
             }
             searchToCloseImageViewCopy.x = searchImageViewXPosition
