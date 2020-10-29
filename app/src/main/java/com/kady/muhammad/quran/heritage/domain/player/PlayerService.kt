@@ -4,6 +4,8 @@ import android.app.Service
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -12,16 +14,14 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.entity.constant.Const
-import kotlinx.coroutines.*
-import java.util.concurrent.Executors
 
 class PlayerService : MediaBrowserServiceCompat() {
 
     private val tag = "Player-Service"
 
     private lateinit var player: Player
-    private val serviceCoroutineScope: CoroutineScope =
-        CoroutineScope(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
+    private val playerHandlerThread = HandlerThread("player_handler_thread").apply { start() }
+    private val playerHandler = Handler(playerHandlerThread.looper)
     private lateinit var mutableMediaSession: MediaSessionCompat
     private val mediaSession by lazy { mutableMediaSession }
     private val playbackStateCompat = PlaybackStateCompat.Builder()
@@ -135,7 +135,7 @@ class PlayerService : MediaBrowserServiceCompat() {
     }
 
     private fun initPlayer() {
-        player = Player(this, serviceCoroutineScope)
+        player = Player(this, playerHandler)
         player.init()
     }
 
@@ -144,7 +144,7 @@ class PlayerService : MediaBrowserServiceCompat() {
         player.stop()
         player.release()
         mediaSession.release()
-        serviceCoroutineScope.cancel()
+        playerHandler.removeCallbacksAndMessages(null)
     }
 
     private fun initMediaSession() {

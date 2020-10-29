@@ -14,7 +14,6 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -47,9 +46,12 @@ import com.kady.muhammad.quran.heritage.domain.player.Player as QuranPlayer
 
 object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent {
 
-    operator fun invoke(playerService: PlayerService, coroutineScope: CoroutineScope): QuranPlayer {
+    operator fun invoke(
+        playerService: PlayerService,
+        handler: Handler
+    ): QuranPlayer {
         this.playerService = playerService
-        this.playerServiceCoroutineScope = coroutineScope
+        this.playerHandler = handler
         return this
     }
 
@@ -57,7 +59,7 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     private const val elapsedTimeRefreshInterval = 1000L
     private const val userAgent = "Muhammad-Alkady"
     private val app: Application by lazy { playerService.applicationContext as App }
-    private val elapsedTimeHandler = Handler(Looper.getMainLooper())
+    private val elapsedTimeHandler by lazy { Handler(playerHandler.looper) }
     private val playbackStateBuilder: PlaybackStateCompat.Builder = PlaybackStateCompat.Builder()
     private val noisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -73,7 +75,7 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     private var childrenCount: Int = 0
 
     private lateinit var playerService: PlayerService
-    private lateinit var playerServiceCoroutineScope: CoroutineScope
+    private lateinit var playerHandler: Handler
     private lateinit var simpleExoPlayer: SimpleExoPlayer
     private lateinit var cache: SimpleCache
     private lateinit var dataSourceFactory: DefaultHttpDataSourceFactory
@@ -93,10 +95,11 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
 
     private val playerBundle = Bundle()
 
-    private suspend fun <T> runOnMainDispatcher(block: () -> T): T {
-        return withContext(Dispatchers.Main) { block() }
-    }
+    private fun post(block: suspend () -> Unit) = playerHandler.post { runBlocking { block() } }
 
+    /**
+     * Init player components.
+     * */
     private fun initComponents() {
         Logger.logI(tag, "initializing player components")
         cache = SimpleCache(
@@ -104,7 +107,10 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
             LeastRecentlyUsedCacheEvictor(Long.MAX_VALUE),
             ExoDatabaseProvider(app)
         )
-        dataSourceFactory = DefaultHttpDataSourceFactory(userAgent, 0, 0, true)
+        dataSourceFactory = DefaultHttpDataSourceFactory(
+            userAgent, 0,
+            0, true
+        )
         cacheDataSourceFactory = CacheDataSourceFactory(cache, dataSourceFactory)
         defaultTrackSelector = DefaultTrackSelector(app)
         defaultLoadControl = DefaultLoadControl()
@@ -194,7 +200,7 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     }
 
     private suspend fun currentChildMedia(childMediaId: ChildMediaId): Media {
-        return allChildren(childMediaId)[runOnMainDispatcher { simpleExoPlayer.currentWindowIndex }]
+        return allChildren(childMediaId)[simpleExoPlayer.currentWindowIndex]
     }
 
     private suspend fun parentMedia(childMediaId: ChildMediaId): Media {
@@ -202,22 +208,18 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     }
 
     private suspend fun buildMetadata(childMediaId: ChildMediaId): MediaMetadataCompat {
-        return withContext(playerServiceCoroutineScope.coroutineContext) {
-            val currentChild = currentChildMedia(childMediaId)
-            val parent = parentMedia(childMediaId)
-            metadataBuilder
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, currentChild.id)
-                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, parent.title)
-                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, currentChild.title)
-                .putLong(
-                    MediaMetadataCompat.METADATA_KEY_DURATION,
-                    runOnMainDispatcher { simpleExoPlayer.duration })
-            metadataBuilder.build()
-        }
+        val currentChild: Media = currentChildMedia(childMediaId)
+        val parent: Media = parentMedia(childMediaId)
+        metadataBuilder
+            .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, currentChild.id)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, parent.title)
+            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, currentChild.title)
+            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, simpleExoPlayer.duration)
+        return metadataBuilder.build()
     }
 
     private fun internalPrepare(allChildren: List<ChildMedia>) {
-        playerServiceCoroutineScope.launch {
+        playerHandler.post {
             childrenCount = allChildren.size
             val mediaSources: Array<ProgressiveMediaSource> = allChildren
                 .map {
@@ -227,19 +229,19 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
                         .createMediaSource(Uri.parse(api.streamUrl(it.parentId, it.id)))
                 }.toTypedArray()
             val contactingMediaSource = ConcatenatingMediaSource(*mediaSources)
-            runOnMainDispatcher { simpleExoPlayer.prepare(contactingMediaSource, true, true) }
+            simpleExoPlayer.prepare(contactingMediaSource, true, true)
         }
     }
 
     private fun setPlaybackState(inPlaybackState: Int) {
-        playerServiceCoroutineScope.launch {
+        playerHandler.post {
             val actions = when (inPlaybackState) {
                 PlaybackStateCompat.STATE_PLAYING, PlaybackStateCompat.STATE_BUFFERING -> PlaybackStateCompat.ACTION_PAUSE or
                         PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
                 else -> PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
             }
-            val currentPosition = runOnMainDispatcher { simpleExoPlayer.currentPosition }
-            val speed = runOnMainDispatcher { simpleExoPlayer.playbackParameters.speed }
+            val currentPosition = simpleExoPlayer.currentPosition
+            val speed = simpleExoPlayer.playbackParameters.speed
             val playbackState =
                 playbackStateBuilder.setState(inPlaybackState, currentPosition, speed)
                     .setActions(actions).build()
@@ -265,7 +267,7 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     }
 
     private fun onPause() {
-        playerServiceCoroutineScope.launch {
+        playerHandler.post {
             setPlaybackState(PlaybackStateCompat.STATE_PAUSED)
             elapsedTimeHandler.removeCallbacks(this@Player)
             unregisterNoisyReceiver()
@@ -274,17 +276,15 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
         }
     }
 
-    private fun onPlay() {
-        playerServiceCoroutineScope.launch {
-            setPlaybackState(PlaybackStateCompat.STATE_PLAYING)
-            setMetadata(childMediaId)
-            elapsedTimeHandler.post(this@Player)
-            registerNoisyReceiver()
-            playerService.startForeground(
-                PlayerNotification.NOTIFICATION_ID,
-                PlayerNotification.notify(app, mediaSession, false)
-            )
-        }
+    private fun onPlay() = post {
+        setPlaybackState(PlaybackStateCompat.STATE_PLAYING)
+        setMetadata(childMediaId)
+        elapsedTimeHandler.post(this@Player)
+        registerNoisyReceiver()
+        playerService.startForeground(
+            PlayerNotification.NOTIFICATION_ID,
+            PlayerNotification.notify(app, mediaSession, false)
+        )
     }
 
     private fun onIdle() {
@@ -297,25 +297,21 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
         setPlaybackState(PlaybackStateCompat.STATE_STOPPED)
     }
 
-    private fun onBuffering() {
-        playerServiceCoroutineScope.launch {
-            setMetadata(childMediaId)
-            setPlaybackState(PlaybackStateCompat.STATE_BUFFERING)
-            playerService.startForeground(
-                PlayerNotification.NOTIFICATION_ID,
-                PlayerNotification.notify(app, mediaSession, false)
-            )
-        }
+    private fun onBuffering() = post {
+        setMetadata(childMediaId)
+        setPlaybackState(PlaybackStateCompat.STATE_BUFFERING)
+        playerService.startForeground(
+            PlayerNotification.NOTIFICATION_ID,
+            PlayerNotification.notify(app, mediaSession, false)
+        )
     }
 
-    private fun onPositionDiscontinuity() {
-        playerServiceCoroutineScope.launch {
-            setMetadata(childMediaId)
-            playerService.startForeground(
-                PlayerNotification.NOTIFICATION_ID,
-                PlayerNotification.notify(app, mediaSession, false)
-            )
-        }
+    private fun onPositionDiscontinuity() = post {
+        setMetadata(childMediaId)
+        playerService.startForeground(
+            PlayerNotification.NOTIFICATION_ID,
+            PlayerNotification.notify(app, mediaSession, false)
+        )
     }
 
     private suspend fun ensureChildrenCount(childMediaId: ChildMediaId) {
@@ -340,47 +336,44 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
         mediaSession.sendSessionEvent(Const.PLAYER_ELAPSED_TIME_EVENT, playerBundle)
     }
 
-    fun seekToChild(childMediaId: ChildMediaId) {
-        playerServiceCoroutineScope.launch {
-            ensureChildrenCount(childMediaId)
-            val windowIndex = allChildren(childMediaId).indexOfFirst { it.id == childMediaId }
-            runOnMainDispatcher { simpleExoPlayer.seekTo(windowIndex, 0) }
-        }
+    fun seekToChild(childMediaId: ChildMediaId) = post {
+        ensureChildrenCount(childMediaId)
+        val windowIndex = allChildren(childMediaId).indexOfFirst { it.id == childMediaId }
+        simpleExoPlayer.seekTo(windowIndex, 0)
     }
 
-    fun play() {
-        playerServiceCoroutineScope.launch {
-            Logger.logI(tag, "play")
-            val allCachedMedia = repo.allCachedMedia()
-            if (allCachedMedia.isEmpty()) return@launch
-            if (!::childMediaId.isInitialized) {
-                childMediaId = allCachedMedia.first().id
-            }
-            ensureChildrenCount(childMediaId)
-            wifiLock.acquire()
-            if (requestAudioFocus()) runOnMainDispatcher { simpleExoPlayer.playWhenReady = true }
+    fun play() = post {
+        Logger.logI(tag, "play")
+        val allCachedMedia = repo.allCachedMedia()
+        if (allCachedMedia.isEmpty()) return@post
+        if (!::childMediaId.isInitialized) {
+            childMediaId = allCachedMedia.first().id
         }
+        ensureChildrenCount(childMediaId)
+        wifiLock.acquire()
+        if (requestAudioFocus()) simpleExoPlayer.playWhenReady = true
     }
 
-    fun pause() {
-        playerServiceCoroutineScope.launch {
-            Logger.logI(tag, "pause")
-            ensureChildrenCount(childMediaId)
-            if (wifiLock.isHeld) wifiLock.release()
-            runOnMainDispatcher { simpleExoPlayer.playWhenReady = false }
-            if (!playOnFocus) abandonAudioFocus()
-            onPause()
-        }
+    fun pause() = post {
+        Logger.logI(tag, "pause")
+        ensureChildrenCount(childMediaId)
+        if (wifiLock.isHeld) wifiLock.release()
+        simpleExoPlayer.playWhenReady = false
+        if (!playOnFocus) abandonAudioFocus()
+        onPause()
     }
 
     fun setChildMediaId(childMediaId: ChildMediaId) {
         this.childMediaId = childMediaId
     }
 
-    fun init() {
+    /**
+     * Init.
+     * */
+    fun init() = post {
         if (isInit) {
             Logger.logE(tag, "player is already initialized ... not initializing")
-            return
+            return@post
         }
         Logger.logI(tag, "initializing")
         initComponents()
@@ -389,8 +382,9 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
             .setTrackSelector(defaultTrackSelector)
             .setLoadControl(defaultLoadControl)
             .setBandwidthMeter(DefaultBandwidthMeter.Builder(app).build())
+            .setLooper(playerHandler.looper)
             .build()
-        simpleExoPlayer.addListener(Listener(this))
+        simpleExoPlayer.addListener(Listener(this@Player))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) initAudioFocusRequest()
         isInit = true
     }
@@ -399,54 +393,42 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
         this.mediaSession = mediaSessionCompat
     }
 
-    fun seekTo(pos: Long) {
-        playerServiceCoroutineScope.launch {
-            if (!::childMediaId.isInitialized) return@launch
+    fun seekTo(pos: Long) = post {
+        if (!::childMediaId.isInitialized) return@post
+        ensureChildrenCount(childMediaId)
+        simpleExoPlayer.seekTo(pos)
+    }
+
+    fun prepare() = post {
+        Logger.logI(tag, "prepare")
+        internalPrepare(allChildren(childMediaId)).also { seekToChild(childMediaId) }
+    }
+
+    fun next() = post {
+        Logger.logI(tag, "next")
+        if (::childMediaId.isInitialized) {
             ensureChildrenCount(childMediaId)
-            runOnMainDispatcher { simpleExoPlayer.seekTo(pos) }
-        }
-    }
-
-    fun prepare() {
-        playerServiceCoroutineScope.launch {
-            Logger.logI(tag, "prepare")
-            internalPrepare(allChildren(childMediaId)).also { seekToChild(childMediaId) }
-        }
-    }
-
-    fun next() {
-        playerServiceCoroutineScope.launch {
-            Logger.logI(tag, "next")
-            if (::childMediaId.isInitialized) {
-                ensureChildrenCount(childMediaId)
-                with(simpleExoPlayer) {
-                    val allChildren = repo.otherChildren(true, childMediaId)
-                    runOnMainDispatcher {
-                        if (currentWindowIndex < allChildren.lastIndex) seekTo(
-                            simpleExoPlayer.currentWindowIndex + 1,
-                            0
-                        )
-                        else seekTo(0, 0)
-                        if (!playWhenReady) play()
-                    }
-                }
+            with(simpleExoPlayer) {
+                val allChildren = repo.otherChildren(true, childMediaId)
+                if (currentWindowIndex < allChildren.lastIndex) seekTo(
+                    simpleExoPlayer.currentWindowIndex + 1,
+                    0
+                )
+                else seekTo(0, 0)
+                if (!playWhenReady) play()
             }
         }
     }
 
-    fun previous() {
-        playerServiceCoroutineScope.launch {
-            Logger.logI(tag, "previous")
-            if (::childMediaId.isInitialized) {
-                ensureChildrenCount(childMediaId)
-                with(simpleExoPlayer) {
-                    val allChildren = repo.otherChildren(true, childMediaId)
-                    runOnMainDispatcher {
-                        if (currentWindowIndex == 0) seekTo(allChildren.lastIndex, 0)
-                        else seekTo(currentWindowIndex - 1, 0)
-                        if (!playWhenReady) play()
-                    }
-                }
+    fun previous() = post {
+        Logger.logI(tag, "previous")
+        if (::childMediaId.isInitialized) {
+            ensureChildrenCount(childMediaId)
+            with(simpleExoPlayer) {
+                val allChildren = repo.otherChildren(true, childMediaId)
+                if (currentWindowIndex == 0) seekTo(allChildren.lastIndex, 0)
+                else seekTo(currentWindowIndex - 1, 0)
+                if (!playWhenReady) play()
             }
         }
     }
@@ -496,7 +478,10 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
             error.printStackTrace()
         }
 
-        override fun onPositionDiscontinuity(reason: Int) = player.onPositionDiscontinuity()
+        override fun onPositionDiscontinuity(reason: Int) {
+            player.onPositionDiscontinuity()
+        }
+
         override fun onRepeatModeChanged(repeatMode: Int) {}
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) =
             player.onPlayerStateChanged(playWhenReady, playbackState)
