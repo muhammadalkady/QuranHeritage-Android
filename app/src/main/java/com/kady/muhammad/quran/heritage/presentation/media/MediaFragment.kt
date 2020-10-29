@@ -39,9 +39,9 @@ class MediaFragment : Fragment() {
             resources.getInteger(R.integer.span_count), mutableListOf()
         )
     }
-    private val argParentMediaId: String by lazy { requireArguments().getString("media-id")!! }
+    private val argParentMediaId: String by lazy { requireArguments().getString(Const.MEDIA_ID)!! }
     private val argTitle: String by lazy {
-        arguments?.getString("title") ?: getString(R.string.main_title)
+        requireArguments().getString(Const.TITLE_KEY) ?: getString(R.string.main_title)
     }
     private val vm by lazy {
         ViewModelProvider(
@@ -49,6 +49,8 @@ class MediaFragment : Fragment() {
             MediaViewModelFactory(requireActivity().application, argParentMediaId)
         ).get(MediaViewModel::class.java)
     }
+
+    val hideSearch: Boolean by lazy { requireArguments().getBoolean(Const.HIDE_SEARCH_KEY) }
 
     private val mainActivity: MainActivity by lazy { requireActivity() as MainActivity }
 
@@ -179,7 +181,7 @@ class MediaFragment : Fragment() {
         }
         adapter.setOnItemClickListener { mediaItem ->
             if (mediaItem.isList) mainActivity
-                .addFragmentToBackStack(newInstance(mediaItem.id, argTitle, mediaItem.title))
+                .addFragmentToBackStack(newInstance(mediaItem.id, argTitle, mediaItem.title, false))
             else mainActivity.playPause(mediaItem.id)
         }
     }
@@ -231,11 +233,17 @@ class MediaFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(id: String, parentTitle: String?, title: String?): MediaFragment {
+        fun newInstance(
+            id: String,
+            parentTitle: String?,
+            title: String?,
+            hideSearch: Boolean,
+        ): MediaFragment {
             val bundle = Bundle()
             bundle.putString(Const.MEDIA_ID, id)
+            bundle.putBoolean(Const.HIDE_SEARCH_KEY, hideSearch)
             if (parentTitle != null && title != null) bundle.putString(
-                "title",
+                Const.TITLE_KEY,
                 "$parentTitle ● $title"
             )
             val fragment = MediaFragment()

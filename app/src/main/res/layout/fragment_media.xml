@@ -13,6 +13,8 @@
             name="fragment"
             type="com.kady.muhammad.quran.heritage.presentation.media.MediaFragment" />
 
+        <import type="android.view.View" />
+
     </data>
 
     <com.kady.muhammad.quran.heritage.presentation.widget.SwipeLayout
@@ -82,6 +84,7 @@
                         android:focusable="true"
                         android:onClick="@{()->fragment.openSearchFragment()}"
                         android:scaleType="center"
+                        android:visibility="@{fragment.hideSearch ? View.INVISIBLE : View.VISIBLE}"
                         app:srcCompat="@drawable/ic_baseline_search_24" />
 
                     <androidx.appcompat.widget.AppCompatImageView

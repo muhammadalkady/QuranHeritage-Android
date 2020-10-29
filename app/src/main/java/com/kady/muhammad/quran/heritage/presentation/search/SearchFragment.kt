@@ -19,6 +19,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.FragmentSearchBinding
 import com.kady.muhammad.quran.heritage.presentation.ext.*
@@ -104,14 +105,23 @@ class SearchFragment : Fragment() {
                 GridLayoutManager(it, resources.getInteger(R.integer.span_count))
             binding.searchResultRecyclerView.adapter = adapter
             binding.searchResultRecyclerView.itemAnimator = SlideInDownAnimator()
+            binding.searchResultRecyclerView.addOnScrollListener(object :
+                RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING) hideKeyboard()
+                }
+            })
         }
         adapter.setOnItemClickListener { mediaItem ->
-            if (mediaItem.isList) mainActivity
-                .addFragmentToBackStack(
-                    MediaFragment
-                        .newInstance(mediaItem.id, "", mediaItem.title)
-                )
-            else mainActivity.playPause(mediaItem.id)
+            if (mediaItem.isList) {
+                hideKeyboard()
+                mainActivity
+                    .addFragmentToBackStack(
+                        MediaFragment
+                            .newInstance(mediaItem.id, "", mediaItem.title, true),
+                        R.id.searchFragmentContainer
+                    )
+            } else mainActivity.playPause(mediaItem.id)
         }
     }
 

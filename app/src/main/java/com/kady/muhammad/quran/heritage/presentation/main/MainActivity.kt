@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
     }
 
     private fun addMediaFragment() {
-        replaceFragment(MediaFragment.newInstance(Const.MAIN_MEDIA_ID, null, null))
+        replaceFragment(MediaFragment.newInstance(Const.MAIN_MEDIA_ID, null, null, false))
     }
 
     private fun replaceFragment(f: Fragment) {
