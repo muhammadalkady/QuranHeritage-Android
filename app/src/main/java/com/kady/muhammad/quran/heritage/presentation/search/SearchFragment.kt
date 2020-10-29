@@ -1,4 +1,4 @@
-package com.kady.muhammad.quran.heritage.presentation
+package com.kady.muhammad.quran.heritage.presentation.search
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator

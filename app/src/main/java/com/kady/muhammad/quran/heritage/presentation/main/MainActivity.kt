@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.entity.constant.Const
-import com.kady.muhammad.quran.heritage.presentation.SearchFragment
+import com.kady.muhammad.quran.heritage.presentation.search.SearchFragment
 import com.kady.muhammad.quran.heritage.presentation.ext.*
 import com.kady.muhammad.quran.heritage.presentation.media.MediaFragment
 import com.kady.muhammad.quran.heritage.presentation.player.PlayerFragment

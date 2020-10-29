@@ -7,7 +7,7 @@
 
         <variable
             name="fragment"
-            type="com.kady.muhammad.quran.heritage.presentation.SearchFragment" />
+            type="com.kady.muhammad.quran.heritage.presentation.search.SearchFragment" />
 
     </data>
 
@@ -19,7 +19,7 @@
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        tools:context=".presentation.SearchFragment">
+        tools:context=".presentation.search.SearchFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"

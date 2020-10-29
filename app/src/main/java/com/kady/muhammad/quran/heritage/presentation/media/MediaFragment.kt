@@ -18,7 +18,7 @@ import com.kady.muhammad.quran.heritage.databinding.FragmentMediaBinding
 import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
-import com.kady.muhammad.quran.heritage.presentation.SearchFragment
+import com.kady.muhammad.quran.heritage.presentation.search.SearchFragment
 import com.kady.muhammad.quran.heritage.presentation.ext.ViewProperty
 import com.kady.muhammad.quran.heritage.presentation.ext.animateProperty
 import com.kady.muhammad.quran.heritage.presentation.ext.hide
