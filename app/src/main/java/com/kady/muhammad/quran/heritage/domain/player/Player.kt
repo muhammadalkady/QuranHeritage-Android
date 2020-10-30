@@ -19,7 +19,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.RequiresApi
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Player.*
 import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -27,7 +27,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
-import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
+import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import com.kady.muhammad.quran.heritage.App
@@ -79,7 +79,7 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     private lateinit var simpleExoPlayer: SimpleExoPlayer
     private lateinit var cache: SimpleCache
     private lateinit var dataSourceFactory: DefaultHttpDataSourceFactory
-    private lateinit var cacheDataSourceFactory: CacheDataSourceFactory
+    private lateinit var cacheDataSourceFactory: CacheDataSource.Factory
     private lateinit var defaultTrackSelector: DefaultTrackSelector
     private lateinit var defaultLoadControl: DefaultLoadControl
     private lateinit var defaultRendererFactory: RenderersFactory
@@ -111,7 +111,9 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
             userAgent, 0,
             0, true
         )
-        cacheDataSourceFactory = CacheDataSourceFactory(cache, dataSourceFactory)
+        cacheDataSourceFactory = CacheDataSource.Factory()
+            .setCache(cache)
+            .setUpstreamDataSourceFactory(dataSourceFactory)
         defaultTrackSelector = DefaultTrackSelector(app)
         defaultLoadControl = DefaultLoadControl()
         defaultRendererFactory = DefaultRenderersFactory(playerService)
@@ -223,13 +225,15 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
             childrenCount = allChildren.size
             val mediaSources: Array<ProgressiveMediaSource> = allChildren
                 .map {
+                    val mediaItem = MediaItem.fromUri(Uri.parse(api.streamUrl(it.parentId, it.id)))
                     ProgressiveMediaSource
                         .Factory(cacheDataSourceFactory)
                         .setLoadErrorHandlingPolicy(CustomLoadErrorLoadPolicy())
-                        .createMediaSource(Uri.parse(api.streamUrl(it.parentId, it.id)))
+                        .createMediaSource(mediaItem)
                 }.toTypedArray()
             val contactingMediaSource = ConcatenatingMediaSource(*mediaSources)
-            simpleExoPlayer.prepare(contactingMediaSource, true, true)
+            simpleExoPlayer.setMediaSource(contactingMediaSource, true)
+            simpleExoPlayer.prepare()
         }
     }
 
@@ -251,10 +255,10 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
 
     private fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
         when (playbackState) {
-            Player.STATE_BUFFERING -> onBuffering()
-            Player.STATE_ENDED -> onEnded()
-            Player.STATE_IDLE -> onIdle()
-            Player.STATE_READY -> onReady(playWhenReady)
+            STATE_BUFFERING -> onBuffering()
+            STATE_ENDED -> onEnded()
+            STATE_IDLE -> onIdle()
+            STATE_READY -> onReady(playWhenReady)
         }
     }
 
@@ -436,7 +440,7 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     fun setRepeatMode(repeatMode: Int) {
         Logger.logI(tag, "set repeat mode")
         simpleExoPlayer.repeatMode =
-            if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
+            if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) REPEAT_MODE_ONE else REPEAT_MODE_OFF
         mediaSession.setRepeatMode(repeatMode)
     }
 
@@ -463,7 +467,7 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
         }
     }
 
-    object Listener : Player.EventListener {
+    object Listener : EventListener {
 
         private lateinit var player: QuranPlayer
 
