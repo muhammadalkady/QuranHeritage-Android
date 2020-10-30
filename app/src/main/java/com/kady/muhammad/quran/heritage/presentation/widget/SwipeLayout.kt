@@ -80,7 +80,8 @@ class SwipeLayout : ConstraintLayout {
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         gestureDetector.onTouchEvent(ev)
         if (ev != null && ev.action == MotionEvent.ACTION_UP) onUpTouch()
-        return super.dispatchTouchEvent(ev)
+        return if (ev?.action == MotionEvent.ACTION_UP && x != 0F) false
+        else super.dispatchTouchEvent(ev)
     }
 
     override fun setX(x: Float) {
