@@ -7,4 +7,11 @@
     <declare-styleable name="AVDImageView">
         <attr name="avd" format="reference" />
     </declare-styleable>
+    <declare-styleable name="SwipeLayout">
+        <attr name="swipeDirection" format="enum">
+            <enum name="right" value="0" />
+            <enum name="left" value="1" />
+        </attr>
+        <attr name="disableSwipe" format="boolean" />
+    </declare-styleable>
 </resources>

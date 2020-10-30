@@ -6,12 +6,15 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.kady.muhammad.quran.heritage.R
+import com.kady.muhammad.quran.heritage.domain.log.Logger
 import kotlin.math.abs
 import kotlin.math.log
 
 class SwipeLayout : ConstraintLayout {
 
     var disableSwipe = false
+    var swipeDirection: SwipeDirection = SwipeDirection.Right
     private var dismissListener: (() -> Unit)? = null
     private var swipeListener: ((fraction: Float) -> Unit)? = null
     private var firstDistanceX: Float = Float.MIN_VALUE
@@ -59,8 +62,27 @@ class SwipeLayout : ConstraintLayout {
                 }
                 if (abs(firstDistanceY) > abs(firstDistanceX)) return false
                 val newX: Float = e2.rawX - e1.rawX
-                val finalX = if (!disableSwipe) if (newX < 0F) 0F else newX
-                else log(newX, base = 1.05F)
+                val finalX =
+                    if (!disableSwipe) {
+                        if (newX < 0F && swipeDirection == SwipeDirection.Left) {
+                            newX
+                        } else if (newX > 0F && swipeDirection == SwipeDirection.Right) {
+                            newX
+                        } else {
+                            0F
+                        }
+                    } else {
+                        Logger.logI("SwipeLayout", "newX = $newX")
+                        val logX = log(abs(newX), base = 1.05F)
+                        if (swipeDirection == SwipeDirection.Right && newX > 0) {
+                            logX
+                        } else if (swipeDirection == SwipeDirection.Left && newX < 0) {
+                            -logX
+                        } else {
+                            0F
+                        }
+                    }
+                Logger.logI("SwipeLayout", "finalX = $finalX")
                 if (!finalX.isNaN()) x = finalX
                 return false
             }
@@ -71,11 +93,17 @@ class SwipeLayout : ConstraintLayout {
         }
 
     constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        resolveAttrs(attrs)
+    }
+
     constructor(
         context: Context, attrs: AttributeSet?,
         @AttrRes defStyleAttr: Int
-    ) : super(context, attrs, defStyleAttr)
+    ) : super(context, attrs, defStyleAttr) {
+        resolveAttrs(attrs)
+    }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         gestureDetector.onTouchEvent(ev)
@@ -102,13 +130,28 @@ class SwipeLayout : ConstraintLayout {
         this.swipeListener = swipeListener
     }
 
+    private fun resolveAttrs(attrs: AttributeSet?) {
+        attrs?.let {
+            val typedArray = context.obtainStyledAttributes(it, R.styleable.SwipeLayout)
+            swipeDirection = if (typedArray.getInt(
+                    R.styleable.SwipeLayout_swipeDirection,
+                    0
+                ) == 0
+            ) SwipeDirection.Right else SwipeDirection.Left
+            disableSwipe = typedArray.getBoolean(R.styleable.SwipeLayout_disableSwipe, false)
+            //
+            typedArray.recycle()
+        }
+    }
+
     private fun onUpTouch() {
         firstDistanceX = Float.MIN_VALUE
         firstDistanceY = Float.MIN_VALUE
         val dismissPoint: Float = width.div(other = 3F)
-        if (x >= dismissPoint) {
+        Logger.logI("SwipeLayout", "onUpTouch x = $x")
+        if (abs(x) >= dismissPoint) {
             animate()
-                .x(width.toFloat())
+                .x(if (swipeDirection == SwipeDirection.Right) width.toFloat() else -width.toFloat())
                 .setDuration(animationDuration)
                 .withEndAction { dismissListener?.invoke() }
                 .setUpdateListener { swipeListener?.invoke(x.div(width.toFloat())) }
@@ -120,6 +163,11 @@ class SwipeLayout : ConstraintLayout {
                 .setUpdateListener { swipeListener?.invoke(x.div(width.toFloat())) }
                 .start()
         }
+    }
+
+    sealed class SwipeDirection {
+        object Right : SwipeDirection()
+        object Left : SwipeDirection()
     }
 
 }
