@@ -137,8 +137,10 @@ class MediaFragment : Fragment() {
             animationEnabled = true
         }
         binding.rootConstraintLayout.setSwipeListener {
-            binding.toolbarTitleTextView.alpha = 1F - it
-            updateImageView.alpha = 1F - it
+            val alpha = 1F - it
+            binding.toolbarTitleTextView.alpha = alpha
+            binding.searchImageView.alpha = alpha
+            binding.updateImageView.alpha = alpha
             Logger.logI(logTag, it.toString(), false)
         }
     }
