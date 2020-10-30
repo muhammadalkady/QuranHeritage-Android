@@ -59,7 +59,9 @@ class SwipeLayout : ConstraintLayout {
                 }
                 if (abs(firstDistanceY) > abs(firstDistanceX)) return false
                 val newX: Float = e2.rawX - e1.rawX
-                x = if (newX < 0F) 0F else newX
+                val finalX = if (!disableSwipe) if (newX < 0F) 0F else newX
+                else log(newX, base = 1.05F)
+                if (!finalX.isNaN()) x = finalX
                 return false
             }
 
@@ -82,7 +84,7 @@ class SwipeLayout : ConstraintLayout {
     }
 
     override fun setX(x: Float) {
-        super.setX(if (disableSwipe) log(x, base = 1.05F) else x)
+        super.setX(x)
         swipeListener?.invoke(x.div(width.toFloat()))
     }
 
