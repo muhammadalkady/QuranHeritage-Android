@@ -67,7 +67,7 @@ class SwipeLayout : ConstraintLayout {
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
         Logger.logI(LOG_TAG + "_$tag", "onInterceptTouchEvent")
-        return false
+        return super.onInterceptTouchEvent(ev)
     }
 
     override fun setX(x: Float) {
