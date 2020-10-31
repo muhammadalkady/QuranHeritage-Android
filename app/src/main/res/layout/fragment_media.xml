@@ -22,96 +22,92 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
+        android:clickable="true"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         tools:context="com.kady.muhammad.quran.heritage.presentation.media.MediaFragment">
 
-        <com.kady.muhammad.quran.heritage.presentation.widget.SwipeLayout
-            android:id="@+id/appBarLayoutContainer"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:clickable="true"
-            android:focusable="true"
-            app:disableSwipe="true"
+            android:layout_height="?android:attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:swipeDirection="left">
+            app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/appBarLayout"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?android:attr/actionBarSize">
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:clipChildren="false">
 
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@null"
-                    android:clipChildren="false">
+                    android:clipChildren="false"
+                    android:orientation="horizontal">
 
+                    <com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
+                        android:id="@+id/appIconImageView"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/avatar_color_circle"
+                        android:elevation="12dp"
+                        android:scaleType="center"
+                        app:avd="@drawable/logo_avd_anim" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/toolbarTitleTextView"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:clipChildren="false"
-                        android:orientation="horizontal">
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_weight="1"
+                        android:ellipsize="marquee"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:gravity="start|center"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
+                        android:textColor="@color/colorAccent"
+                        android:textStyle="bold"
+                        app:fontFamily="@font/main_bold"
+                        tools:text="القرآن الكريم" />
 
-                        <com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
-                            android:id="@+id/appIconImageView"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/avatar_color_circle"
-                            android:elevation="12dp"
-                            android:scaleType="center"
-                            app:avd="@drawable/logo_avd_anim" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/searchImageView"
+                        android:layout_width="56dp"
+                        android:layout_height="match_parent"
+                        android:background="?android:selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="@{()->fragment.openSearchFragment()}"
+                        android:scaleType="center"
+                        android:visibility="@{fragment.hideSearch ? View.INVISIBLE : View.VISIBLE}"
+                        app:srcCompat="@drawable/ic_baseline_search_24" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/toolbarTitleTextView"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:layout_weight="1"
-                            android:ellipsize="marquee"
-                            android:focusable="true"
-                            android:gravity="start|center"
-                            android:marqueeRepeatLimit="marquee_forever"
-                            android:scrollHorizontally="true"
-                            android:singleLine="true"
-                            android:textColor="@color/colorAccent"
-                            android:textStyle="bold"
-                            app:fontFamily="@font/main_bold"
-                            tools:text="القرآن الكريم" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/updateImageView"
+                        android:layout_width="56dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="16dp"
+                        android:background="?android:selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:scaleType="center"
+                        app:srcCompat="@drawable/ic_round_refresh_24" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/searchImageView"
-                            android:layout_width="56dp"
-                            android:layout_height="match_parent"
-                            android:background="?android:selectableItemBackgroundBorderless"
-                            android:onClick="@{()->fragment.openSearchFragment()}"
-                            android:scaleType="center"
-                            android:visibility="@{fragment.hideSearch ? View.INVISIBLE : View.VISIBLE}"
-                            app:srcCompat="@drawable/ic_baseline_search_24" />
+                </LinearLayout>
+            </androidx.appcompat.widget.Toolbar>
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/updateImageView"
-                            android:layout_width="56dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:layout_marginEnd="16dp"
-                            android:background="?android:selectableItemBackgroundBorderless"
-                            android:gravity="center"
-                            android:scaleType="center"
-                            app:srcCompat="@drawable/ic_round_refresh_24" />
-
-                    </LinearLayout>
-
-                </androidx.appcompat.widget.Toolbar>
-
-            </com.google.android.material.appbar.AppBarLayout>
-        </com.kady.muhammad.quran.heritage.presentation.widget.SwipeLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -122,7 +118,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appBarLayoutContainer">
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/mediaRecyclerView"
