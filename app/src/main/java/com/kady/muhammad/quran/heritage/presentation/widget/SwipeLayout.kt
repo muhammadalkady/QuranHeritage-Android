@@ -14,83 +14,35 @@ import kotlin.math.log
 class SwipeLayout : ConstraintLayout {
 
     var disableSwipe = false
-    var swipeDirection: SwipeDirection = SwipeDirection.Right
+    private var swipeDirection: SwipeDirection = SwipeDirection.Right
     private var dismissListener: (() -> Unit)? = null
     private var swipeListener: ((fraction: Float) -> Unit)? = null
+    private var touchUpListener: (() -> Unit)? = null
     private var firstDistanceX: Float = Float.MIN_VALUE
     private var firstDistanceY: Float = Float.MIN_VALUE
     private val animationDuration = 150L
     private val gestureDetector: GestureDetector by lazy {
-        GestureDetector(
-            context,
-            gestureDetectorListener
-        )
+        GestureDetector(context, gestureDetectorListenerAdapter)
     }
-    private val gestureDetectorListener: GestureDetector.OnGestureListener =
-        object : GestureDetector.OnGestureListener {
-
-            override fun onShowPress(e: MotionEvent?) {}
-
-            override fun onSingleTapUp(e: MotionEvent?): Boolean {
-                return false
+    private val gestureDetectorListenerAdapter = object : OnGestureListenerAdapter() {
+        override fun onScroll(
+            e1: MotionEvent?, e2: MotionEvent?,
+            distanceX: Float, distanceY: Float
+        ): Boolean {
+            Logger.logI(LOG_TAG, "onScroll")
+            e1 ?: return false
+            e2 ?: return false
+            if (firstDistanceX == Float.MIN_VALUE && firstDistanceY == Float.MIN_VALUE) {
+                firstDistanceX = distanceX
+                firstDistanceY = distanceY
             }
-
-            override fun onDown(e: MotionEvent?): Boolean {
-                return false
-            }
-
-            override fun onFling(
-                e1: MotionEvent?,
-                e2: MotionEvent?,
-                velocityX: Float,
-                velocityY: Float
-            ): Boolean {
-                return false
-            }
-
-            override fun onScroll(
-                e1: MotionEvent?,
-                e2: MotionEvent?,
-                distanceX: Float,
-                distanceY: Float
-            ): Boolean {
-                e1 ?: return false
-                e2 ?: return false
-                if (firstDistanceX == Float.MIN_VALUE && firstDistanceY == Float.MIN_VALUE) {
-                    firstDistanceX = distanceX
-                    firstDistanceY = distanceY
-                }
-                if (abs(firstDistanceY) > abs(firstDistanceX)) return false
-                val newX: Float = e2.rawX - e1.rawX
-                val finalX =
-                    if (!disableSwipe) {
-                        if (newX < 0F && swipeDirection == SwipeDirection.Left) {
-                            newX
-                        } else if (newX > 0F && swipeDirection == SwipeDirection.Right) {
-                            newX
-                        } else {
-                            0F
-                        }
-                    } else {
-                        Logger.logI("SwipeLayout", "newX = $newX")
-                        val logX = log(abs(newX), base = 1.05F)
-                        if (swipeDirection == SwipeDirection.Right && newX > 0) {
-                            logX
-                        } else if (swipeDirection == SwipeDirection.Left && newX < 0) {
-                            -logX
-                        } else {
-                            0F
-                        }
-                    }
-                Logger.logI("SwipeLayout", "finalX = $finalX")
-                if (!finalX.isNaN()) x = finalX
-                return false
-            }
-
-            override fun onLongPress(e: MotionEvent?) {
-            }
-
+            if (abs(firstDistanceY) > abs(firstDistanceX)) return false
+            val newX: Float = e2.rawX - e1.rawX
+            val finalX: Float = getFinalXPosition(newX)
+            if (!finalX.isNaN()) x = finalX
+            return false
         }
+    }
 
     constructor(context: Context) : super(context)
 
@@ -106,20 +58,21 @@ class SwipeLayout : ConstraintLayout {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        Logger.logI(LOG_TAG, "dispatchTouchEvent")
         gestureDetector.onTouchEvent(ev)
         if (ev != null && ev.action == MotionEvent.ACTION_UP) onUpTouch()
         return if (ev?.action == MotionEvent.ACTION_UP && x != 0F) false
         else super.dispatchTouchEvent(ev)
     }
 
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        Logger.logI(LOG_TAG, "onInterceptTouchEvent")
+        return false
+    }
+
     override fun setX(x: Float) {
         super.setX(x)
         swipeListener?.invoke(x.div(width.toFloat()))
-    }
-
-    override fun performClick(): Boolean {
-        super.performClick()
-        return true
     }
 
     fun setDismissListener(dismissListener: (() -> Unit)?) {
@@ -128,6 +81,10 @@ class SwipeLayout : ConstraintLayout {
 
     fun setSwipeListener(swipeListener: ((Float) -> Unit)?) {
         this.swipeListener = swipeListener
+    }
+
+    fun setTouchUpListener(touchUpListener: () -> Unit) {
+        this.touchUpListener = touchUpListener
     }
 
     private fun resolveAttrs(attrs: AttributeSet?) {
@@ -144,11 +101,33 @@ class SwipeLayout : ConstraintLayout {
         }
     }
 
+    private fun getFinalXPosition(newX: Float): Float {
+        return if (!disableSwipe) {
+            if (newX < 0F && swipeDirection == SwipeDirection.Left) {
+                newX
+            } else if (newX > 0F && swipeDirection == SwipeDirection.Right) {
+                newX
+            } else {
+                0F
+            }
+        } else {
+            val logX = log(abs(newX), base = 1.05F)
+            if (swipeDirection == SwipeDirection.Right && newX > 0) {
+                logX
+            } else if (swipeDirection == SwipeDirection.Left && newX < 0) {
+                -logX
+            } else {
+                0F
+            }
+        }
+    }
+
     private fun onUpTouch() {
+        touchUpListener?.invoke()
         firstDistanceX = Float.MIN_VALUE
         firstDistanceY = Float.MIN_VALUE
-        val dismissPoint: Float = width.div(other = 3F)
-        Logger.logI("SwipeLayout", "onUpTouch x = $x")
+        val dismissPoint: Float = getDismissPoint()
+        Logger.logI(LOG_TAG, "onUpTouch x = $x")
         if (abs(x) >= dismissPoint) {
             animate()
                 .x(if (swipeDirection == SwipeDirection.Right) width.toFloat() else -width.toFloat())
@@ -165,9 +144,15 @@ class SwipeLayout : ConstraintLayout {
         }
     }
 
+    private fun getDismissPoint() = width.div(other = 3F)
+
     sealed class SwipeDirection {
         object Right : SwipeDirection()
         object Left : SwipeDirection()
+    }
+
+    companion object {
+        private const val LOG_TAG = "SwipeLayout"
     }
 
 }

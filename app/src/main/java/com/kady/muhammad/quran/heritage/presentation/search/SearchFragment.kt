@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -136,15 +135,7 @@ class SearchFragment : Fragment() {
 
     private fun setupSwipeLayout() {
         binding.rootSwipeLayout.setDismissListener { hideKeyboard() }
-        binding.rootSwipeLayout.setOnTouchListener { v, event ->
-            v.performClick()
-            event?.run {
-                if (action == MotionEvent.ACTION_DOWN) {
-                    hideKeyboard()
-                }
-            }
-            false
-        }
+        binding.rootSwipeLayout.setTouchUpListener { hideKeyboard() }
     }
 
     private fun hideKeyboardOnLossFocus() {
