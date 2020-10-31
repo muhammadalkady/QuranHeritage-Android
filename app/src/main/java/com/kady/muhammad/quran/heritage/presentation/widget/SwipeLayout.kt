@@ -29,7 +29,7 @@ class SwipeLayout : ConstraintLayout {
             e1: MotionEvent?, e2: MotionEvent?,
             distanceX: Float, distanceY: Float
         ): Boolean {
-            Logger.logI(LOG_TAG, "onScroll")
+            Logger.logI(LOG_TAG + "_$tag", "onScroll")
             e1 ?: return false
             e2 ?: return false
             if (firstDistanceX == Float.MIN_VALUE && firstDistanceY == Float.MIN_VALUE) {
@@ -58,7 +58,7 @@ class SwipeLayout : ConstraintLayout {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        Logger.logI(LOG_TAG, "dispatchTouchEvent")
+        Logger.logI(LOG_TAG + "_$tag", "dispatchTouchEvent")
         gestureDetector.onTouchEvent(ev)
         if (ev != null && ev.action == MotionEvent.ACTION_UP) onUpTouch()
         return if (ev?.action == MotionEvent.ACTION_UP && x != 0F) false
@@ -66,7 +66,7 @@ class SwipeLayout : ConstraintLayout {
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-        Logger.logI(LOG_TAG, "onInterceptTouchEvent")
+        Logger.logI(LOG_TAG + "_$tag", "onInterceptTouchEvent")
         return false
     }
 
@@ -127,7 +127,7 @@ class SwipeLayout : ConstraintLayout {
         firstDistanceX = Float.MIN_VALUE
         firstDistanceY = Float.MIN_VALUE
         val dismissPoint: Float = getDismissPoint()
-        Logger.logI(LOG_TAG, "onUpTouch x = $x")
+        Logger.logI(LOG_TAG + "_$tag", "onUpTouch x = $x")
         if (abs(x) >= dismissPoint) {
             animate()
                 .x(if (swipeDirection == SwipeDirection.Right) width.toFloat() else -width.toFloat())

@@ -27,6 +27,7 @@
         android:clipToPadding="false"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:tag="root"
         tools:context="com.kady.muhammad.quran.heritage.presentation.media.MediaFragment">
 
         <com.google.android.material.appbar.AppBarLayout
