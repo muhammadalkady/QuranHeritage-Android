@@ -84,7 +84,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun observeSearchResult() {
-        vm.searchResult.observe(viewLifecycleOwner, { adapter.updateMedia(it) })
+        vm.searchResult.observe(
+            viewLifecycleOwner,
+            { adapter.updateMedia(it, vm.searchQuery.value ?: "") })
     }
 
     private fun observeSearch() {

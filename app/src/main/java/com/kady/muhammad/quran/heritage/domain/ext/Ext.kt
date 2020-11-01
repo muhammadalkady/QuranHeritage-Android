@@ -1,7 +1,6 @@
 package com.kady.muhammad.quran.heritage.domain.ext
 
 import com.kady.muhammad.quran.heritage.domain.lang.Lang.LANGUAGE_ARABIC
-import com.kady.muhammad.quran.heritage.entity.media.Media
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -30,3 +29,10 @@ fun Long.millisToPlayerDuration(): String =
             )
         )
     )
+
+fun String?.rangesOf(str: String, ignoreCase: Boolean = true): List<IntRange> {
+    return this?.let {
+        val regex = if (ignoreCase) Regex(str, RegexOption.IGNORE_CASE) else Regex(str)
+        regex.findAll(this).map { it.range }.toList()
+    } ?: emptyList()
+}

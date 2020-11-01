@@ -14,11 +14,12 @@ import com.kady.muhammad.quran.heritage.entity.media.Media
 class SearchAdapter(
     private val context: Context,
     private val spanCount: Int,
-    private val mediaList: MutableList<Media> = mutableListOf()
+    private val mediaList: MutableList<Media> = mutableListOf(),
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var listener: ((mediaItem: Media) -> Unit)? = null
+    var query: String = ""
 
     override fun getItemCount(): Int = mediaList.size
 
@@ -56,7 +57,7 @@ class SearchAdapter(
         return if (media.isList) LIST_TYPE else NON_LIST_TYPE
     }
 
-    fun updateMedia(mediaList: List<Media>) {
+    fun updateMedia(mediaList: List<Media>, query: String) {
         if (this.mediaList.isEmpty()) {
             this.mediaList.addAll(mediaList)
             notifyItemRangeChanged(0, mediaList.size)
@@ -65,6 +66,7 @@ class SearchAdapter(
             this.mediaList.addAll(mediaList)
             notifyDataSetChanged()
         }
+        this.query = query
     }
 
     fun setOnItemClickListener(listener: (mediaItem: Media) -> Unit) {
@@ -85,10 +87,10 @@ class SearchAdapter(
         fun bind(mediaItem: Media, position: Int) {
             binding.mediaItem = mediaItem
             binding.position = position
+            binding.query = query
             binding.executePendingBindings()
             binding.root.setOnClickListener { listener?.invoke(mediaItem) }
         }
-
     }
 
     inner class MediaNonListTypeHolder(private val binding: SearchItemNonListTypeBinding) :
@@ -105,6 +107,7 @@ class SearchAdapter(
         fun bind(mediaItem: Media, position: Int) {
             binding.mediaItem = mediaItem
             binding.position = position
+            binding.query = query
             binding.executePendingBindings()
             binding.root.setOnClickListener { listener?.invoke(mediaItem) }
         }

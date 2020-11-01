@@ -1,8 +1,15 @@
 package com.kady.muhammad.quran.heritage.domain.data_binding
 
+import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.View
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
+import com.kady.muhammad.quran.heritage.domain.ext.rangesOf
 
 object Adapter {
 
@@ -19,6 +26,26 @@ object Adapter {
             if (((position + positionToSumWith) - 1).rem(8) == 0) drawable1 else drawable2
         }
         view.background = background
+    }
+
+    @BindingAdapter(
+        "foregroundColorSpanText",
+        "foregroundColorSpanSubText", requireAll = true
+    )
+    @JvmStatic
+    fun setText(textView: TextView, text: String, subText: String) {
+        val ranges = text.rangesOf(subText)
+        val spannable = SpannableString(text)
+        val spans = ranges.map {
+            ForegroundColorSpan(Color.RED)
+        }
+        ranges.forEachIndexed { index, range ->
+            spannable.setSpan(
+                spans[index],
+                range.first, range.last + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        textView.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
 }
