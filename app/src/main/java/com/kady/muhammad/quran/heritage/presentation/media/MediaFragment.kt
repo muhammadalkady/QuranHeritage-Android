@@ -12,7 +12,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.FragmentMediaBinding
 import com.kady.muhammad.quran.heritage.domain.log.Logger
@@ -149,13 +148,6 @@ class MediaFragment : Fragment() {
             binding.mediaCountTextView.translationY = binding.mediaCountTextView.height.toFloat()
             binding.mediaCountTextView.animate()
                 .translationYBy(-binding.mediaCountTextView.height.toFloat())
-                .setDuration(mediaCountAnimationDuration).start()
-        }
-    }
-
-    private fun hideMediaCount() {
-        binding.mediaCountTextView.doOnLayout {
-            binding.mediaCountTextView.animate().translationYBy(mediaCountTextView.height.toFloat())
                 .setDuration(mediaCountAnimationDuration).start()
         }
     }
