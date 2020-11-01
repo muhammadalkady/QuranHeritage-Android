@@ -127,9 +127,23 @@
                 android:layout_height="match_parent"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:paddingBottom="32dp"
+                android:paddingBottom="36dp"
                 tools:itemCount="100"
                 tools:listitem="@layout/media_item" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/mediaCountTextView"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_gravity="center|bottom"
+                android:background="@color/colorAccent"
+                android:elevation="12dp"
+                android:gravity="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="عدد التلاوات ١٠٠ تلاوه"
+                tools:visibility="visible" />
 
         </androidx.cardview.widget.CardView>
 
@@ -150,23 +164,6 @@
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
             tools:alpha="1"
             tools:text="عفوا لا يوجد محتوي" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/mediaCountTextView"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:layout_gravity="center|bottom"
-            android:background="@color/colorAccent"
-            android:elevation="12dp"
-            android:gravity="center"
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="عدد التلاوات ١٠٠ تلاوه"
-            tools:visibility="visible" />
 
     </com.kady.muhammad.quran.heritage.presentation.widget.SwipeLayout>
 </layout>

@@ -54,14 +54,6 @@ class MediaFragment : Fragment() {
 
     private val mainActivity: MainActivity by lazy { requireActivity() as MainActivity }
 
-    private val mediaListScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            val showMediaCount = (mediaRecyclerView.layoutManager as GridLayoutManager)
-                .findFirstCompletelyVisibleItemPosition() == 0
-            if (showMediaCount) showMediaCount() else hideMediaCount()
-        }
-    }
-
     private val updateImageViewRotateObjectAnimator: ObjectAnimator by lazy {
         ObjectAnimator
             .ofFloat(binding.updateImageView, "rotation", 0F, 360F)
@@ -107,11 +99,6 @@ class MediaFragment : Fragment() {
         if (!isRestarted) animateAppBarLayoutHeight()
     }
 
-    override fun onDestroyView() {
-        binding.mediaRecyclerView.removeOnScrollListener(mediaListScrollListener)
-        super.onDestroyView()
-    }
-
     override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
         if (!animationEnabled) {
             return object : Animation() {}.apply { duration = 0 }
@@ -155,7 +142,6 @@ class MediaFragment : Fragment() {
 
     private fun setupMediaCount() {
         showMediaCount()
-        binding.mediaRecyclerView.addOnScrollListener(mediaListScrollListener)
     }
 
     private fun showMediaCount() {
