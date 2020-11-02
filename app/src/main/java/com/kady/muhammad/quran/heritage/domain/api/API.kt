@@ -56,7 +56,8 @@ class API(
 
     suspend fun allMedia(): Response =
         withContext(this) {
-            mediaRepo.parentMediaIds()
+            val parentMediaIds: List<List<String>> = mediaRepo.parentMediaIds()
+            parentMediaIds
                 .map { mediaForIdAsync(it[1], allMediaJob) }
                 .run { awaitAll(*this.toTypedArray()) }
                 .mapNotNull { it as? GetMetadataResponse }
@@ -69,7 +70,7 @@ class API(
                     val media: MutableList<Media> =
                         pair.second.map { it.toMedia(pair.first.identifier, pair.first.title) }
                             .toMutableList()
-                    val parentMediaId = parentMediaId(pair.first)
+                    val parentMediaId = parentMediaId(parentMediaIds, pair.first)
                     media.add(createParentMedia(pair.first, parentMediaId))
                     return@flatMap media
                 }
@@ -83,8 +84,8 @@ class API(
         return Media(metadata.identifier, parentMediaId, metadata.title, "", true)
     }
 
-    private suspend fun parentMediaId(metadata: Metadata) =
-        mediaRepo.parentMediaIds().first { it[1] == metadata.identifier }[0]
+    private fun parentMediaId(parentMediaIds: List<List<String>>, metadata: Metadata) =
+        parentMediaIds.first { it[1] == metadata.identifier }[0]
 
     fun streamUrl(parentMediaId: String, mediaId: String): String =
         Uri
