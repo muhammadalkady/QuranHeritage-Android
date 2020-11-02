@@ -66,13 +66,11 @@ class API(
                             it.files.filter { file: File -> file.format == ARCHIVE_DOT_ORG_MP3_FORMAT }
                 }
                 .flatMap { pair: Pair<Metadata, List<File>> ->
-                    val metadata = pair.first
-                    val files = pair.second
                     val media: MutableList<Media> =
-                        files.map { it.toMedia(metadata.identifier, metadata.title) }
+                        pair.second.map { it.toMedia(pair.first.identifier, pair.first.title) }
                             .toMutableList()
-                    val parentMediaId = parentMediaId(metadata)
-                    media.add(createParentMedia(metadata, parentMediaId))
+                    val parentMediaId = parentMediaId(pair.first)
+                    media.add(createParentMedia(pair.first, parentMediaId))
                     return@flatMap media
                 }
                 .apply { cacheIfNotEmpty(this, this@API) }
