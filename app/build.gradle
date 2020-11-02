@@ -57,7 +57,7 @@ def koin_version = '2.0.1'
 def preference = "1.1.1"
 def lingver = "1.3.0"
 def material = '1.2.1'
-def constraint_layout = '2.0.2'
+def constraint_layout = '2.0.4'
 def recycler_view_animators = "4.0.1"
 
 dependencies {
