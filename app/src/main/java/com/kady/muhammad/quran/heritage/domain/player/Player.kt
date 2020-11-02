@@ -20,16 +20,12 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.RequiresApi
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player.*
-import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
-import com.google.android.exoplayer2.upstream.cache.CacheDataSource
-import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
-import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import com.kady.muhammad.quran.heritage.App
 import com.kady.muhammad.quran.heritage.domain.api.API
 import com.kady.muhammad.quran.heritage.domain.log.Logger
@@ -77,9 +73,7 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     private lateinit var playerService: PlayerService
     private lateinit var playerHandler: Handler
     private lateinit var simpleExoPlayer: SimpleExoPlayer
-    private lateinit var cache: SimpleCache
     private lateinit var dataSourceFactory: DefaultHttpDataSourceFactory
-    private lateinit var cacheDataSourceFactory: CacheDataSource.Factory
     private lateinit var defaultTrackSelector: DefaultTrackSelector
     private lateinit var defaultLoadControl: DefaultLoadControl
     private lateinit var defaultRendererFactory: RenderersFactory
@@ -102,18 +96,10 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
      * */
     private fun initComponents() {
         Logger.logI(tag, "initializing player components")
-        cache = SimpleCache(
-            playerService.cacheDir,
-            LeastRecentlyUsedCacheEvictor(Long.MAX_VALUE),
-            ExoDatabaseProvider(app)
-        )
         dataSourceFactory = DefaultHttpDataSourceFactory(
             userAgent, 0,
             0, true
         )
-        cacheDataSourceFactory = CacheDataSource.Factory()
-            .setCache(cache)
-            .setUpstreamDataSourceFactory(dataSourceFactory)
         defaultTrackSelector = DefaultTrackSelector(app)
         defaultLoadControl = DefaultLoadControl()
         defaultRendererFactory = DefaultRenderersFactory(playerService)
@@ -227,7 +213,7 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
                 .map {
                     val mediaItem = MediaItem.fromUri(Uri.parse(api.streamUrl(it.parentId, it.id)))
                     ProgressiveMediaSource
-                        .Factory(cacheDataSourceFactory)
+                        .Factory(dataSourceFactory)
                         .setLoadErrorHandlingPolicy(CustomLoadErrorLoadPolicy())
                         .createMediaSource(mediaItem)
                 }.toTypedArray()
@@ -458,7 +444,6 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     fun release() {
         Logger.logI(tag, "release")
         simpleExoPlayer.release()
-        cache.release()
     }
 
     class CustomLoadErrorLoadPolicy : DefaultLoadErrorHandlingPolicy() {
