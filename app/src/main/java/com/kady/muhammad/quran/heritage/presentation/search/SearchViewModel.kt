@@ -32,7 +32,8 @@ class SearchViewModel : ViewModel(), KoinComponent {
         }
         searchJob = viewModelScope.launch(Dispatchers.Default) {
             val cachedMedia = cashedMedia.await()
-            _searchResult.postValue(cachedMedia.filter { it.title.contains(query.trim(), true) })
+            _searchResult.postValue(cachedMedia.filter { it.title.contains(query.trim(), true) }
+                .sortedBy { !it.isList })
         }
     }
 
