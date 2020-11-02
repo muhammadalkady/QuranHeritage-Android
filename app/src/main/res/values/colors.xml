@@ -4,4 +4,6 @@
     <color name="colorPrimary">#EEEEEE</color>
     <color name="colorAccent">#212121</color>
     <color name="colorAvatar">#FFFFFF</color>
+    <color name="colorMediaBackground1">#F5F5F5</color>
+    <color name="colorMediaBackground2">#EEEEEE</color>
 </resources>

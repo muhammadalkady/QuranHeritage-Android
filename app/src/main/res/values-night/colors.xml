@@ -4,4 +4,6 @@
     <color name="colorPrimary">#616161</color>
     <color name="colorAccent">#FAFAFA</color>
     <color name="colorAvatar">#000000</color>
+    <color name="colorMediaBackground1">#424242</color>
+    <color name="colorMediaBackground2">#212121</color>
 </resources>
