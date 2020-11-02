@@ -111,7 +111,7 @@ class SwipeLayout : ConstraintLayout {
                 0F
             }
         } else {
-            val logX = log(abs(newX), base = 1.05F)
+            val logX = log(abs(newX), base = 1.03F)
             if (swipeDirection == SwipeDirection.Right && newX > 0) {
                 logX
             } else if (swipeDirection == SwipeDirection.Left && newX < 0) {
