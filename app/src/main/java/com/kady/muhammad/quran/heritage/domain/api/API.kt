@@ -57,7 +57,7 @@ class API(
     suspend fun allMedia(): Response =
         withContext(this) {
             mediaRepo.parentMediaIds()
-                .map { mediaForIdAsync(it, allMediaJob) }
+                .map { mediaForIdAsync(it[1], allMediaJob) }
                 .run { awaitAll(*this.toTypedArray()) }
                 .mapNotNull { it as? GetMetadataResponse }
                 .filter { it.files.isNotEmpty() }
@@ -83,8 +83,8 @@ class API(
         return Media(metadata.identifier, parentMediaId, metadata.title, "", true)
     }
 
-    private fun parentMediaId(metadata: Metadata) =
-        metadata.identifier.split("_").first()
+    private suspend fun parentMediaId(metadata: Metadata) =
+        mediaRepo.parentMediaIds().first { it[1] == metadata.identifier }[0]
 
     fun streamUrl(parentMediaId: String, mediaId: String): String =
         Uri

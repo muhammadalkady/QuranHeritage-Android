@@ -52,13 +52,13 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
         )
     }
 
-    suspend fun parentMediaIds(): List<String> = withContext(cc) {
+    suspend fun parentMediaIds(): List<List<String>> = withContext(cc) {
         val json: String = res.openRawResource(res.getIdentifier("media", "raw", packageName))
             .bufferedReader()
             .use { it.readText() }
-        return@withContext Gson().fromJson<List<String>>(
+        return@withContext Gson().fromJson<List<List<String>>>(
             json,
-            object : TypeToken<List<String>>() {}.type
+            object : TypeToken<List<List<String>>>() {}.type
         )
     }
 
