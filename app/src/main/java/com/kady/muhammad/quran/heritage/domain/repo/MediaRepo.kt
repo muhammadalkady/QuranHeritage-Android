@@ -13,7 +13,6 @@ import com.kady.muhammad.quran.heritage.entity.api_response.GetMediaResponse
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.domain.pref.Pref
-import com.kady.muhammad.quran.heritage.entity.api_response.File
 import com.kady.muhammad.quran.heritage.entity.api_response.Metadata
 import com.kady.muhammad.quran.heritage.entity.media.ParentLocalMedia
 import com.kady.muhammad.quran.heritage.entity.reciter.Reciter
