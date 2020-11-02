@@ -11,6 +11,7 @@ import com.kady.muhammad.quran.heritage.entity.api_response.*
 import com.kady.muhammad.quran.heritage.entity.constant.Const.ARCHIVE_DOT_ORG_MP3_FORMAT
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.domain.pref.Pref
+import com.kady.muhammad.quran.heritage.entity.media.ParentLocalMedia
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -56,9 +57,9 @@ class API(
 
     suspend fun allMedia(): Response =
         withContext(this) {
-            val parentMediaIds: List<List<String>> = mediaRepo.parentMediaIds()
+            val parentMediaIds: List<ParentLocalMedia> = mediaRepo.parentMediaIds()
             parentMediaIds
-                .map { mediaForIdAsync(it[1], allMediaJob) }
+                .map { mediaForIdAsync(it.id, allMediaJob) }
                 .run { awaitAll(*this.toTypedArray()) }
                 .mapNotNull { it as? GetMetadataResponse }
                 .filter { it.files.isNotEmpty() }
@@ -84,8 +85,8 @@ class API(
         return Media(metadata.identifier, parentMediaId, metadata.title, "", true)
     }
 
-    private fun parentMediaId(parentMediaIds: List<List<String>>, metadata: Metadata) =
-        parentMediaIds.first { it[1] == metadata.identifier }[0]
+    private fun parentMediaId(parentMediaIds: List<ParentLocalMedia>, metadata: Metadata) =
+        parentMediaIds.first { it.id == metadata.identifier }.parentId
 
     fun streamUrl(parentMediaId: String, mediaId: String): String =
         Uri

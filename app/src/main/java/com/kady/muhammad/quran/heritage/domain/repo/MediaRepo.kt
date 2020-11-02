@@ -13,6 +13,7 @@ import com.kady.muhammad.quran.heritage.entity.api_response.GetMediaResponse
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.domain.pref.Pref
+import com.kady.muhammad.quran.heritage.entity.media.ParentLocalMedia
 import com.kady.muhammad.quran.heritage.entity.reciter.Reciter
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
@@ -52,13 +53,13 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
         )
     }
 
-    suspend fun parentMediaIds(): List<List<String>> = withContext(cc) {
+    suspend fun parentMediaIds(): List<ParentLocalMedia> = withContext(cc) {
         val json: String = res.openRawResource(res.getIdentifier("media", "raw", packageName))
             .bufferedReader()
             .use { it.readText() }
-        return@withContext Gson().fromJson<List<List<String>>>(
+        return@withContext Gson().fromJson<List<ParentLocalMedia>>(
             json,
-            object : TypeToken<List<List<String>>>() {}.type
+            object : TypeToken<List<ParentLocalMedia>>() {}.type
         )
     }
 
