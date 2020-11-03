@@ -96,6 +96,10 @@
     "id": "ismail_quran_1"
   },
   {
+    "parent_id": "ismail",
+    "id": "ismail_quran_2"
+  },
+  {
     "parent_id": "hussary",
     "id": "hussary_quran_1"
   },
