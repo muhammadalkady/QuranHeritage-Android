@@ -15,6 +15,7 @@ import kotlin.math.log
 class SwipeLayout : ConstraintLayout {
 
     var disableSwipe = false
+    private var lastDownTime: Long = 0L
     private var swipeDirection: SwipeDirection = SwipeDirection.Right
     private var dismissListener: (() -> Unit)? = null
     private var swipeListener: ((fraction: Float) -> Unit)? = null
@@ -67,6 +68,7 @@ class SwipeLayout : ConstraintLayout {
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         Logger.logI(LOG_TAG + "_$tag", "dispatchTouchEvent action = $ev")
+        if (ev?.action == MotionEvent.ACTION_DOWN) lastDownTime = System.currentTimeMillis()
         gestureDetector.onTouchEvent(ev)
         if (ev != null && ev.action == MotionEvent.ACTION_UP) onUpTouch()
         return if (ev?.action == MotionEvent.ACTION_UP && x != 0F) false
@@ -74,12 +76,16 @@ class SwipeLayout : ConstraintLayout {
     }
 
     override fun performClick(): Boolean {
-        Logger.logI(LOG_TAG + "_$tag", "performClick $parent")
+        Logger.logI(
+            LOG_TAG + "_$tag",
+            "performClick -> ${System.currentTimeMillis() - lastDownTime}"
+        )
         if (parent is RecyclerView) {
             val parent = parent as RecyclerView
-            if (parent.scrollState ==
-                RecyclerView.SCROLL_STATE_DRAGGING ||
-                parent.scrollState == RecyclerView.SCROLL_STATE_SETTLING
+            if ((parent.scrollState ==
+                        RecyclerView.SCROLL_STATE_DRAGGING ||
+                        parent.scrollState == RecyclerView.SCROLL_STATE_SETTLING) ||
+                (System.currentTimeMillis() - lastDownTime) > 500
             ) {
                 Logger.logI(LOG_TAG + "_$tag", " performClick no click")
                 return false
