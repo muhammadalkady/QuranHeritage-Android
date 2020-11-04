@@ -27,18 +27,20 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.kady.muhammad.quran.heritage.presentation.widget.SwipeLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
+        android:background="@color/colorAccent"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:focusable="true"
+        android:elevation="12dp"
+        app:disableSwipe="true"
         app:drawable1="@{drawable1}"
         app:drawable2="@{drawable2}"
         app:position="@{position}"
         app:spanCount="@{spanCount}"
+        app:swipeDirection="left"
         tools:background="@color/colorPrimaryDark">
 
         <androidx.cardview.widget.CardView
@@ -85,5 +87,5 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="ما تيسر من سورة الفاتحة" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.kady.muhammad.quran.heritage.presentation.widget.SwipeLayout>
 </layout>

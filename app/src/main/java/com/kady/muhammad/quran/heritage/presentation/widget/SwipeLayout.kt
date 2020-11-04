@@ -6,6 +6,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.domain.log.Logger
 import kotlin.math.abs
@@ -25,6 +26,12 @@ class SwipeLayout : ConstraintLayout {
         GestureDetector(context, gestureDetectorListenerAdapter)
     }
     private val gestureDetectorListenerAdapter = object : OnGestureListenerAdapter() {
+
+        override fun onSingleTapUp(e: MotionEvent?): Boolean {
+            Logger.logI(LOG_TAG + "_$tag", "onSingleTapUp")
+            return false
+        }
+
         override fun onScroll(
             e1: MotionEvent?, e2: MotionEvent?,
             distanceX: Float, distanceY: Float
@@ -42,6 +49,7 @@ class SwipeLayout : ConstraintLayout {
             if (!finalX.isNaN()) x = finalX
             return false
         }
+
     }
 
     constructor(context: Context) : super(context)
@@ -58,11 +66,26 @@ class SwipeLayout : ConstraintLayout {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        Logger.logI(LOG_TAG + "_$tag", "dispatchTouchEvent")
+        Logger.logI(LOG_TAG + "_$tag", "dispatchTouchEvent action = $ev")
         gestureDetector.onTouchEvent(ev)
         if (ev != null && ev.action == MotionEvent.ACTION_UP) onUpTouch()
         return if (ev?.action == MotionEvent.ACTION_UP && x != 0F) false
         else super.dispatchTouchEvent(ev)
+    }
+
+    override fun performClick(): Boolean {
+        Logger.logI(LOG_TAG + "_$tag", "performClick $parent")
+        if (parent is RecyclerView) {
+            val parent = parent as RecyclerView
+            if (parent.scrollState ==
+                RecyclerView.SCROLL_STATE_DRAGGING ||
+                parent.scrollState == RecyclerView.SCROLL_STATE_SETTLING
+            ) {
+                Logger.logI(LOG_TAG + "_$tag", " performClick no click")
+                return false
+            }
+        }
+        return super.performClick()
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
