@@ -6,4 +6,5 @@
     <color name="colorAvatar">#000000</color>
     <color name="colorMediaBackground1">#424242</color>
     <color name="colorMediaBackground2">#212121</color>
+    <color name="colorRipple">#FF0000</color>
 </resources>
