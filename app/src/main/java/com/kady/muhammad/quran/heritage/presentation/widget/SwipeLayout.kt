@@ -23,6 +23,7 @@ class SwipeLayout : ConstraintLayout {
     private var firstDistanceX: Float = Float.MIN_VALUE
     private var firstDistanceY: Float = Float.MIN_VALUE
     private val animationDuration = 150L
+    private val clickDownTime = 250L
     private val gestureDetector: GestureDetector by lazy {
         GestureDetector(context, gestureDetectorListenerAdapter)
     }
@@ -80,12 +81,12 @@ class SwipeLayout : ConstraintLayout {
             LOG_TAG + "_$tag",
             "performClick -> ${System.currentTimeMillis() - lastDownTime}"
         )
-        if (parent is RecyclerView) {
+        if (parent is SwipeRecyclerView) {
             val parent = parent as RecyclerView
             if ((parent.scrollState ==
                         RecyclerView.SCROLL_STATE_DRAGGING ||
                         parent.scrollState == RecyclerView.SCROLL_STATE_SETTLING) ||
-                (System.currentTimeMillis() - lastDownTime) > 500
+                (System.currentTimeMillis() - lastDownTime) > clickDownTime
             ) {
                 Logger.logI(LOG_TAG + "_$tag", " performClick no click")
                 return false
