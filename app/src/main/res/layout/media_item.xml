@@ -34,7 +34,6 @@
         android:background="@color/colorAccent"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:elevation="12dp"
         app:disableSwipe="true"
         app:drawable1="@{drawable1}"
         app:drawable2="@{drawable2}"
