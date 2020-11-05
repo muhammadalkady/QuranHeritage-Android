@@ -3,6 +3,7 @@ package com.kady.muhammad.quran.heritage.presentation.media
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -92,7 +93,7 @@ class MediaFragment : Fragment() {
         setupToolbarLogo()
         setupMediaCount()
         setupUpdate()
-        setupRecyclerView()
+        initRecyclerView()
         observeLoading()
         observeMediaList()
         observeCount()
@@ -153,7 +154,7 @@ class MediaFragment : Fragment() {
         }
     }
 
-    private fun setupRecyclerView() {
+    private fun initRecyclerView() {
         context?.let {
             binding.mediaRecyclerView.layoutManager =
                 GridLayoutManager(it, resources.getInteger(R.integer.span_count))

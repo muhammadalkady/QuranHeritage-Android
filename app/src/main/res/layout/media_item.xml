@@ -28,22 +28,18 @@
     </data>
 
     <com.kady.muhammad.quran.heritage.presentation.widget.SwipeLayout
-        android:id="@+id/swipeConstraintLayout"
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:clickable="true"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:focusable="true"
-        app:disableSwipe="false"
+        app:disableSwipe="true"
         app:drawable1="@{drawable1}"
         app:drawable2="@{drawable2}"
         app:position="@{position}"
-        app:revertSwipeOnTouchUp="false"
         app:spanCount="@{spanCount}"
         app:swipeDirection="left"
-        app:swipeLimit="100dp"
         tools:background="@color/colorPrimaryDark">
 
         <androidx.cardview.widget.CardView
