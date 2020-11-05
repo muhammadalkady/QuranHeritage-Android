@@ -15,8 +15,10 @@ import kotlin.math.log
 class SwipeLayout : ConstraintLayout {
 
     var disableSwipe = false
-    private var lastDownTime: Long = 0L
     private var swipeDirection: SwipeDirection = SwipeDirection.Right
+    private var swipeLimitInPx: Float = 0F
+    private var revertSwipeOnTouchUp: Boolean = true
+    private var lastDownTime: Long = 0L
     private var dismissListener: (() -> Unit)? = null
     private var swipeListener: ((fraction: Float) -> Unit)? = null
     private var touchUpListener: (() -> Unit)? = null
@@ -49,6 +51,7 @@ class SwipeLayout : ConstraintLayout {
             val newX: Float = e2.rawX - e1.rawX
             val finalX: Float = getFinalXPosition(newX)
             if (!finalX.isNaN()) x = finalX
+            Logger.logI(LOG_TAG + "_$tag", "finalX = $finalX limit = $swipeLimitInPx")
             return false
         }
 
@@ -71,9 +74,9 @@ class SwipeLayout : ConstraintLayout {
         Logger.logI(LOG_TAG + "_$tag", "dispatchTouchEvent action = $ev")
         if (ev?.action == MotionEvent.ACTION_DOWN) lastDownTime = System.currentTimeMillis()
         gestureDetector.onTouchEvent(ev)
-        if (ev != null && ev.action == MotionEvent.ACTION_UP) onUpTouch()
-        return if (ev?.action == MotionEvent.ACTION_UP && x != 0F) false
-        else super.dispatchTouchEvent(ev)
+        if (ev != null && ev.action == MotionEvent.ACTION_UP && revertSwipeOnTouchUp) onUpTouch()
+        return /*if (ev?.action == MotionEvent.ACTION_UP && x != 0F) false
+        else*/ super.dispatchTouchEvent(ev)
     }
 
     override fun performClick(): Boolean {
@@ -105,6 +108,10 @@ class SwipeLayout : ConstraintLayout {
         swipeListener?.invoke(x.div(width.toFloat()))
     }
 
+    fun revertSwipe() {
+        onUpTouch()
+    }
+
     fun setDismissListener(dismissListener: (() -> Unit)?) {
         this.dismissListener = dismissListener
     }
@@ -126,6 +133,10 @@ class SwipeLayout : ConstraintLayout {
                 ) == 0
             ) SwipeDirection.Right else SwipeDirection.Left
             disableSwipe = typedArray.getBoolean(R.styleable.SwipeLayout_disableSwipe, false)
+            swipeLimitInPx = typedArray
+                .getDimensionPixelSize(R.styleable.SwipeLayout_swipeLimit, 0).toFloat()
+            revertSwipeOnTouchUp =
+                typedArray.getBoolean(R.styleable.SwipeLayout_revertSwipeOnTouchUp, true)
             //
             typedArray.recycle()
         }
@@ -134,9 +145,9 @@ class SwipeLayout : ConstraintLayout {
     private fun getFinalXPosition(newX: Float): Float {
         return if (!disableSwipe) {
             if (newX < 0F && swipeDirection == SwipeDirection.Left) {
-                newX
+                if (abs(newX) > swipeLimitInPx && swipeLimitInPx > 0) -swipeLimitInPx else newX
             } else if (newX > 0F && swipeDirection == SwipeDirection.Right) {
-                newX
+                if (newX > swipeLimitInPx && swipeLimitInPx > 0) swipeLimitInPx else newX
             } else {
                 0F
             }
@@ -158,6 +169,7 @@ class SwipeLayout : ConstraintLayout {
         firstDistanceY = Float.MIN_VALUE
         val dismissPoint: Float = getDismissPoint()
         Logger.logI(LOG_TAG + "_$tag", "onUpTouch x = $x")
+        if (x == 0F) return
         if (abs(x) >= dismissPoint) {
             animate()
                 .x(if (swipeDirection == SwipeDirection.Right) width.toFloat() else -width.toFloat())

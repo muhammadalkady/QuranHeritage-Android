@@ -13,5 +13,7 @@
             <enum name="left" value="1" />
         </attr>
         <attr name="disableSwipe" format="boolean" />
+        <attr name="swipeLimit" format="dimension" />
+        <attr name="revertSwipeOnTouchUp" format="boolean" />
     </declare-styleable>
 </resources>

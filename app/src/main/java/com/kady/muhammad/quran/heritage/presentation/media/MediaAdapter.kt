@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.MediaItemBinding
 import com.kady.muhammad.quran.heritage.entity.media.Media
+import kotlinx.android.synthetic.main.media_item.view.*
 
 class MediaAdapter(
     private val context: Context,
@@ -62,6 +63,7 @@ class MediaAdapter(
             binding.mediaItem = mediaItem
             binding.position = position
             binding.executePendingBindings()
+            binding.root.swipeConstraintLayout.revertSwipe()
             binding.root.setOnClickListener { listener?.invoke(mediaItem) }
         }
 
