@@ -53,7 +53,7 @@
         <com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
             android:id="@+id/horizontalSwipeLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:tag="horizontalSwipeLayoutChild"
             android:clickable="true"
             android:clipChildren="false"
