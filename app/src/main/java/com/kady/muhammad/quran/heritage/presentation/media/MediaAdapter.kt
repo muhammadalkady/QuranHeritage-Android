@@ -54,24 +54,24 @@ class MediaAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         init {
+            //
             binding.spanCount = spanCount
             binding.drawable1 =
                 ContextCompat.getDrawable(context, R.drawable.media_item_background_1)
             binding.drawable2 =
                 ContextCompat.getDrawable(context, R.drawable.media_item_background_2)
+            //
+            val horizontalSwipeLayout = binding.root.horizontalSwipeLayout
+            val horizontalSwipeLayoutTag = "${horizontalSwipeLayout.tag}"
+            horizontalSwipeLayout.setUpWithRecyclerView(recyclerView, horizontalSwipeLayoutTag)
         }
 
         fun bind(mediaItem: Media, position: Int) {
-            val horizontalSwipeLayout = binding.root.horizontalSwipeLayout
             //
             binding.mediaItem = mediaItem
             binding.position = position
             binding.executePendingBindings()
-            horizontalSwipeLayout.setOnClickListener { listener?.invoke(mediaItem) }
-            horizontalSwipeLayout.setUpWithRecyclerView(
-                recyclerView,
-                "${horizontalSwipeLayout.tag}"
-            )
+            binding.root.horizontalSwipeLayout.setOnClickListener { listener?.invoke(mediaItem) }
         }
 
     }
