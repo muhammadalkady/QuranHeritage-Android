@@ -17,7 +17,7 @@
 
     </data>
 
-    <com.kady.muhammad.quran.heritage.presentation.widget.SwipeLayout
+    <com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
         android:id="@+id/rootConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,6 +27,9 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:tag="root"
+        app:dismissFraction=".3"
+        app:swipeBackOnTouchUp="true"
+        app:swipeDirection="right"
         tools:context="com.kady.muhammad.quran.heritage.presentation.media.MediaFragment">
 
         <androidx.cardview.widget.CardView
@@ -177,5 +180,5 @@
 
         </androidx.cardview.widget.CardView>
 
-    </com.kady.muhammad.quran.heritage.presentation.widget.SwipeLayout>
+    </com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout>
 </layout>

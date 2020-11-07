@@ -7,11 +7,14 @@
     <declare-styleable name="AVDImageView">
         <attr name="avd" format="reference" />
     </declare-styleable>
-    <declare-styleable name="SwipeLayout">
+    <declare-styleable name="HorizontalSwipeLayout">
         <attr name="swipeDirection" format="enum">
             <enum name="right" value="0" />
             <enum name="left" value="1" />
         </attr>
+        <attr name="swipeBackOnTouchUp" format="boolean" />
         <attr name="disableSwipe" format="boolean" />
+        <attr name="maxSwipe" format="dimension" />
+        <attr name="dismissFraction" format="float" />
     </declare-styleable>
 </resources>

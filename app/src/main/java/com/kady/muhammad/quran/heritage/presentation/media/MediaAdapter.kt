@@ -9,11 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.MediaItemBinding
 import com.kady.muhammad.quran.heritage.entity.media.Media
+import com.kady.muhammad.quran.heritage.presentation.widget.SwipeRecyclerView
+import kotlinx.android.synthetic.main.media_item.view.*
 
 class MediaAdapter(
     private val context: Context,
     private val spanCount: Int,
-    private val mediaList: MutableList<Media> = mutableListOf()
+    private val mediaList: MutableList<Media> = mutableListOf(),
+    private val recyclerView: SwipeRecyclerView,
 ) :
     RecyclerView.Adapter<MediaAdapter.MediaHolder>() {
 
@@ -59,10 +62,16 @@ class MediaAdapter(
         }
 
         fun bind(mediaItem: Media, position: Int) {
+            val horizontalSwipeLayout = binding.root.horizontalSwipeLayout
+            //
             binding.mediaItem = mediaItem
             binding.position = position
             binding.executePendingBindings()
-            binding.root.setOnClickListener { listener?.invoke(mediaItem) }
+            horizontalSwipeLayout.setOnClickListener { listener?.invoke(mediaItem) }
+            horizontalSwipeLayout.setUpWithRecyclerView(
+                recyclerView,
+                "${horizontalSwipeLayout.tag}"
+            )
         }
 
     }

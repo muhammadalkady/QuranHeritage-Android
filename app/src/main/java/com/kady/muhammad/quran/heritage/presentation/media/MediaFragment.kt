@@ -3,7 +3,6 @@ package com.kady.muhammad.quran.heritage.presentation.media
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -13,7 +12,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.FragmentMediaBinding
 import com.kady.muhammad.quran.heritage.domain.log.Logger
@@ -37,7 +35,7 @@ class MediaFragment : Fragment() {
     private val adapter by lazy {
         MediaAdapter(
             requireContext(),
-            resources.getInteger(R.integer.span_count), mutableListOf()
+            resources.getInteger(R.integer.span_count), mutableListOf(), binding.mediaRecyclerView
         )
     }
     private val argParentMediaId: String by lazy { requireArguments().getString(Const.MEDIA_ID)!! }
@@ -119,17 +117,17 @@ class MediaFragment : Fragment() {
 
     private fun setupSwipe() {
         if (argParentMediaId == Const.MAIN_MEDIA_ID) rootConstraintLayout.disableSwipe = true
-        binding.rootConstraintLayout.setDismissListener {
+        binding.rootConstraintLayout.addDismissListener() {
             animationEnabled = false
             requireActivity().supportFragmentManager.popBackStackImmediate()
             animationEnabled = true
         }
-        binding.rootConstraintLayout.setSwipeListener {
-            val alpha = 1F - it
+        binding.rootConstraintLayout.addHorizontalSwipeListener { _, fraction ->
+            val alpha = 1F - fraction
             binding.toolbarTitleTextView.alpha = alpha
             binding.searchImageView.alpha = alpha
             binding.updateImageView.alpha = alpha
-            Logger.logI(logTag, it.toString(), false)
+            Logger.logI(logTag, fraction.toString(), false)
         }
     }
 

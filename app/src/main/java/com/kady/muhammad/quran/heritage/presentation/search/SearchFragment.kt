@@ -136,8 +136,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun setupSwipeLayout() {
-        binding.rootSwipeLayout.setDismissListener { hideKeyboard() }
-        binding.rootSwipeLayout.setTouchUpListener { hideKeyboard() }
+        binding.rootSwipeLayout.addDismissListener { hideKeyboard() }
+        binding.rootSwipeLayout.addOnTouchUpListener { hideKeyboard() }
     }
 
     private fun hideKeyboardOnLossFocus() {

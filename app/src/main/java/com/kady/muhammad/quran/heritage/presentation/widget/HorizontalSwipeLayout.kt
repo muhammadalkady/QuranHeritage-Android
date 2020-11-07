@@ -1,0 +1,346 @@
+package com.kady.muhammad.quran.heritage.presentation.widget
+
+import android.content.Context
+import android.content.res.TypedArray
+import android.util.AttributeSet
+import android.util.Log
+import android.view.MotionEvent
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.GestureDetectorCompat
+import androidx.core.view.children
+import androidx.recyclerview.widget.RecyclerView
+import com.kady.muhammad.quran.heritage.R
+import kotlin.math.abs
+import kotlin.math.log
+
+class HorizontalSwipeLayout @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : ConstraintLayout(context, attrs, defStyleAttr) {
+
+    var disableSwipe: Boolean = false
+
+    //
+    private var swipeDirection: SwipeDirection = SwipeDirection.RIGHT
+    private var swipeBackOnTouchUp: Boolean = true
+    private var maxSwipe: Float = 0F
+    private var dismissFraction = 0F
+
+    //
+    private var swipeRecyclerView: SwipeRecyclerView? = null
+    private var childrenTags: String? = null
+    private var lastDownTime: Long = 0L
+    private var firstDistanceXPosition: Float = Float.NaN
+    private var firstDistanceYPosition: Float = Float.NaN
+    private var lastXPosition: Float = Float.NaN
+
+    //
+    private val horizontalSwipeListeners: MutableList<HorizontalSwipeListener> = mutableListOf()
+    private val dismissListeners: MutableList<DismissListener> = mutableListOf()
+    private val onTouchUpListeners: MutableList<OnTouchUpListener> = mutableListOf()
+
+    //
+    private val gestureDetector: GestureDetectorCompat =
+        GestureDetectorCompat(context, object : OnGestureListenerAdapter() {
+
+            override fun onDown(e: MotionEvent?): Boolean {
+                logI("onDown")
+                val isSwiped = isSwiped()
+                if (isSwiped) swipeBack()
+                getOthersHorizontalSwipeLayouts().forEach { it.swipeBack() }
+                return isSwiped
+            }
+
+            override fun onScroll(
+                e1: MotionEvent?, e2: MotionEvent?,
+                distanceX: Float, distanceY: Float
+            ): Boolean {
+                logI("onScroll")
+                e1 ?: return false
+                e2 ?: return false
+                logI("onScroll rawX e1 = ${e1.rawX}")
+                logI("onScroll rawX e2 = ${e2.rawX}")
+                handleOnScroll(distanceX, distanceY, e1, e2)
+                return false
+            }
+
+        })
+
+    init {
+        logI("Init")
+        isClickable = true
+        isFocusable = true
+        resolveAttrs(attrs)
+    }
+
+    override fun dispatchTouchEvent(e: MotionEvent?): Boolean {
+        if (gestureDetector.onTouchEvent(e)) return false
+        if (isActionUp(e)) onActionUp()
+        if (isActionUp(e) && isSwiped())
+            if (hasMaxSwipe() || isAtEnoughMaxSwipe()) animateToMaxSwipe()
+            else if (isSwipedBeforeDismissFraction() || hasNoDismissFraction()) swipeBack()
+        if (isActionUp(e) && swipeBackOnTouchUp && !disableSwipe && hasDismissFraction())
+            if (isSwipedBeforeDismissFraction()) swipeBack()
+            else if (isSwipedAtOrAfterDismissFraction()) animateDismiss()
+        if (isActionDown(e)) onActionDown()
+        val returned: Boolean = super.dispatchTouchEvent(e)
+        logI("dispatchTouchEvent -> $returned")
+        return returned
+    }
+
+    override fun onInterceptTouchEvent(e: MotionEvent?): Boolean {
+        val returned = super.onInterceptTouchEvent(e)
+        logI("onInterceptTouchEvent -> $returned")
+        return returned
+    }
+
+    override fun performClick(): Boolean {
+        logI("performClick")
+        if (isSwipeRecyclerViewScrolling() || canClick() || isSwiped()) {
+            return false
+        }
+        return super.performClick()
+    }
+
+    override fun setX(x: Float) {
+        super.setX(x)
+        logI("setX = $x")
+        onHorizontalSwipe(x)
+    }
+
+    fun swipeBack() {
+        animateXToPosition(0F)
+    }
+
+    fun setUpWithRecyclerView(swipeRecyclerView: SwipeRecyclerView, childrenTags: String) {
+        this.swipeRecyclerView = swipeRecyclerView
+        this.childrenTags = childrenTags
+    }
+
+    fun addHorizontalSwipeListener(horizontalSwipeListener: HorizontalSwipeListener) {
+        horizontalSwipeListeners.add(horizontalSwipeListener)
+    }
+
+    fun removeHorizontalSwipeListener(horizontalSwipeListener: HorizontalSwipeListener) {
+        horizontalSwipeListeners.remove(horizontalSwipeListener)
+    }
+
+    fun addDismissListener(dismissListener: DismissListener) {
+        dismissListeners.add(dismissListener)
+    }
+
+    fun removeDismissListener(dismissListener: DismissListener) {
+        dismissListeners.remove(dismissListener)
+    }
+
+    fun addOnTouchUpListener(onTouchUpListener: OnTouchUpListener) {
+        onTouchUpListeners.add(onTouchUpListener)
+    }
+
+    fun removeTouchUpListener(onTouchUpListener: OnTouchUpListener) {
+        onTouchUpListeners.remove(onTouchUpListener)
+    }
+
+    private fun isAtEnoughMaxSwipe(): Boolean {
+        return maxSwipe.div(10F) <= abs(x)
+    }
+
+    private fun hasMaxSwipe(): Boolean {
+        return maxSwipe != 0F
+    }
+
+    private fun animateDismiss() {
+        animateXToPosition((if (isSwipeDirectionRight()) width else -width).f) {
+            dismissListeners.forEach { it.onDismiss(this) }
+        }
+    }
+
+    private fun isSwipedAtOrAfterDismissFraction(): Boolean {
+        return abs(x).div(width.f) >= dismissFraction
+    }
+
+    private fun isSwipedBeforeDismissFraction(): Boolean {
+        return abs(x).div(width.f) < dismissFraction
+    }
+
+    private fun isActionDown(e: MotionEvent?): Boolean {
+        return e?.action == MotionEvent.ACTION_DOWN
+    }
+
+    private fun hasDismissFraction(): Boolean {
+        return dismissFraction != 0F
+    }
+
+    private fun animateToMaxSwipe() {
+        animateXToPosition(if (isSwipeDirectionRight()) maxSwipe else -maxSwipe)
+    }
+
+    private fun hasNoDismissFraction(): Boolean {
+        return dismissFraction == 0F
+    }
+
+    private fun isActionUp(e: MotionEvent?): Boolean {
+        return e?.action == MotionEvent.ACTION_UP
+    }
+
+    private fun canNotSwipe(): Boolean {
+        return abs(firstDistanceYPosition) > abs(firstDistanceXPosition)
+    }
+
+    private fun isSwipeRecyclerViewScrolling(): Boolean {
+        return swipeRecyclerView?.scrollState == RecyclerView.SCROLL_STATE_SETTLING ||
+                swipeRecyclerView?.scrollState == RecyclerView.SCROLL_STATE_DRAGGING
+    }
+
+    private fun canClick(): Boolean {
+        return System.currentTimeMillis() - lastDownTime > CLICK_DOWN_TIME
+    }
+
+    private fun onHorizontalSwipe(x: Float) {
+        if (lastXPosition != x) {
+            val fraction = abs(translationX).div(width)
+            horizontalSwipeListeners.forEach {
+                it.onHorizontalSwipe(
+                    this,
+                    if (fraction < 0F) 0F else if (fraction > 1F) 1F else fraction
+                )
+            }
+        }
+        lastXPosition = translationX
+    }
+
+    private fun getOthersHorizontalSwipeLayouts(): List<HorizontalSwipeLayout> {
+        return swipeRecyclerView?.children?.toList()?.mapNotNull {
+            it.findViewWithTag<HorizontalSwipeLayout?>(childrenTags)
+        }?.filterNot { it == this } ?: emptyList()
+    }
+
+    private fun isSwiped(): Boolean {
+        return translationX != 0F
+    }
+
+    private fun resolveAttrs(attrs: AttributeSet?) {
+        val typedArray: TypedArray =
+            context.obtainStyledAttributes(attrs, R.styleable.HorizontalSwipeLayout)
+        with(typedArray) {
+            swipeDirection = getSwipeDirection()
+            swipeBackOnTouchUp = getSwipeBackOnTouchUp()
+            disableSwipe = getDisableSwipe()
+            maxSwipe = getMaxSwipe()
+            dismissFraction = getDismissFraction()
+        }
+        typedArray.recycle()
+    }
+
+    private fun TypedArray.getDismissFraction(): Float =
+        getFloat(R.styleable.HorizontalSwipeLayout_dismissFraction, 0F)
+
+    private fun TypedArray.getMaxSwipe(): Float {
+        return getDimensionPixelSize(R.styleable.HorizontalSwipeLayout_maxSwipe, 0).f
+    }
+
+    private fun TypedArray.getDisableSwipe(): Boolean {
+        return getBoolean(R.styleable.HorizontalSwipeLayout_disableSwipe, false)
+    }
+
+    private fun TypedArray.getSwipeBackOnTouchUp(): Boolean {
+        return getBoolean(R.styleable.HorizontalSwipeLayout_swipeBackOnTouchUp, true)
+    }
+
+    private fun TypedArray.getSwipeDirection(): SwipeDirection {
+        return if (getInt(R.styleable.HorizontalSwipeLayout_swipeDirection, 0) == 0)
+            SwipeDirection.RIGHT else SwipeDirection.LEFT
+    }
+
+    private fun logI(msg: String) {
+        if (IS_LOGGING_ENABLED) Log.i("SwipeLayout->${tag ?: ""}", msg)
+    }
+
+    private fun isSwipeDirectionRight(): Boolean {
+        return swipeDirection == SwipeDirection.RIGHT
+    }
+
+    private fun onActionUp() {
+        firstDistanceXPosition = Float.NaN
+        firstDistanceYPosition = Float.NaN
+        onTouchUpListeners.forEach { it.onTouchUp() }
+    }
+
+    private fun onActionDown() {
+        lastDownTime = System.currentTimeMillis()
+    }
+
+    private fun animateXToPosition(to: Float, endAction: () -> Unit = {}) {
+        logI("animateXToPosition")
+        animate()
+            .translationX(to)
+            .setDuration(ANIMATION_DURATION)
+            .setUpdateListener { onHorizontalSwipe(it.animatedValue as Float) }
+            .withEndAction { endAction() }
+            .start()
+    }
+
+    private fun handleOnScroll(
+        distanceX: Float, distanceY: Float,
+        e1: MotionEvent, e2: MotionEvent
+    ) {
+        if (firstDistanceXPosition.isNaN() && firstDistanceYPosition.isNaN()) {
+            firstDistanceXPosition = distanceX
+            firstDistanceYPosition = distanceY
+        }
+        if (canNotSwipe()) return
+        val newX: Float = e2.rawX - e1.rawX
+        val finalX: Float
+        finalX = if (isSwipeDirectionRight()) {
+            if (newX < 0F) 0F
+            else newX
+        } else {
+            if (newX > 0F) 0F
+            else newX
+        }
+        val finalXMaxSwipe: Float = if (maxSwipe == 0F) {
+            finalX
+        } else {
+            if (isSwipeDirectionRight()) {
+                if (finalX > maxSwipe) maxSwipe else finalX
+            } else {
+                if (abs(finalX) > maxSwipe) -maxSwipe else finalX
+            }
+        }
+        val finalXLog: Float = if (disableSwipe) {
+            val logX = log(abs(finalXMaxSwipe), 1.03F)
+            if (finalXMaxSwipe > 0 && isSwipeDirectionRight()) logX else if (finalXMaxSwipe < 0 && !isSwipeDirectionRight()) -logX
+            else 0F
+        } else {
+            finalXMaxSwipe
+        }
+        if (!finalX.isNaN())
+            translationX = finalXLog
+    }
+
+    private val Int.f: Float get() = this.toFloat()
+
+    fun interface HorizontalSwipeListener {
+        fun onHorizontalSwipe(horizontalSwipeLayout: HorizontalSwipeLayout, fraction: Float)
+    }
+
+    fun interface DismissListener {
+        fun onDismiss(horizontalSwipeLayout: HorizontalSwipeLayout)
+    }
+
+    fun interface OnTouchUpListener {
+        fun onTouchUp()
+    }
+
+    enum class SwipeDirection {
+        RIGHT,
+        LEFT
+    }
+
+    companion object {
+        private const val IS_LOGGING_ENABLED = true
+        private const val ANIMATION_DURATION = 100L
+        private const val CLICK_DOWN_TIME = 250L
+    }
+
+
+}

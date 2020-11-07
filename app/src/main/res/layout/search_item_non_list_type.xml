@@ -31,7 +31,7 @@
 
     </data>
 
-    <com.kady.muhammad.quran.heritage.presentation.widget.SwipeLayout
+    <com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,6 +44,7 @@
         app:drawable2="@{drawable2}"
         app:position="@{position}"
         app:spanCount="@{spanCount}"
+        app:swipeBackOnTouchUp="false"
         app:swipeDirection="left"
         tools:background="@color/colorPrimaryDark">
 
@@ -117,5 +118,5 @@
             app:layout_constraintTop_toBottomOf="@+id/title"
             tools:text="ما تيسر من سورة الفاتحة" />
 
-    </com.kady.muhammad.quran.heritage.presentation.widget.SwipeLayout>
+    </com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout>
 </layout>
