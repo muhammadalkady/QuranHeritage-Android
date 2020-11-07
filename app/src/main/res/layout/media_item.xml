@@ -33,10 +33,18 @@
         android:background="@color/colorAccent">
 
         <FrameLayout
+            android:id="@+id/horizontalSwipeLayoutActions"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@color/colorAccent" />
+            android:background="@color/colorHorizontalSwipeLayoutActions">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                app:srcCompat="@drawable/ic_baseline_favorite_48" />
+        </FrameLayout>
 
         <com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
             android:id="@+id/horizontalSwipeLayout"
@@ -44,6 +52,7 @@
             android:layout_height="wrap_content"
             android:clipChildren="false"
             android:clipToPadding="false"
+            android:elevation="12dp"
             android:tag="horizontalSwipeLayoutChild"
             app:drawable1="@{drawable1}"
             app:drawable2="@{drawable2}"

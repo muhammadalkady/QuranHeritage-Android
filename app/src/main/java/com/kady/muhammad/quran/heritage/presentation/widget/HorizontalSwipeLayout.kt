@@ -3,8 +3,8 @@ package com.kady.muhammad.quran.heritage.presentation.widget
 import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
+import android.view.animation.DecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.children
@@ -43,7 +43,6 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
         GestureDetectorCompat(context, object : OnGestureListenerAdapter() {
 
             override fun onDown(e: MotionEvent?): Boolean {
-                logI("onDown")
                 val isSwiped = isSwiped()
                 if (isSwiped) swipeBack()
                 getOthersHorizontalSwipeLayouts().forEach { it.swipeBack() }
@@ -54,11 +53,8 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
                 e1: MotionEvent?, e2: MotionEvent?,
                 distanceX: Float, distanceY: Float
             ): Boolean {
-                logI("onScroll")
                 e1 ?: return false
                 e2 ?: return false
-                logI("onScroll rawX e1 = ${e1.rawX}")
-                logI("onScroll rawX e2 = ${e2.rawX}")
                 handleOnScroll(distanceX, distanceY, e1, e2)
                 return false
             }
@@ -66,7 +62,6 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
         })
 
     init {
-        logI("Init")
         isClickable = true
         isFocusable = true
         resolveAttrs(attrs)
@@ -82,19 +77,10 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
             if (isSwipedBeforeDismissFraction()) swipeBack()
             else if (isSwipedAtOrAfterDismissFraction()) animateDismiss()
         if (isActionDown(e)) onActionDown()
-        val returned: Boolean = super.dispatchTouchEvent(e)
-        logI("dispatchTouchEvent -> $returned")
-        return returned
-    }
-
-    override fun onInterceptTouchEvent(e: MotionEvent?): Boolean {
-        val returned = super.onInterceptTouchEvent(e)
-        logI("onInterceptTouchEvent -> $returned")
-        return returned
+        return super.dispatchTouchEvent(e)
     }
 
     override fun performClick(): Boolean {
-        logI("performClick")
         if (isSwipeRecyclerViewScrolling() || canClick() || isSwiped()) {
             return false
         }
@@ -103,8 +89,7 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
 
     override fun setX(x: Float) {
         super.setX(x)
-        logI("setX = $x")
-        onHorizontalSwipe(x)
+        onHorizontalSwipe(translationX)
     }
 
     fun swipeBack() {
@@ -197,7 +182,7 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
 
     private fun onHorizontalSwipe(x: Float) {
         if (lastXPosition != x) {
-            val fraction = abs(translationX).div(width)
+            val fraction = abs(translationX).div(if (hasMaxSwipe()) maxSwipe else width.f)
             horizontalSwipeListeners.forEach {
                 it.onHorizontalSwipe(
                     this,
@@ -251,10 +236,6 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
             SwipeDirection.RIGHT else SwipeDirection.LEFT
     }
 
-    private fun logI(msg: String) {
-        if (IS_LOGGING_ENABLED) Log.i("SwipeLayout->${tag ?: ""}", msg)
-    }
-
     private fun isSwipeDirectionRight(): Boolean {
         return swipeDirection == SwipeDirection.RIGHT
     }
@@ -270,9 +251,9 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
     }
 
     private fun animateXToPosition(to: Float, endAction: () -> Unit = {}) {
-        logI("animateXToPosition")
         animate()
             .translationX(to)
+            .setInterpolator(DecelerateInterpolator())
             .setDuration(ANIMATION_DURATION)
             .setUpdateListener { onHorizontalSwipe(it.animatedValue as Float) }
             .withEndAction { endAction() }
@@ -313,8 +294,10 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
         } else {
             finalXMaxSwipe
         }
-        if (!finalX.isNaN())
+        if (!finalX.isNaN()) {
             translationX = finalXLog
+            onHorizontalSwipe(translationX)
+        }
     }
 
     private val Int.f: Float get() = this.toFloat()
@@ -337,10 +320,8 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
     }
 
     companion object {
-        private const val IS_LOGGING_ENABLED = true
         private const val ANIMATION_DURATION = 100L
         private const val CLICK_DOWN_TIME = 250L
     }
-
 
 }

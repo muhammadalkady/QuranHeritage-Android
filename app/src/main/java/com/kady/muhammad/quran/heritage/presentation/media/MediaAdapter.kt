@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.MediaItemBinding
 import com.kady.muhammad.quran.heritage.entity.media.Media
+import com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
 import com.kady.muhammad.quran.heritage.presentation.widget.SwipeRecyclerView
 import kotlinx.android.synthetic.main.media_item.view.*
 
@@ -53,6 +54,10 @@ class MediaAdapter(
     inner class MediaHolder(private val binding: MediaItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        private val horizontalSwipeLayout: HorizontalSwipeLayout =
+            binding.root.horizontalSwipeLayout
+        private val horizontalSwipeLayoutTag = "${horizontalSwipeLayout.tag}"
+
         init {
             //
             binding.spanCount = spanCount
@@ -61,8 +66,6 @@ class MediaAdapter(
             binding.drawable2 =
                 ContextCompat.getDrawable(context, R.drawable.media_item_background_2)
             //
-            val horizontalSwipeLayout = binding.root.horizontalSwipeLayout
-            val horizontalSwipeLayoutTag = "${horizontalSwipeLayout.tag}"
             horizontalSwipeLayout.setUpWithRecyclerView(recyclerView, horizontalSwipeLayoutTag)
         }
 
@@ -72,6 +75,7 @@ class MediaAdapter(
             binding.position = position
             binding.executePendingBindings()
             binding.root.horizontalSwipeLayout.setOnClickListener { listener?.invoke(mediaItem) }
+            binding.root.horizontalSwipeLayoutActions.setOnClickListener { horizontalSwipeLayout.swipeBack() }
         }
 
     }

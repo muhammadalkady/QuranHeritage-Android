@@ -123,6 +123,7 @@ class MediaFragment : Fragment() {
             animationEnabled = true
         }
         binding.rootConstraintLayout.addHorizontalSwipeListener { _, fraction ->
+            Logger.logI(logTag, "onHorizontalSwipe fraction = $fraction")
             val alpha = 1F - fraction
             binding.toolbarTitleTextView.alpha = alpha
             binding.searchImageView.alpha = alpha
