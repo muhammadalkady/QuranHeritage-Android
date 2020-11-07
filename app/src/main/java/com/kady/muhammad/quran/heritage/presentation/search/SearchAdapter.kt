@@ -10,11 +10,15 @@ import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.SeachItemListTypeBinding
 import com.kady.muhammad.quran.heritage.databinding.SearchItemNonListTypeBinding
 import com.kady.muhammad.quran.heritage.entity.media.Media
+import com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
+import com.kady.muhammad.quran.heritage.presentation.widget.SwipeRecyclerView
+import kotlinx.android.synthetic.main.media_item.view.*
 
 class SearchAdapter(
     private val context: Context,
     private val spanCount: Int,
     private val mediaList: MutableList<Media> = mutableListOf(),
+    private val recyclerView: SwipeRecyclerView,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -76,12 +80,18 @@ class SearchAdapter(
     inner class MediaListTypeHolder(private val binding: SeachItemListTypeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        private val horizontalSwipeLayout: HorizontalSwipeLayout =
+            binding.root.horizontalSwipeLayout
+        private val horizontalSwipeLayoutTag = "${horizontalSwipeLayout.tag}"
+
         init {
             binding.spanCount = spanCount
             binding.drawable1 =
                 ContextCompat.getDrawable(context, R.drawable.media_item_background_1)
             binding.drawable2 =
                 ContextCompat.getDrawable(context, R.drawable.media_item_background_2)
+            //
+            horizontalSwipeLayout.setUpWithRecyclerView(recyclerView, horizontalSwipeLayoutTag)
         }
 
         fun bind(mediaItem: Media, position: Int) {
@@ -89,19 +99,25 @@ class SearchAdapter(
             binding.position = position
             binding.query = query
             binding.executePendingBindings()
-            binding.root.setOnClickListener { listener?.invoke(mediaItem) }
+            binding.root.horizontalSwipeLayout.setOnClickListener { listener?.invoke(mediaItem) }
+            binding.root.horizontalSwipeLayoutActions.setOnClickListener { horizontalSwipeLayout.swipeBack() }
         }
     }
 
     inner class MediaNonListTypeHolder(private val binding: SearchItemNonListTypeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        private val horizontalSwipeLayout: HorizontalSwipeLayout =
+            binding.root.horizontalSwipeLayout
+        private val horizontalSwipeLayoutTag = "${horizontalSwipeLayout.tag}"
+
         init {
             binding.spanCount = spanCount
             binding.drawable1 =
                 ContextCompat.getDrawable(context, R.drawable.media_item_background_1)
             binding.drawable2 =
                 ContextCompat.getDrawable(context, R.drawable.media_item_background_2)
+            horizontalSwipeLayout.setUpWithRecyclerView(recyclerView, horizontalSwipeLayoutTag)
         }
 
         fun bind(mediaItem: Media, position: Int) {
@@ -109,7 +125,8 @@ class SearchAdapter(
             binding.position = position
             binding.query = query
             binding.executePendingBindings()
-            binding.root.setOnClickListener { listener?.invoke(mediaItem) }
+            binding.root.horizontalSwipeLayout.setOnClickListener { listener?.invoke(mediaItem) }
+            binding.root.horizontalSwipeLayoutActions.setOnClickListener { horizontalSwipeLayout.swipeBack() }
         }
 
     }

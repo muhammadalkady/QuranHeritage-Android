@@ -31,92 +31,116 @@
 
     </data>
 
-    <com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
-        android:id="@+id/constraintLayout"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:focusable="true"
-        app:disableSwipe="true"
-        app:drawable1="@{drawable1}"
-        app:drawable2="@{drawable2}"
-        app:position="@{position}"
-        app:spanCount="@{spanCount}"
-        app:swipeBackOnTouchUp="false"
-        app:swipeDirection="left"
-        tools:background="@color/colorPrimaryDark">
+        android:layout_height="wrap_content">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/colorAvatar"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="12dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <FrameLayout
+            android:id="@+id/horizontalSwipeLayoutActions"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@color/colorHorizontalSwipeLayoutActions">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="center"
-                app:srcCompat="@drawable/media_item_non_list" />
+                app:srcCompat="@drawable/ic_baseline_favorite_48" />
 
-        </androidx.cardview.widget.CardView>
+        </FrameLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/title"
-            foregroundColorSpanSubText="@{query}"
-            foregroundColorSpanText="@{mediaItem.title}"
-            android:layout_width="0dp"
+        <com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
+            android:id="@+id/horizontalSwipeLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:ellipsize="marquee"
+            android:clickable="true"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:elevation="12dp"
             android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center|start"
-            android:textColor="?attr/colorAccent"
-            android:textDirection="locale"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/subTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/cardView"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="ما تيسر من سورة الفاتحة" />
+            android:tag="horizontalSwipeLayoutChild"
+            app:disableSwipe="false"
+            app:drawable1="@{drawable1}"
+            app:drawable2="@{drawable2}"
+            app:maxSwipe="100dp"
+            app:position="@{position}"
+            app:spanCount="@{spanCount}"
+            app:swipeBackOnTouchUp="false"
+            app:swipeDirection="left"
+            tools:background="@color/colorPrimaryDark">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/subTitle"
-            foregroundColorSpanSubText="@{query}"
-            foregroundColorSpanText="@{mediaItem.parentTitle}"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:alpha=".5"
-            android:ellipsize="marquee"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center|start"
-            android:textColor="@color/colorAccent"
-            android:textDirection="locale"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/cardView"
-            app:layout_constraintTop_toBottomOf="@+id/title"
-            tools:text="ما تيسر من سورة الفاتحة" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/colorAvatar"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-    </com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="center"
+                    app:srcCompat="@drawable/media_item_non_list" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/title"
+                foregroundColorSpanSubText="@{query}"
+                foregroundColorSpanText="@{mediaItem.title}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center|start"
+                android:textColor="?attr/colorAccent"
+                android:textDirection="locale"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/subTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cardView"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="ما تيسر من سورة الفاتحة" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/subTitle"
+                foregroundColorSpanSubText="@{query}"
+                foregroundColorSpanText="@{mediaItem.parentTitle}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:alpha=".5"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center|start"
+                android:textColor="@color/colorAccent"
+                android:textDirection="locale"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cardView"
+                app:layout_constraintTop_toBottomOf="@+id/title"
+                tools:text="ما تيسر من سورة الفاتحة" />
+
+        </com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout>
+
+    </FrameLayout>
 </layout>

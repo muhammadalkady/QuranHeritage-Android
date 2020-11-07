@@ -32,7 +32,9 @@ class SearchFragment : Fragment() {
     private val adapter by lazy {
         SearchAdapter(
             requireContext(),
-            resources.getInteger(R.integer.span_count), mutableListOf()
+            resources.getInteger(R.integer.span_count),
+            mutableListOf(),
+            binding.searchResultRecyclerView
         )
     }
     private val searchImageViewXPosition: Float by lazy {

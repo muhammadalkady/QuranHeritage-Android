@@ -29,8 +29,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAccent">
+        android:layout_height="wrap_content">
 
         <FrameLayout
             android:id="@+id/horizontalSwipeLayoutActions"
@@ -44,6 +43,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="center"
                 app:srcCompat="@drawable/ic_baseline_favorite_48" />
+
         </FrameLayout>
 
         <com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout

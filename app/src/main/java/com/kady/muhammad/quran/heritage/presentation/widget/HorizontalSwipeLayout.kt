@@ -288,7 +288,7 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
             }
         }
         val finalXLog: Float = if (disableSwipe) {
-            val logX = log(abs(finalXMaxSwipe), 1.03F)
+            val logX = log(abs(finalXMaxSwipe), 1.02F)
             if (finalXMaxSwipe > 0 && isSwipeDirectionRight()) logX else if (finalXMaxSwipe < 0 && !isSwipeDirectionRight()) -logX
             else 0F
         } else {
