@@ -33,7 +33,7 @@
         android:background="@color/colorAccent">
 
         <FrameLayout
-            android:layout_width="200dp"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:background="@color/colorAccent" />
@@ -47,7 +47,7 @@
             android:tag="horizontalSwipeLayoutChild"
             app:drawable1="@{drawable1}"
             app:drawable2="@{drawable2}"
-            app:maxSwipe="200dp"
+            app:maxSwipe="100dp"
             app:position="@{position}"
             app:spanCount="@{spanCount}"
             app:swipeBackOnTouchUp="false"
