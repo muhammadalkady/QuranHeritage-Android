@@ -38,7 +38,6 @@ class MediaFragment : Fragment() {
             resources.getInteger(R.integer.span_count), mutableListOf(), binding.mediaRecyclerView
         )
     }
-    private val argParentMediaId: String by lazy { requireArguments().getString(Const.MEDIA_ID)!! }
     private val argTitle: String by lazy {
         requireArguments().getString(Const.TITLE_KEY) ?: getString(R.string.main_title)
     }
@@ -50,6 +49,7 @@ class MediaFragment : Fragment() {
     }
 
     val hideSearch: Boolean by lazy { requireArguments().getBoolean(Const.HIDE_SEARCH_KEY) }
+    val argParentMediaId: String by lazy { requireArguments().getString(Const.MEDIA_ID)!! }
 
     private val mainActivity: MainActivity by lazy { requireActivity() as MainActivity }
 
@@ -111,19 +111,22 @@ class MediaFragment : Fragment() {
         mainActivity.addSearchFragment(searchFragment)
     }
 
+    fun openFavoriteFragment(){
+
+    }
+
     private fun animateAppBarLayoutHeight() {
         binding.appBarLayout.animateProperty(ViewProperty.HEIGHT)
     }
 
     private fun setupSwipe() {
         if (argParentMediaId == Const.MAIN_MEDIA_ID) rootConstraintLayout.disableSwipe = true
-        binding.rootConstraintLayout.addDismissListener() {
+        binding.rootConstraintLayout.addDismissListener {
             animationEnabled = false
             requireActivity().supportFragmentManager.popBackStackImmediate()
             animationEnabled = true
         }
         binding.rootConstraintLayout.addHorizontalSwipeListener { _, fraction ->
-            Logger.logI(logTag, "onHorizontalSwipe fraction = $fraction")
             val alpha = 1F - fraction
             binding.toolbarTitleTextView.alpha = alpha
             binding.searchImageView.alpha = alpha

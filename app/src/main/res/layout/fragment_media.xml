@@ -15,6 +15,8 @@
 
         <import type="android.view.View" />
 
+        <import type="com.kady.muhammad.quran.heritage.entity.constant.Const" />
+
     </data>
 
     <com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
@@ -108,6 +110,18 @@
                                 android:scaleType="center"
                                 android:visibility="@{fragment.hideSearch ? View.INVISIBLE : View.VISIBLE}"
                                 app:srcCompat="@drawable/ic_baseline_search_24" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/favoriteImageView"
+                                android:layout_width="56dp"
+                                android:layout_height="match_parent"
+                                android:background="?android:selectableItemBackgroundBorderless"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:onClick="@{()->fragment.openFavoriteFragment()}"
+                                android:scaleType="center"
+                                android:visibility="@{fragment.argParentMediaId == Const.MAIN_MEDIA_ID ? View.VISIBLE : View.GONE }"
+                                app:srcCompat="@drawable/ic_outline_favorite_border_24" />
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/updateImageView"
