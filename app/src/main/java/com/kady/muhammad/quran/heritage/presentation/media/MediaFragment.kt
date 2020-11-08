@@ -91,7 +91,7 @@ class MediaFragment : Fragment() {
         setupToolbarLogo()
         setupMediaCount()
         setupUpdate()
-        initRecyclerView()
+        setupRecyclerView()
         observeLoading()
         observeMediaList()
         observeCount()
@@ -111,7 +111,7 @@ class MediaFragment : Fragment() {
         mainActivity.addSearchFragment(searchFragment)
     }
 
-    fun openFavoriteFragment(){
+    fun openFavoriteFragment() {
 
     }
 
@@ -128,10 +128,7 @@ class MediaFragment : Fragment() {
         }
         binding.rootConstraintLayout.addHorizontalSwipeListener { _, fraction ->
             val alpha = 1F - fraction
-            binding.toolbarTitleTextView.alpha = alpha
-            binding.searchImageView.alpha = alpha
-            binding.updateImageView.alpha = alpha
-            Logger.logI(logTag, fraction.toString(), false)
+            binding.toolbar.alpha = alpha
         }
     }
 
@@ -156,7 +153,7 @@ class MediaFragment : Fragment() {
         }
     }
 
-    private fun initRecyclerView() {
+    private fun setupRecyclerView() {
         context?.let {
             binding.mediaRecyclerView.layoutManager =
                 GridLayoutManager(it, resources.getInteger(R.integer.span_count))

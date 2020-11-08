@@ -31,7 +31,7 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
     private var lastDownTime: Long = 0L
     private var firstDistanceXPosition: Float = Float.NaN
     private var firstDistanceYPosition: Float = Float.NaN
-    private var lastXPosition: Float = Float.NaN
+    private var lastHorizontalSwipeFraction: Float = Float.NaN
 
     //
     private val horizontalSwipeListeners: MutableList<HorizontalSwipeListener> = mutableListOf()
@@ -71,7 +71,7 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
         if (gestureDetector.onTouchEvent(e)) return false
         if (isActionUp(e)) onActionUp()
         if (isActionUp(e) && isSwiped())
-            if (hasMaxSwipe() || isAtEnoughMaxSwipe()) animateToMaxSwipe()
+            if (hasMaxSwipe() || isAtEnoughMaxSwipe()) toMaxSwipe()
             else if (isSwipedBeforeDismissFraction() || hasNoDismissFraction()) swipeBack()
         if (isActionUp(e) && swipeBackOnTouchUp && !disableSwipe && hasDismissFraction())
             if (isSwipedBeforeDismissFraction()) swipeBack()
@@ -87,13 +87,8 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
         return super.performClick()
     }
 
-    override fun setX(x: Float) {
-        super.setX(x)
-        onHorizontalSwipe(translationX)
-    }
-
-    fun swipeBack() {
-        animateXToPosition(0F)
+    fun swipeBack(animate: Boolean = true) {
+        animateTranslationXToPosition(0F, if (animate) ANIMATION_DURATION else 0L)
     }
 
     fun setUpWithRecyclerView(swipeRecyclerView: SwipeRecyclerView, childrenTags: String) {
@@ -125,6 +120,13 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
         onTouchUpListeners.remove(onTouchUpListener)
     }
 
+    private fun toMaxSwipe(animate: Boolean = true) {
+        animateTranslationXToPosition(
+            if (isSwipeDirectionRight()) maxSwipe else -maxSwipe,
+            if (animate) ANIMATION_DURATION else 0L
+        )
+    }
+
     private fun isAtEnoughMaxSwipe(): Boolean {
         return maxSwipe.div(10F) <= abs(x)
     }
@@ -134,7 +136,7 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
     }
 
     private fun animateDismiss() {
-        animateXToPosition((if (isSwipeDirectionRight()) width else -width).f) {
+        animateTranslationXToPosition((if (isSwipeDirectionRight()) width else -width).f) {
             dismissListeners.forEach { it.onDismiss(this) }
         }
     }
@@ -153,10 +155,6 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
 
     private fun hasDismissFraction(): Boolean {
         return dismissFraction != 0F
-    }
-
-    private fun animateToMaxSwipe() {
-        animateXToPosition(if (isSwipeDirectionRight()) maxSwipe else -maxSwipe)
     }
 
     private fun hasNoDismissFraction(): Boolean {
@@ -180,17 +178,14 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
         return System.currentTimeMillis() - lastDownTime > CLICK_DOWN_TIME
     }
 
-    private fun onHorizontalSwipe(x: Float) {
-        if (lastXPosition != x) {
-            val fraction = abs(translationX).div(if (hasMaxSwipe()) maxSwipe else width.f)
+    private fun onHorizontalSwipeSetTranslationX(translationX: Float) {
+        val fraction = abs(translationX).div(if (hasMaxSwipe()) maxSwipe else width.f)
+        if (lastHorizontalSwipeFraction != fraction) {
+            lastHorizontalSwipeFraction = fraction
             horizontalSwipeListeners.forEach {
-                it.onHorizontalSwipe(
-                    this,
-                    if (fraction < 0F) 0F else if (fraction > 1F) 1F else fraction
-                )
+                it.onHorizontalSwipe(this, fraction)
             }
         }
-        lastXPosition = translationX
     }
 
     private fun getOthersHorizontalSwipeLayouts(): List<HorizontalSwipeLayout> {
@@ -250,12 +245,16 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
         lastDownTime = System.currentTimeMillis()
     }
 
-    private fun animateXToPosition(to: Float, endAction: () -> Unit = {}) {
+    private fun animateTranslationXToPosition(
+        to: Float,
+        duration: Long = ANIMATION_DURATION,
+        endAction: () -> Unit = {}
+    ) {
         animate()
             .translationX(to)
             .setInterpolator(DecelerateInterpolator())
-            .setDuration(ANIMATION_DURATION)
-            .setUpdateListener { onHorizontalSwipe(it.animatedValue as Float) }
+            .setDuration(duration)
+            .setUpdateListener { onHorizontalSwipeSetTranslationX(translationX) }
             .withEndAction { endAction() }
             .start()
     }
@@ -296,7 +295,7 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
         }
         if (!finalX.isNaN()) {
             translationX = finalXLog
-            onHorizontalSwipe(translationX)
+            onHorizontalSwipeSetTranslationX(translationX)
         }
     }
 
