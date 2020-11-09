@@ -1,21 +1,20 @@
 package com.kady.muhammad.quran.heritage.presentation.media
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.MediaItemBinding
 import com.kady.muhammad.quran.heritage.entity.media.Media
+import com.kady.muhammad.quran.heritage.presentation.ext.MediaAdapterHelper
 import com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
 import com.kady.muhammad.quran.heritage.presentation.widget.SwipeRecyclerView
 import kotlinx.android.synthetic.main.media_item.view.*
 
 class MediaAdapter(
-    private val context: Context,
+    context: Context,
     private val spanCount: Int,
     private val mediaList: MutableList<Media> = mutableListOf(),
     private val recyclerView: SwipeRecyclerView,
@@ -24,7 +23,7 @@ class MediaAdapter(
 
     var listener: ((mediaItem: Media) -> Unit)? = null
 
-    private val swipedMap: MutableMap<Int, String> = mutableMapOf()
+    private val mediaAdapterHelper = MediaAdapterHelper(context, mediaList)
 
     override fun getItemCount(): Int = mediaList.size
 
@@ -40,6 +39,8 @@ class MediaAdapter(
     }
 
     fun updateMedia(mediaList: List<Media>) {
+        mediaAdapterHelper.mediaList.clear()
+        mediaAdapterHelper.mediaList.addAll(mediaList)
         if (this.mediaList.isEmpty()) {
             this.mediaList.addAll(mediaList)
             notifyItemRangeChanged(0, mediaList.size)
@@ -64,30 +65,24 @@ class MediaAdapter(
         init {
             //
             binding.spanCount = spanCount
-            binding.drawable1 = getDrawable(R.drawable.media_item_background_1)
-            binding.drawable2 = getDrawable(R.drawable.media_item_background_2)
+            binding.drawable1 = mediaAdapterHelper.getDrawable(R.drawable.media_item_background_1)
+            binding.drawable2 = mediaAdapterHelper.getDrawable(R.drawable.media_item_background_2)
             //
             horizontalSwipeLayout.setUpWithRecyclerView(recyclerView, horizontalSwipeLayoutTag)
             horizontalSwipeLayout.addHorizontalSwipeListener(this)
         }
 
-        private fun getDrawable(drawableRes: Int): Drawable? {
-            return ContextCompat.getDrawable(context, drawableRes)
-        }
-
-        private fun setSwipe(isSwiped: Boolean) {
-            with(horizontalSwipeLayout) { if (isSwiped) toMaxSwipe(false) else swipeBack(false) }
-        }
 
         fun bind(mediaItem: Media, position: Int) {
-            //
             binding.mediaItem = mediaItem
             binding.position = position
             binding.executePendingBindings()
             with(horizontalSwipeLayout) {
                 setOnClickListener { listener?.invoke(mediaItem) }
-                val isSwiped = swipedMap[adapterPosition]
-                setSwipe(isSwiped != null)
+                mediaAdapterHelper.restoreHorizontalSwipeLayoutState(
+                    adapterPosition,
+                    horizontalSwipeLayout
+                )
             }
             horizontalSwipeLayoutActions.setOnClickListener { horizontalSwipeLayout.swipeBack() }
         }
@@ -96,14 +91,8 @@ class MediaAdapter(
             horizontalSwipeLayout: HorizontalSwipeLayout,
             fraction: Float
         ) {
-            if (adapterPosition == RecyclerView.NO_POSITION) return
-            if (fraction == 1F) {
-                val mediaId = mediaList[adapterPosition].id
-                swipedMap[adapterPosition] = mediaId
-            } else if (fraction < 1F) {
-                swipedMap.remove(adapterPosition)
-            }
+            mediaAdapterHelper.onHorizontalSwipe(adapterPosition, fraction)
         }
-
     }
+
 }

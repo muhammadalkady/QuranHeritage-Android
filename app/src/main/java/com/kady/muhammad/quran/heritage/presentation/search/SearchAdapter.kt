@@ -22,6 +22,8 @@ class SearchAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private val swipedMap: MutableMap<Int, String> = mutableMapOf()
+    //
     var listener: ((mediaItem: Media) -> Unit)? = null
     var query: String = ""
 

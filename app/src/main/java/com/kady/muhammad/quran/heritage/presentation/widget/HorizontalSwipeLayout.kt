@@ -321,6 +321,10 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
     companion object {
         private const val ANIMATION_DURATION = 500L
         private const val CLICK_DOWN_TIME = 250L
+
+        //
+        const val SWIPED_FRACTION = 1F
+        const val NOT_SWIPED_FRACTION = 0F
     }
 
 }
