@@ -18,6 +18,7 @@ class MediaAdapter(
     private val spanCount: Int,
     private val mediaList: MutableList<Media> = mutableListOf(),
     private val recyclerView: SwipeRecyclerView,
+    private val parentHorizontalSwipeLayout: HorizontalSwipeLayout
 ) :
     RecyclerView.Adapter<MediaAdapter.MediaHolder>() {
 
@@ -69,6 +70,7 @@ class MediaAdapter(
             binding.drawable2 = mediaAdapterHelper.getDrawable(R.drawable.media_item_background_2)
             //
             horizontalSwipeLayout.setUpWithRecyclerView(recyclerView, horizontalSwipeLayoutTag)
+            horizontalSwipeLayout.setupWithParentHorizontalSwipeLayout(parentHorizontalSwipeLayout)
             horizontalSwipeLayout.addHorizontalSwipeListener(this)
         }
 

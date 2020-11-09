@@ -27,6 +27,7 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
 
     //
     private var swipeRecyclerView: SwipeRecyclerView? = null
+    private var parentHorizontalSwipeLayout: HorizontalSwipeLayout? = null
     private var childrenTags: String? = null
     private var lastDownTime: Long = 0L
     private var firstDistanceXPosition: Float = Float.NaN
@@ -81,7 +82,7 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
     }
 
     override fun performClick(): Boolean {
-        if (isSwipeRecyclerViewScrolling() || canClick() || isSwiped()) {
+        if (isSwipeRecyclerViewScrolling() || canClick() || isSwiped() || isParentHorizontalSwipeLayoutSwiping()) {
             return false
         }
         return super.performClick()
@@ -101,6 +102,10 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
     fun setUpWithRecyclerView(swipeRecyclerView: SwipeRecyclerView, childrenTags: String) {
         this.swipeRecyclerView = swipeRecyclerView
         this.childrenTags = childrenTags
+    }
+
+    fun setupWithParentHorizontalSwipeLayout(parentHorizontalSwipeLayout: HorizontalSwipeLayout) {
+        this.parentHorizontalSwipeLayout = parentHorizontalSwipeLayout
     }
 
     fun addHorizontalSwipeListener(horizontalSwipeListener: HorizontalSwipeListener) {
@@ -125,6 +130,10 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
 
     fun removeTouchUpListener(onTouchUpListener: OnTouchUpListener) {
         onTouchUpListeners.remove(onTouchUpListener)
+    }
+
+    private fun isParentHorizontalSwipeLayoutSwiping(): Boolean {
+        return parentHorizontalSwipeLayout?.isSwiped() ?: false
     }
 
     private fun isAtEnoughMaxSwipe(): Boolean {

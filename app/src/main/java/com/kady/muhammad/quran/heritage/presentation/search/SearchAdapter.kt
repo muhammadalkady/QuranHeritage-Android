@@ -19,6 +19,7 @@ class SearchAdapter(
     private val spanCount: Int,
     private val mediaList: MutableList<Media> = mutableListOf(),
     private val recyclerView: SwipeRecyclerView,
+    private val parentHorizontalSwipeLayout: HorizontalSwipeLayout,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -93,6 +94,7 @@ class SearchAdapter(
                 ContextCompat.getDrawable(context, R.drawable.media_item_background_2)
             //
             horizontalSwipeLayout.setUpWithRecyclerView(recyclerView, horizontalSwipeLayoutTag)
+            horizontalSwipeLayout.setupWithParentHorizontalSwipeLayout(parentHorizontalSwipeLayout)
         }
 
         fun bind(mediaItem: Media, position: Int) {
@@ -119,6 +121,7 @@ class SearchAdapter(
             binding.drawable2 =
                 ContextCompat.getDrawable(context, R.drawable.media_item_background_2)
             horizontalSwipeLayout.setUpWithRecyclerView(recyclerView, horizontalSwipeLayoutTag)
+            horizontalSwipeLayout.setupWithParentHorizontalSwipeLayout(parentHorizontalSwipeLayout)
         }
 
         fun bind(mediaItem: Media, position: Int) {

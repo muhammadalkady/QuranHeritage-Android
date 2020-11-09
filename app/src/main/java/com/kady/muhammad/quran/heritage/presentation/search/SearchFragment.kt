@@ -34,7 +34,8 @@ class SearchFragment : Fragment() {
             requireContext(),
             resources.getInteger(R.integer.span_count),
             mutableListOf(),
-            binding.searchResultRecyclerView
+            binding.searchResultRecyclerView,
+            binding.rootHorizontalSwipeLayout,
         )
     }
     private val searchImageViewXPosition: Float by lazy {
@@ -138,8 +139,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun setupSwipeLayout() {
-        binding.rootSwipeLayout.addDismissListener { hideKeyboard() }
-        binding.rootSwipeLayout.addOnTouchUpListener { hideKeyboard() }
+        binding.rootHorizontalSwipeLayout.addDismissListener { hideKeyboard() }
+        binding.rootHorizontalSwipeLayout.addOnTouchUpListener { hideKeyboard() }
     }
 
     private fun hideKeyboardOnLossFocus() {

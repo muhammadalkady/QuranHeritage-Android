@@ -35,7 +35,10 @@ class MediaFragment : Fragment() {
     private val adapter by lazy {
         MediaAdapter(
             requireContext(),
-            resources.getInteger(R.integer.span_count), mutableListOf(), binding.mediaRecyclerView
+            resources.getInteger(R.integer.span_count),
+            mutableListOf(),
+            binding.mediaRecyclerView,
+            binding.rootHorizontalSwipeLayout
         )
     }
     private val argTitle: String by lazy {
@@ -120,13 +123,13 @@ class MediaFragment : Fragment() {
     }
 
     private fun setupSwipe() {
-        if (argParentMediaId == Const.MAIN_MEDIA_ID) rootConstraintLayout.disableSwipe = true
-        binding.rootConstraintLayout.addDismissListener {
+        if (argParentMediaId == Const.MAIN_MEDIA_ID) rootHorizontalSwipeLayout.disableSwipe = true
+        binding.rootHorizontalSwipeLayout.addDismissListener {
             animationEnabled = false
             requireActivity().supportFragmentManager.popBackStackImmediate()
             animationEnabled = true
         }
-        binding.rootConstraintLayout.addHorizontalSwipeListener { _, fraction ->
+        binding.rootHorizontalSwipeLayout.addHorizontalSwipeListener { _, fraction ->
             val alpha = 1F - fraction
             binding.toolbar.alpha = alpha
         }
