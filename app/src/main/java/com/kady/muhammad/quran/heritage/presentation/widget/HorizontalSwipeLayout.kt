@@ -91,6 +91,13 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
         animateTranslationXToPosition(0F, if (animate) ANIMATION_DURATION else 0L)
     }
 
+    fun toMaxSwipe(animate: Boolean = true) {
+        animateTranslationXToPosition(
+            if (isSwipeDirectionRight()) maxSwipe else -maxSwipe,
+            if (animate) ANIMATION_DURATION else 0L
+        )
+    }
+
     fun setUpWithRecyclerView(swipeRecyclerView: SwipeRecyclerView, childrenTags: String) {
         this.swipeRecyclerView = swipeRecyclerView
         this.childrenTags = childrenTags
@@ -118,13 +125,6 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
 
     fun removeTouchUpListener(onTouchUpListener: OnTouchUpListener) {
         onTouchUpListeners.remove(onTouchUpListener)
-    }
-
-    private fun toMaxSwipe(animate: Boolean = true) {
-        animateTranslationXToPosition(
-            if (isSwipeDirectionRight()) maxSwipe else -maxSwipe,
-            if (animate) ANIMATION_DURATION else 0L
-        )
     }
 
     private fun isAtEnoughMaxSwipe(): Boolean {
