@@ -3,9 +3,5 @@
     <color name="colorPrimaryDark">#BDBDBD</color>
     <color name="colorPrimary">#EEEEEE</color>
     <color name="colorAccent">#212121</color>
-    <color name="colorAvatar">#FFFFFF</color>
-    <color name="colorMediaBackground1">#E0E0E0</color>
-    <color name="colorMediaBackground2">#9E9E9E</color>
-    <color name="colorRipple">#FFCDD2</color>
     <color name="colorHorizontalSwipeLayoutActions">#FF0000</color>
 </resources>

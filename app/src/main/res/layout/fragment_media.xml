@@ -81,7 +81,7 @@
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:layout_gravity="center"
-                                android:background="@drawable/avatar_color_circle"
+                                android:background="@drawable/circle"
                                 android:elevation="12dp"
                                 android:scaleType="center"
                                 app:avd="@drawable/logo_avd_anim" />
