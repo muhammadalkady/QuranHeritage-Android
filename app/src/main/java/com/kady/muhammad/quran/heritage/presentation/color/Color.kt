@@ -6,6 +6,8 @@ import androidx.annotation.ColorInt
 import androidx.annotation.Size
 import androidx.core.content.ContextCompat
 import com.kady.muhammad.quran.heritage.R
+import com.kady.muhammad.quran.heritage.domain.pref.Pref
+import kotlinx.coroutines.runBlocking
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import kotlin.math.max
@@ -15,11 +17,95 @@ object Color : KoinComponent {
 
     const val colorWhite = Color.WHITE
     const val colorBlack = Color.BLACK
+    //
+
+    private const val PRIMARY_COLOR_KEY = "primary_color"
+    private const val PRIMARY_DARK_COLOR_KEY = "primary_dark_color"
+    private const val COLOR_1 = "color1"
+    private const val COLOR_2 = "color2"
+    private const val AVD_COLOR_1 = "avd_color1"
+    private const val AVD_COLOR_2 = "avd_color2"
+    private const val TEXT_PRIMARY_COLOR_KEY = "text_primary_color"
+    private const val TEXT_SECONDARY_COLOR_KEY = "text_secondary_color"
 
     //
     private val app: Application by inject()
+    private val pref: Pref by inject()
     val colorPrimary = ContextCompat.getColor(app, R.color.colorPrimary)
     val colorPrimaryDark = ContextCompat.getColor(app, R.color.colorPrimaryDark)
+
+
+    fun savePrimaryColor(color: Int) {
+        saveColor(PRIMARY_COLOR_KEY, color)
+    }
+
+    fun getPrimaryColor(color: Int): Int {
+        return getColor(PRIMARY_COLOR_KEY, color)
+    }
+
+    fun savePrimaryDarkColor(color: Int) {
+        saveColor(PRIMARY_DARK_COLOR_KEY, color)
+    }
+
+    fun getPrimaryDarkColor(color: Int): Int {
+        return getColor(PRIMARY_DARK_COLOR_KEY, color)
+    }
+
+    fun saveColor1(color: Int) {
+        saveColor(COLOR_1, color)
+    }
+
+    fun getColor1(color: Int): Int {
+        return getColor(COLOR_1, color)
+    }
+
+    fun saveColor2(color: Int) {
+        saveColor(COLOR_2, color)
+    }
+
+    fun getColor2(color: Int): Int {
+        return getColor(COLOR_2, color)
+    }
+
+    fun saveAvdColor1(color: Int) {
+        saveColor(AVD_COLOR_1, color)
+    }
+
+    fun getAvdColor1(color: Int): Int {
+        return getColor(AVD_COLOR_1, color)
+    }
+
+    fun saveAvdColor2(color: Int) {
+        saveColor(AVD_COLOR_2, color)
+    }
+
+    fun getAvdColor2(color: Int): Int {
+        return getColor(AVD_COLOR_2, color)
+    }
+
+    fun saveTextPrimaryColor(color: Int) {
+        saveColor(TEXT_PRIMARY_COLOR_KEY, color)
+    }
+
+    fun getTextPrimaryColor(color: Int): Int {
+        return getColor(TEXT_PRIMARY_COLOR_KEY, color)
+    }
+
+    fun saveTextSecondaryColor(color: Int) {
+        saveColor(TEXT_SECONDARY_COLOR_KEY, color)
+    }
+
+    fun getTextSecondaryColor(color: Int): Int {
+        return getColor(TEXT_SECONDARY_COLOR_KEY, color)
+    }
+
+    private fun saveColor(key: String, value: Int) = runBlocking {
+        pref.saveInt(key, value)
+    }
+
+    private fun getColor(key: String, defaultValue: Int): Int = runBlocking {
+        pref.getInt(key, defaultValue)
+    }
 
     fun colorIndexFromPosition(spanCount: Int, position: Int): Int {
         return if (spanCount.rem(2) != 0) {

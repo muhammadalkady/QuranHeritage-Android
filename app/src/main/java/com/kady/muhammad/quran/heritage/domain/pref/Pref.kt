@@ -18,4 +18,15 @@ class Pref(private val app: Application, private val coroutineContext: Coroutine
         withContext(coroutineContext) {
             PreferenceManager.getDefaultSharedPreferences(app).getString(key, defValue)
         }
+
+    @SuppressLint("ApplySharedPref")
+    suspend fun saveInt(key: String, value: Int) =
+        withContext(coroutineContext) {
+            PreferenceManager.getDefaultSharedPreferences(app).edit().putInt(key, value).commit()
+        }
+
+    suspend fun getInt(key: String, defValue: Int): Int =
+        withContext(coroutineContext) {
+            PreferenceManager.getDefaultSharedPreferences(app).getInt(key, defValue)
+        }
 }
