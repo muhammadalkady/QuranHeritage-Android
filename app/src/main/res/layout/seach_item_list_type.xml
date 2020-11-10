@@ -72,6 +72,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@android:color/white"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="12dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -79,10 +80,11 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
+                    android:scaleType="center"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="center"
-                    app:srcCompat="@drawable/media_item_list" />
+                    app:srcCompat="@drawable/media_item_list"
+                    app:tintColor="@{colorVm.primaryColor}" />
 
             </androidx.cardview.widget.CardView>
 
