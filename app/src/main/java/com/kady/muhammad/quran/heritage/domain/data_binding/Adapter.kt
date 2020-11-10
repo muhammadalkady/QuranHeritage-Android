@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.databinding.BindingAdapter
 import com.kady.muhammad.quran.heritage.domain.ext.rangesOf
+import com.kady.muhammad.quran.heritage.presentation.widget.TwoStatesAVDImageView
 
 object Adapter {
 
@@ -71,6 +72,17 @@ object Adapter {
         appCompatSeekBar.thumb.setTintList(ColorStateList.valueOf(color))
     }
 
+    @BindingAdapter("avd1TintColor")
+    @JvmStatic
+    fun tintAvd1(twoStatesAVDImageView: TwoStatesAVDImageView, color: Int) {
+        twoStatesAVDImageView.tintState1Drawable(color)
+    }
+
+    @BindingAdapter("avd2TintColor")
+    @JvmStatic
+    fun tintAvd2(twoStatesAVDImageView: TwoStatesAVDImageView, color: Int) {
+        twoStatesAVDImageView.tintState2Drawable(color)
+    }
 
     @BindingAdapter("tintColor")
     @JvmStatic

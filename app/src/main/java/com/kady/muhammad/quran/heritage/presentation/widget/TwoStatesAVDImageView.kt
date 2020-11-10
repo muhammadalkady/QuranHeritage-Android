@@ -39,6 +39,14 @@ class TwoStatesAVDImageView : AppCompatImageView {
         }
     }
 
+    fun tintState1Drawable(color: Int) {
+        state1Avd.setTint(color)
+    }
+
+    fun tintState2Drawable(color: Int) {
+        state2Avd.setTint(color)
+    }
+
     fun toState1() {
         post {
             if (state != 1 || state == -1) {

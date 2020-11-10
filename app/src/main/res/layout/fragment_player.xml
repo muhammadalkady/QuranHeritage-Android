@@ -73,8 +73,9 @@
                 android:onClick="@{()->vm.toggleRepeatOne()}"
                 android:scaleType="center"
                 app:avd1="@drawable/repeat_one_to_active_avd_anim"
+                app:avd1TintColor="@{colorVm.textPrimaryColor}"
                 app:avd2="@drawable/repeat_one_to_inactive_avd_anim"
-                app:tintColor="@{colorVm.textPrimaryColor}" />
+                app:avd2TintColor="@{colorVm.primaryDarkColor}" />
 
             <com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
                 android:id="@+id/previous"
@@ -127,8 +128,9 @@
                 android:onClick="@{()->vm.toggleShuffle()}"
                 android:scaleType="center"
                 app:avd1="@drawable/shuffle_to_active_avd_anim"
+                app:avd1TintColor="@{colorVm.textPrimaryColor}"
                 app:avd2="@drawable/shuffle_to_inactive_avd_anim"
-                app:tintColor="@{colorVm.textPrimaryColor}" />
+                app:avd2TintColor="@{colorVm.primaryDarkColor}" />
         </LinearLayout>
 
         <LinearLayout
