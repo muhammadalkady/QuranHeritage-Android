@@ -13,6 +13,10 @@
             name="vm"
             type="com.kady.muhammad.quran.heritage.presentation.search.SearchViewModel" />
 
+        <variable
+            name="colorVm"
+            type="com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel" />
+
     </data>
 
     <com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
@@ -42,8 +46,9 @@
                 <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/appBarLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="?android:attr/actionBarSize"
-                    android:background="@color/colorPrimary"
+                    android:layout_height="80dp"
+                    android:paddingTop="24dp"
+                    app:backgroundColor="@{colorVm.primaryColor}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -73,6 +78,7 @@
                                 android:onClick="@{()-> fragment.onCloseImageViewClicked()}"
                                 android:scaleType="center"
                                 app:srcCompat="@drawable/ic_baseline_close_24"
+                                app:tintColor="@{colorVm.textPrimaryColor}"
                                 tools:alpha="1" />
 
                             <androidx.appcompat.widget.AppCompatEditText
@@ -88,7 +94,9 @@
                                 android:inputType="text"
                                 android:singleLine="true"
                                 android:text="@={vm.searchQuery}"
-                                android:textDirection="locale" />
+                                android:textColorHint="@{colorVm.textSecondaryColor}"
+                                android:textDirection="locale"
+                                app:textColor="@{colorVm.textPrimaryColor}" />
 
                         </LinearLayout>
                     </androidx.appcompat.widget.Toolbar>
@@ -99,6 +107,7 @@
                     android:id="@+id/searchResultRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    app:backgroundColor="@{colorVm.color1}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

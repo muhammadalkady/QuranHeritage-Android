@@ -116,8 +116,13 @@ class MediaFragment : Fragment() {
 
     fun openSearchFragment() {
         //
+        val searchImageViewLocationOnScreen = IntArray(2)
+        binding.searchImageView.getLocationOnScreen(searchImageViewLocationOnScreen)
         val searchFragment: SearchFragment =
-            SearchFragment.newInstance(searchImageView.x, searchImageView.y)
+            SearchFragment.newInstance(
+                searchImageViewLocationOnScreen[0],
+                searchImageViewLocationOnScreen[1]
+            )
         mainActivity.addSearchFragment(searchFragment)
     }
 
@@ -130,7 +135,7 @@ class MediaFragment : Fragment() {
         mainActivity.colorViewModel.primaryColor.observe(viewLifecycleOwner) {
             adapter.notifyDataSetChanged()
             binding.toolbar.overflowIcon!!.setTint(textColorPrimary.value!!)
-            
+
         }
     }
 

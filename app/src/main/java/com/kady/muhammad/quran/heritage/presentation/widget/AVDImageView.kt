@@ -9,10 +9,10 @@ import com.kady.muhammad.quran.heritage.R
 class AVDImageView : AppCompatImageView {
 
     var avd: AnimatedVectorDrawable? = null
-    set(value) {
-        field = value
-        setImageDrawable(value)
-    }
+        set(value) {
+            field = value
+            setImageDrawable(value)
+        }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -40,6 +40,10 @@ class AVDImageView : AppCompatImageView {
 
     fun startAVDAnim() {
         avd?.start()
+    }
+
+    fun tintDrawable(color: Int) {
+        avd?.setTint(color)
     }
 
 }

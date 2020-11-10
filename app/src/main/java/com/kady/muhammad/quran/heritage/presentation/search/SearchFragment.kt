@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.FragmentSearchBinding
+import com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel
 import com.kady.muhammad.quran.heritage.presentation.ext.*
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
 import com.kady.muhammad.quran.heritage.presentation.media.MediaFragment
@@ -38,18 +39,19 @@ class SearchFragment : Fragment() {
             binding.rootHorizontalSwipeLayout,
         )
     }
-    private val searchImageViewXPosition: Float by lazy {
-        requireArguments().getFloat(
+    private val searchImageViewXPosition: Int by lazy {
+        requireArguments().getInt(
             SEARCH_ICON_IMAGE_VIEW_X_POSITION
         )
     }
-    private val searchImageViewYPosition: Float by lazy {
-        requireArguments().getFloat(
+    private val searchImageViewYPosition: Int by lazy {
+        requireArguments().getInt(
             SEARCH_ICON_IMAGE_VIEW_Y_POSITION
         )
     }
     private val vm by lazy { ViewModelProvider(this).get(SearchViewModel::class.java) }
     private val mainActivity: MainActivity by lazy { requireActivity() as MainActivity }
+    private val colorVm: ColorViewModel by lazy { mainActivity.colorViewModel }
     private val viewHandler = Handler(Looper.getMainLooper())
     private lateinit var binding: FragmentSearchBinding
     private var isRestarted = false
@@ -67,6 +69,7 @@ class SearchFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.fragment = this
         binding.vm = vm
+        binding.colorVm = colorVm
         return binding.root
     }
 
@@ -176,6 +179,8 @@ class SearchFragment : Fragment() {
                 requireContext(),
                 R.drawable.search_to_close_avd_anim
             ) as AnimatedVectorDrawable
+            searchToCloseImageViewCopy.tintDrawable(colorVm.avdColor1.value!!)
+            //
             getContentView().addView(searchToCloseImageViewCopy)
             searchToCloseImageViewCopy.apply {
                 post {
@@ -185,13 +190,23 @@ class SearchFragment : Fragment() {
                     }
                 }
             }
-            searchToCloseImageViewCopy.x = searchImageViewXPosition
-            searchToCloseImageViewCopy.y = searchImageViewYPosition
+            searchToCloseImageViewCopy.x = searchImageViewXPosition.toFloat()
+            searchToCloseImageViewCopy.y = searchImageViewYPosition.toFloat()
+            val closeImageViewLocationOnScreen = IntArray(2)
+            binding.closeImageView.getLocationInWindow(closeImageViewLocationOnScreen)
             val xObjectAnimator: ObjectAnimator = ObjectAnimator
-                .ofFloat(searchToCloseImageViewCopy, "x", binding.closeImageView.x)
+                .ofFloat(
+                    searchToCloseImageViewCopy,
+                    "x",
+                    closeImageViewLocationOnScreen[0].toFloat()
+                )
             //
             val yObjectAnimator: ObjectAnimator = ObjectAnimator
-                .ofFloat(searchToCloseImageViewCopy, "y", binding.closeImageView.y)
+                .ofFloat(
+                    searchToCloseImageViewCopy,
+                    "y",
+                    closeImageViewLocationOnScreen[1].toFloat()
+                )
             //
             val animatorSet: AnimatorSet =
                 AnimatorSet().setDuration(SEARCH_ICON_TO_CLOSE_ANIMATION_DURATION)
@@ -216,13 +231,13 @@ class SearchFragment : Fragment() {
         private const val SEARCH_ICON_IMAGE_VIEW_X_POSITION = "x"
         private const val SEARCH_ICON_IMAGE_VIEW_Y_POSITION = "y"
         fun newInstance(
-            searchImageViewXPosition: Float,
-            searchImageViewYPosition: Float
+            searchImageViewXPosition: Int,
+            searchImageViewYPosition: Int
         ): SearchFragment {
             return SearchFragment().apply {
                 arguments = Bundle().apply {
-                    putFloat(SEARCH_ICON_IMAGE_VIEW_X_POSITION, searchImageViewXPosition)
-                    putFloat(SEARCH_ICON_IMAGE_VIEW_Y_POSITION, searchImageViewYPosition)
+                    putInt(SEARCH_ICON_IMAGE_VIEW_X_POSITION, searchImageViewXPosition)
+                    putInt(SEARCH_ICON_IMAGE_VIEW_Y_POSITION, searchImageViewYPosition)
                 }
             }
         }
