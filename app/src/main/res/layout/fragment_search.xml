@@ -95,6 +95,7 @@
                                 android:singleLine="true"
                                 android:text="@={vm.searchQuery}"
                                 android:textColorHint="@{colorVm.textSecondaryColor}"
+                                android:textCursorDrawable="@null"
                                 android:textDirection="locale"
                                 app:textColor="@{colorVm.textPrimaryColor}" />
 
