@@ -361,10 +361,6 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
      * Init.
      * */
     fun init() = post {
-        if (isInit) {
-            Logger.logE(tag, "player is already initialized ... not initializing")
-            return@post
-        }
         Logger.logI(tag, "initializing")
         initComponents()
         simpleExoPlayer = SimpleExoPlayer
@@ -438,12 +434,12 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
 
     fun stop() {
         Logger.logI(tag, "stop")
-        simpleExoPlayer.stop()
+        post { simpleExoPlayer.stop() }
     }
 
     fun release() {
         Logger.logI(tag, "release")
-        simpleExoPlayer.release()
+        post { simpleExoPlayer.release() }
     }
 
     class CustomLoadErrorLoadPolicy : DefaultLoadErrorHandlingPolicy() {
