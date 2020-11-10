@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.MediaItemBinding
 import com.kady.muhammad.quran.heritage.entity.media.Media
+import com.kady.muhammad.quran.heritage.presentation.color.Color
+import com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel
 import com.kady.muhammad.quran.heritage.presentation.ext.MediaAdapterHelper
 import com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
 import com.kady.muhammad.quran.heritage.presentation.widget.SwipeRecyclerView
@@ -18,7 +20,8 @@ class MediaAdapter(
     private val spanCount: Int,
     private val mediaList: MutableList<Media> = mutableListOf(),
     private val recyclerView: SwipeRecyclerView,
-    private val parentHorizontalSwipeLayout: HorizontalSwipeLayout
+    private val parentHorizontalSwipeLayout: HorizontalSwipeLayout,
+    private val colorViewModel: ColorViewModel,
 ) :
     RecyclerView.Adapter<MediaAdapter.MediaHolder>() {
 
@@ -66,8 +69,7 @@ class MediaAdapter(
         init {
             //
             binding.spanCount = spanCount
-            binding.drawable1 = mediaAdapterHelper.getDrawable(R.drawable.media_item_background_1)
-            binding.drawable2 = mediaAdapterHelper.getDrawable(R.drawable.media_item_background_2)
+            binding.colorVm = colorViewModel
             //
             horizontalSwipeLayout.setUpWithRecyclerView(recyclerView, horizontalSwipeLayoutTag)
             horizontalSwipeLayout.setupWithParentHorizontalSwipeLayout(parentHorizontalSwipeLayout)
@@ -78,6 +80,8 @@ class MediaAdapter(
         fun bind(mediaItem: Media, position: Int) {
             binding.mediaItem = mediaItem
             binding.position = position
+            binding.spanCount = spanCount
+            binding.colorVm = colorViewModel
             binding.executePendingBindings()
             with(horizontalSwipeLayout) {
                 setOnClickListener { listener?.invoke(mediaItem) }

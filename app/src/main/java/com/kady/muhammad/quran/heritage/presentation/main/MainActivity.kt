@@ -5,8 +5,11 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProvider
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.entity.constant.Const
+import com.kady.muhammad.quran.heritage.presentation.color.ColorFragment
+import com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel
 import com.kady.muhammad.quran.heritage.presentation.search.SearchFragment
 import com.kady.muhammad.quran.heritage.presentation.ext.*
 import com.kady.muhammad.quran.heritage.presentation.media.MediaFragment
@@ -18,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_player.*
 class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListener,
     PlayerUpClickListener, PanelLayout {
 
+    val colorViewModel: ColorViewModel by lazy { ViewModelProvider(this).get(ColorViewModel::class.java) }
     private val playerFragment: PlayerFragment by lazy {
         supportFragmentManager.findFragmentByTag("player") as PlayerFragment
     }
@@ -33,7 +37,7 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
             syncPlayerWithPanel(slidingUpPanelLayout, getPanelOffset())
         }
         if (!isRestarted) {
-            fragmentContainerView.animateProperty(ViewProperty.HEIGHT, 1_000L)
+            mediaFragmentContainerView.animateProperty(ViewProperty.HEIGHT, 1_000L)
         }
     }
 
@@ -70,7 +74,7 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
 
     private fun replaceFragment(f: Fragment) {
         val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragmentContainerView, f).commit()
+        fragmentTransaction.replace(R.id.mediaFragmentContainerView, f).commit()
     }
 
     private fun syncPlayerWithPanel(panel: View, slideOffset: Float) {
@@ -89,7 +93,7 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
         playerFragment.playPause(mediaId)
     }
 
-    fun addFragmentToBackStack(f: Fragment, containerId: Int = R.id.fragmentContainerView) {
+    fun addFragmentToBackStack(f: Fragment, containerId: Int = R.id.mediaFragmentContainerView) {
         val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.setCustomAnimations(
             android.R.anim.slide_in_left,
@@ -101,7 +105,11 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
     }
 
     fun addSearchFragment(searchFragment: SearchFragment) {
-        addFragmentToBackStack(searchFragment, R.id.searchFragmentContainer)
+        addFragmentToBackStack(searchFragment, R.id.rootFragmentContainer)
+    }
+
+    fun addColorFragment(colorFragment: ColorFragment) {
+        addFragmentToBackStack(colorFragment, R.id.rootFragmentContainer)
     }
 
     fun popSearchFragment() {

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel" />
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        tools:context=".presentation.color.ColorFragment">
+
+        <com.madrapps.pikolo.HSLColorPicker
+            android:id="@+id/rgbColorPicker"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_gravity="center|bottom"
+            android:background="@android:color/white"
+            android:clickable="true"
+            android:elevation="12dp"
+            android:focusable="true" />
+
+        <View
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="100dp"
+            android:background="@drawable/circle"
+            android:elevation="16dp"
+            app:tintColor="@{vm.primaryColor}" />
+
+    </FrameLayout>
+</layout>

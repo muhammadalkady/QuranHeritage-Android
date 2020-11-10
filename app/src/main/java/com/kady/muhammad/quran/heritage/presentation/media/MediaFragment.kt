@@ -10,6 +10,7 @@ import android.view.animation.LinearInterpolator
 import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.kady.muhammad.quran.heritage.R
@@ -17,6 +18,7 @@ import com.kady.muhammad.quran.heritage.databinding.FragmentMediaBinding
 import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
+import com.kady.muhammad.quran.heritage.presentation.color.ColorFragment
 import com.kady.muhammad.quran.heritage.presentation.search.SearchFragment
 import com.kady.muhammad.quran.heritage.presentation.ext.ViewProperty
 import com.kady.muhammad.quran.heritage.presentation.ext.animateProperty
@@ -38,7 +40,8 @@ class MediaFragment : Fragment() {
             resources.getInteger(R.integer.span_count),
             mutableListOf(),
             binding.mediaRecyclerView,
-            binding.rootHorizontalSwipeLayout
+            binding.rootHorizontalSwipeLayout,
+            mainActivity.colorViewModel
         )
     }
     private val argTitle: String by lazy {
@@ -84,6 +87,7 @@ class MediaFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_media, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.vm = vm
+        binding.colorVm = mainActivity.colorViewModel
         binding.fragment = this
         return binding.root
     }
@@ -92,12 +96,14 @@ class MediaFragment : Fragment() {
         setupSwipe()
         setToolbarTitle()
         setupToolbarLogo()
+        setupToolbarMenu()
         setupMediaCount()
         setupUpdate()
         setupRecyclerView()
         observeLoading()
         observeMediaList()
         observeCount()
+        observeColors()
         if (!isRestarted) animateAppBarLayoutHeight()
     }
 
@@ -110,7 +116,8 @@ class MediaFragment : Fragment() {
 
     fun openSearchFragment() {
         //
-        val searchFragment = SearchFragment.newInstance(searchImageView.x, searchImageView.y)
+        val searchFragment: SearchFragment =
+            SearchFragment.newInstance(searchImageView.x, searchImageView.y)
         mainActivity.addSearchFragment(searchFragment)
     }
 
@@ -118,8 +125,30 @@ class MediaFragment : Fragment() {
 
     }
 
+    private fun observeColors() {
+        val textColorPrimary: MutableLiveData<Int> = mainActivity.colorViewModel.textPrimaryColor
+        mainActivity.colorViewModel.primaryColor.observe(viewLifecycleOwner) {
+            adapter.notifyDataSetChanged()
+            binding.toolbar.overflowIcon!!.setTint(textColorPrimary.value!!)
+            
+        }
+    }
+
     private fun animateAppBarLayoutHeight() {
         binding.appBarLayout.animateProperty(ViewProperty.HEIGHT)
+    }
+
+    private fun setupToolbarMenu() {
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.colors -> addColorFragment()
+            }
+            true
+        }
+    }
+
+    private fun addColorFragment() {
+        mainActivity.addColorFragment(ColorFragment())
     }
 
     private fun setupSwipe() {

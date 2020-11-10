@@ -6,6 +6,9 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="fontFamily">@font/main</item>
         <item name="android:fontFamily">@font/main</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="AppThemeTimeFont" parent="AppTheme">

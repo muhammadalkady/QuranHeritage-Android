@@ -1,12 +1,17 @@
 package com.kady.muhammad.quran.heritage.domain.data_binding
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatSeekBar
+import androidx.core.view.ViewCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.databinding.BindingAdapter
 import com.kady.muhammad.quran.heritage.domain.ext.rangesOf
 
@@ -45,6 +50,38 @@ object Adapter {
             )
         }
         textView.setText(spannable, TextView.BufferType.SPANNABLE)
+    }
+
+    @BindingAdapter("textColor")
+    @JvmStatic
+    fun setTextColor(textView: TextView, color: Int) {
+        textView.setTextColor(color)
+    }
+
+    @BindingAdapter("backgroundColor")
+    @JvmStatic
+    fun setBackground(view: View, color: Int) {
+        view.setBackgroundColor(color)
+    }
+
+    @BindingAdapter("tintColor")
+    @JvmStatic
+    fun setSeekBarTintColor(appCompatSeekBar: AppCompatSeekBar, color: Int) {
+        appCompatSeekBar.progressDrawable.setTintList(ColorStateList.valueOf(color))
+        appCompatSeekBar.thumb.setTintList(ColorStateList.valueOf(color))
+    }
+
+
+    @BindingAdapter("tintColor")
+    @JvmStatic
+    fun setViewBackgroundTintColor(view: View, color: Int) {
+        ViewCompat.setBackgroundTintList(view, ColorStateList.valueOf(color))
+    }
+
+    @BindingAdapter("tintColor")
+    @JvmStatic
+    fun setImageViewTintColor(imageView: ImageView, color: Int) {
+        ImageViewCompat.setImageTintList(imageView, ColorStateList.valueOf(color))
     }
 
 }

@@ -123,7 +123,7 @@ class SearchFragment : Fragment() {
                     .addFragmentToBackStack(
                         MediaFragment
                             .newInstance(mediaItem.id, "", mediaItem.title, true),
-                        R.id.searchFragmentContainer
+                        R.id.rootFragmentContainer
                     )
             } else mainActivity.playPause(mediaItem.id)
         }

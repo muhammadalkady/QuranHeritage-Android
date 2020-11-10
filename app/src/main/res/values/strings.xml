@@ -12,4 +12,5 @@
     <string name="previous">previous</string>
     <string name="media_count">%1$d recitation(s)</string>
     <string name="search">Search for recitation…</string>
+    <string name="colors">Colors</string>
 </resources>
