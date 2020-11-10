@@ -172,15 +172,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="36dp"
                     android:layout_gravity="center|bottom"
-                    android:background="@color/colorAccent"
                     android:elevation="12dp"
                     android:gravity="center"
-                    android:textColor="@color/colorPrimary"
                     android:textSize="14sp"
                     android:textStyle="bold"
+                    app:backgroundColor="@{colorVm.primaryDarkColor}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:textColor="@{colorVm.textSecondaryColor}"
                     tools:text="عدد التلاوات ١٠٠ تلاوه"
                     tools:visibility="visible" />
 
