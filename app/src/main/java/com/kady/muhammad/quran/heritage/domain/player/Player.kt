@@ -116,19 +116,13 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
                 .setOnAudioFocusChangeListener(this@Player).build()
     }
 
-    private fun onAudioFocusLossTransientCanDuck() {
-        simpleExoPlayer.volume = .3F
-    }
+    private fun onAudioFocusLossTransientCanDuck() = post { simpleExoPlayer.volume = .3F }
 
-    private fun onAudioFocusLossTransient() {
-        playOnFocus = true;pause()
-    }
+    private fun onAudioFocusLossTransient() = post { playOnFocus = true;pause() }
 
-    private fun onAudioFocusLoss() {
-        playOnFocus = false;pause()
-    }
+    private fun onAudioFocusLoss() = post { playOnFocus = false;pause() }
 
-    private fun onAudioFocusGain() {
+    private fun onAudioFocusGain() = post {
         if (isPlaying()) simpleExoPlayer.volume = 1F
         if (playOnFocus && !isPlaying()) play();playOnFocus = false
     }
@@ -419,14 +413,14 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
         }
     }
 
-    fun setRepeatMode(repeatMode: Int) {
+    fun setRepeatMode(repeatMode: Int) = post {
         Logger.logI(tag, "set repeat mode")
         simpleExoPlayer.repeatMode =
             if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) REPEAT_MODE_ONE else REPEAT_MODE_OFF
         mediaSession.setRepeatMode(repeatMode)
     }
 
-    fun setShuffleMode(shuffleMode: Int) {
+    fun setShuffleMode(shuffleMode: Int) = post {
         Logger.logI(tag, "set shuffle mode")
         simpleExoPlayer.shuffleModeEnabled = shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL
         mediaSession.setShuffleMode(shuffleMode)
