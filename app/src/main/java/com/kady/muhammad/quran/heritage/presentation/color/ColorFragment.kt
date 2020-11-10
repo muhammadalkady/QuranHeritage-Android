@@ -44,10 +44,14 @@ class ColorFragment : Fragment() {
                     //Dark color
                     vm.textPrimaryColor.value = Color.colorWhite
                     vm.textSecondaryColor.value = Color.darkenColor(Color.colorWhite, .2F)
+                    vm.avdColor1.value = Color.colorWhite
+                    vm.avdColor2.value = Color.darkenColor(Color.colorWhite, .8F)
                 } else {
                     //Light color
                     vm.textPrimaryColor.value = Color.colorBlack
                     vm.textSecondaryColor.value = Color.lightenColor(Color.colorBlack, .2F)
+                    vm.avdColor1.value = Color.colorBlack
+                    vm.avdColor2.value = Color.lightenColor(Color.colorBlack, .8F)
                 }
 
             }

@@ -73,9 +73,9 @@
                 android:onClick="@{()->vm.toggleRepeatOne()}"
                 android:scaleType="center"
                 app:avd1="@drawable/repeat_one_to_active_avd_anim"
-                app:avd1TintColor="@{colorVm.textPrimaryColor}"
+                app:avd1TintColor="@{colorVm.avdColor1}"
                 app:avd2="@drawable/repeat_one_to_inactive_avd_anim"
-                app:avd2TintColor="@{colorVm.primaryDarkColor}" />
+                app:avd2TintColor="@{colorVm.avdColor2}" />
 
             <com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
                 android:id="@+id/previous"
@@ -88,7 +88,7 @@
                 android:onClick="@{()->fragment.previous()}"
                 android:scaleType="center"
                 app:avd="@drawable/skip_previous_avd_anim"
-                app:tintColor="@{colorVm.textPrimaryColor}" />
+                app:tintColor="@{colorVm.avdColor1}" />
 
             <com.kady.muhammad.quran.heritage.presentation.widget.TwoStatesAVDImageView
                 android:id="@+id/playPause"
@@ -102,7 +102,7 @@
                 android:scaleType="center"
                 app:avd1="@drawable/play_to_pause_rounded_avd_anim"
                 app:avd2="@drawable/pause_to_play_rounded_avd_anim"
-                app:tintColor="@{colorVm.textPrimaryColor}" />
+                app:tintColor="@{colorVm.avdColor1}" />
 
             <com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
                 android:id="@+id/next"
@@ -115,7 +115,7 @@
                 android:onClick="@{()->fragment.next()}"
                 android:scaleType="center"
                 app:avd="@drawable/skip_next_avd_anim"
-                app:tintColor="@{colorVm.textPrimaryColor}" />
+                app:tintColor="@{colorVm.avdColor1}" />
 
             <com.kady.muhammad.quran.heritage.presentation.widget.TwoStatesAVDImageView
                 android:id="@+id/shuffle"
@@ -128,9 +128,9 @@
                 android:onClick="@{()->vm.toggleShuffle()}"
                 android:scaleType="center"
                 app:avd1="@drawable/shuffle_to_active_avd_anim"
-                app:avd1TintColor="@{colorVm.textPrimaryColor}"
+                app:avd1TintColor="@{colorVm.avdColor1}"
                 app:avd2="@drawable/shuffle_to_inactive_avd_anim"
-                app:avd2TintColor="@{colorVm.primaryDarkColor}" />
+                app:avd2TintColor="@{colorVm.avdColor2}" />
         </LinearLayout>
 
         <LinearLayout
