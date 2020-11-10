@@ -18,16 +18,14 @@
             type="int" />
 
         <variable
-            name="drawable1"
-            type="android.graphics.drawable.Drawable" />
-
-        <variable
-            name="drawable2"
-            type="android.graphics.drawable.Drawable" />
-
-        <variable
             name="query"
             type="String" />
+
+        <variable
+            name="colorVm"
+            type="com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel" />
+
+        <import type="com.kady.muhammad.quran.heritage.presentation.color.Color" />
 
     </data>
 
@@ -54,18 +52,15 @@
             android:id="@+id/horizontalSwipeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:tag="horizontalSwipeLayoutChild"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:elevation="12dp"
             android:focusable="true"
+            android:tag="horizontalSwipeLayoutChild"
+            app:backgroundColor="@{Color.INSTANCE.colorIndexFromPosition(spanCount,position) == 0 ? colorVm.color1 : colorVm.color2}"
             app:disableSwipe="false"
-            app:drawable1="@{drawable1}"
-            app:drawable2="@{drawable2}"
             app:maxSwipe="100dp"
-            app:position="@{position}"
-            app:spanCount="@{spanCount}"
             app:swipeBackOnTouchUp="false"
             app:swipeDirection="left"
             tools:background="@color/colorPrimaryDark">
@@ -106,13 +101,13 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:gravity="center|start"
-                android:textColor="?attr/colorAccent"
                 android:textDirection="locale"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/cardView"
                 app:layout_constraintTop_toTopOf="parent"
+                app:textColor="@{colorVm.textPrimaryColor}"
                 tools:text="ما تيسر من سورة الفاتحة" />
 
         </com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout>

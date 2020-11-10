@@ -1,25 +1,24 @@
 package com.kady.muhammad.quran.heritage.presentation.search
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.SeachItemListTypeBinding
 import com.kady.muhammad.quran.heritage.databinding.SearchItemNonListTypeBinding
 import com.kady.muhammad.quran.heritage.entity.media.Media
+import com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel
 import com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
 import com.kady.muhammad.quran.heritage.presentation.widget.SwipeRecyclerView
 import kotlinx.android.synthetic.main.media_item.view.*
 
 class SearchAdapter(
-    private val context: Context,
     private val spanCount: Int,
     private val mediaList: MutableList<Media> = mutableListOf(),
     private val recyclerView: SwipeRecyclerView,
     private val parentHorizontalSwipeLayout: HorizontalSwipeLayout,
+    private val colorViewModel: ColorViewModel,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -88,10 +87,7 @@ class SearchAdapter(
 
         init {
             binding.spanCount = spanCount
-            binding.drawable1 =
-                ContextCompat.getDrawable(context, R.drawable.media_item_background_1)
-            binding.drawable2 =
-                ContextCompat.getDrawable(context, R.drawable.media_item_background_2)
+            binding.colorVm = colorViewModel
             //
             horizontalSwipeLayout.setUpWithRecyclerView(recyclerView, horizontalSwipeLayoutTag)
             horizontalSwipeLayout.setupWithParentHorizontalSwipeLayout(parentHorizontalSwipeLayout)
@@ -116,10 +112,7 @@ class SearchAdapter(
 
         init {
             binding.spanCount = spanCount
-            binding.drawable1 =
-                ContextCompat.getDrawable(context, R.drawable.media_item_background_1)
-            binding.drawable2 =
-                ContextCompat.getDrawable(context, R.drawable.media_item_background_2)
+            binding.colorVm = colorViewModel
             horizontalSwipeLayout.setUpWithRecyclerView(recyclerView, horizontalSwipeLayoutTag)
             horizontalSwipeLayout.setupWithParentHorizontalSwipeLayout(parentHorizontalSwipeLayout)
         }

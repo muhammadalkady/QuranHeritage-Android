@@ -32,11 +32,11 @@ class SearchFragment : Fragment() {
 
     private val adapter by lazy {
         SearchAdapter(
-            requireContext(),
             resources.getInteger(R.integer.span_count),
             mutableListOf(),
             binding.searchResultRecyclerView,
             binding.rootHorizontalSwipeLayout,
+            colorVm,
         )
     }
     private val searchImageViewXPosition: Int by lazy {
