@@ -8,16 +8,16 @@ import kotlin.coroutines.CoroutineContext
 
 class Pref(private val app: Application, private val coroutineContext: CoroutineContext) {
 
-    @SuppressLint("ApplySharedPref")
+    /**    @SuppressLint("ApplySharedPref")
     suspend fun saveString(key: String, value: String) =
-        withContext(coroutineContext) {
-            PreferenceManager.getDefaultSharedPreferences(app).edit().putString(key, value).commit()
-        }
+    withContext(coroutineContext) {
+    PreferenceManager.getDefaultSharedPreferences(app).edit().putString(key, value).commit()
+    }
 
     suspend fun getString(key: String, defValue: String? = null): String? =
-        withContext(coroutineContext) {
-            PreferenceManager.getDefaultSharedPreferences(app).getString(key, defValue)
-        }
+    withContext(coroutineContext) {
+    PreferenceManager.getDefaultSharedPreferences(app).getString(key, defValue)
+    }*/
 
     @SuppressLint("ApplySharedPref")
     suspend fun saveInt(key: String, value: Int) =

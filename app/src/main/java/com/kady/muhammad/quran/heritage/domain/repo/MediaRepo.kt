@@ -6,6 +6,7 @@ import android.net.Uri
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kady.muhammad.quran.heritage.domain.api.API
+import com.kady.muhammad.quran.heritage.domain.db.DB
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMedia
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMediaId
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ParentMedia
@@ -13,7 +14,6 @@ import com.kady.muhammad.quran.heritage.entity.`typealias`.ParentMediaId
 import com.kady.muhammad.quran.heritage.entity.api_response.GetMediaResponse
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
-import com.kady.muhammad.quran.heritage.domain.pref.Pref
 import com.kady.muhammad.quran.heritage.entity.api_response.File
 import com.kady.muhammad.quran.heritage.entity.api_response.GetMetadataResponse
 import com.kady.muhammad.quran.heritage.entity.api_response.Metadata
@@ -26,12 +26,13 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 import kotlin.coroutines.CoroutineContext
 
-class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : KoinComponent {
+class MediaRepo(private val cc: CoroutineContext) : KoinComponent {
 
     private val api: API by inject()
     private val app: Application by inject()
     private val res: Resources = app.resources
     private val packageName: String = app.packageName
+    private val db: DB = DB
 
     private suspend fun allMedia(fromCache: Boolean): List<Media> {
         val allMedia: List<Media> = if (fromCache) allCachedMedia()
@@ -60,10 +61,10 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
         )
     }
 
-    private suspend fun cacheAllMedia(media: List<Media>): Boolean =
+    private suspend fun cacheAllMedia(media: List<Media>) =
         withContext(context = cc) {
-            val value: String = Gson().toJson(media, object : TypeToken<List<Media>>() {}.type)
-            return@withContext pref.saveString(ALL_MEDIA_KEY, value)
+            db.deleteAllMedia()
+            db.insertAllMedia(media)
         }
 
     private fun parentMediaToMedia(it: ParentMediaData): List<Media> {
@@ -137,13 +138,7 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
         return allMedia(fromCache).filter { it.parentId == parentMediaId && !it.isList }
     }
 
-    suspend fun allCachedMedia(): List<Media> =
-        withContext(cc) {
-            Gson().fromJson(
-                pref.getString(ALL_MEDIA_KEY, ALL_MEDIA_DEFAULT_VALUE),
-                object : TypeToken<List<Media>>() {}.type
-            )
-        }
+    suspend fun allCachedMedia(): List<Media> = withContext(cc) { db.getAllMedia() }
 
     fun streamUrl(parentMediaId: String, mediaId: String): String =
         Uri

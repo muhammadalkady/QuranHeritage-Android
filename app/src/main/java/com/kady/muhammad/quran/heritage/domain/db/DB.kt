@@ -1,0 +1,36 @@
+package com.kady.muhammad.quran.heritage.domain.db
+
+import android.app.Application
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.kady.muhammad.quran.heritage.entity.media.Media
+import org.koin.core.KoinComponent
+import org.koin.core.inject
+
+object DB : KoinComponent {
+
+    private const val DB_VERSION = 1
+    private const val DB_NAME = "quran_heritage_db"
+    private val app: Application by inject()
+    private val roomDb: QuranHeritageDb =
+        Room.databaseBuilder(app, QuranHeritageDb::class.java, DB_NAME).build()
+
+    @Database(entities = [Media::class], version = DB_VERSION, exportSchema = true)
+    abstract class QuranHeritageDb : RoomDatabase() {
+        abstract fun dao(): DAO
+    }
+
+    suspend fun insertAllMedia(allMedia: List<Media>): List<Long> {
+        return roomDb.dao().insertAllMedia(allMedia = allMedia)
+    }
+
+    suspend fun deleteAllMedia() {
+        roomDb.dao().deleteAllMedia()
+    }
+
+    suspend fun getAllMedia(): List<Media> {
+        return roomDb.dao().getAllMedia()
+    }
+
+}

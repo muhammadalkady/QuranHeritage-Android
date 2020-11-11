@@ -13,6 +13,6 @@ val appModules: Module = module {
     single<Application> { App.APP_INSTANCE }
     single { Pref(get(), Dispatchers.IO) }
     single { API(Dispatchers.IO, get()) }
-    single { MediaRepo(Dispatchers.IO, get()) }
+    single { MediaRepo(Dispatchers.IO) }
 
 }
