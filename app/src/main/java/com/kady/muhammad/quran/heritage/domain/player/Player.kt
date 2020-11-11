@@ -27,7 +27,6 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.kady.muhammad.quran.heritage.App
-import com.kady.muhammad.quran.heritage.domain.api.API
 import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.domain.repo.MediaRepo
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMedia
@@ -62,7 +61,6 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
             pause()
         }
     }
-    private val api: API by inject()
     private val repo: MediaRepo by inject()
 
     private var isInit = false
@@ -205,7 +203,7 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
             childrenCount = allChildren.size
             val mediaSources: Array<ProgressiveMediaSource> = allChildren
                 .map {
-                    val mediaItem = MediaItem.fromUri(Uri.parse(api.streamUrl(it.parentId, it.id)))
+                    val mediaItem = MediaItem.fromUri(Uri.parse(repo.streamUrl(it.parentId, it.id)))
                     ProgressiveMediaSource
                         .Factory(dataSourceFactory)
                         .setLoadErrorHandlingPolicy(CustomLoadErrorLoadPolicy())

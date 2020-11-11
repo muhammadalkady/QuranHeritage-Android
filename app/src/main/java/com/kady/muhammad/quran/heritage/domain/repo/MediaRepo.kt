@@ -2,6 +2,7 @@ package com.kady.muhammad.quran.heritage.domain.repo
 
 import android.app.Application
 import android.content.res.Resources
+import android.net.Uri
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kady.muhammad.quran.heritage.domain.api.API
@@ -120,7 +121,20 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
             )
         }
 
+    fun streamUrl(parentMediaId: String, mediaId: String): String =
+        Uri
+            .parse(ARCHIVE_DOT_ORG_DOWNLOAD_BASE_URL)
+            .buildUpon()
+            .appendPath(parentMediaId).appendPath(mediaId.split("_").last())
+            .appendQueryParameter("id", mediaId)
+            .build()
+            .toString()
+
+
     companion object {
+        private const val ARCHIVE_DOT_ORG_DOWNLOAD_BASE_URL = "https://archive.org/download"
+
+        //
         const val ALL_MEDIA_KEY = "all_media"
         const val ALL_MEDIA_DEFAULT_VALUE = "[]"
         const val RAW_MEDIA_FILE_NAME = "media"

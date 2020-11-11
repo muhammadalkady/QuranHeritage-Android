@@ -57,18 +57,8 @@ class API(
                 .run { GetMediaResponse(this) }
         }
 
-    fun streamUrl(parentMediaId: String, mediaId: String): String =
-        Uri
-            .parse(ARCHIVE_DOT_ORG_DOWNLOAD_BASE_URL)
-            .buildUpon()
-            .appendPath(parentMediaId).appendPath(mediaId.split("_").last())
-            .appendQueryParameter("id", mediaId)
-            .build()
-            .toString()
-
 
     companion object {
         private const val ARCHIVE_DOT_ORG_METADATA_BASE_URL = "https://archive.org/metadata"
-        private const val ARCHIVE_DOT_ORG_DOWNLOAD_BASE_URL = "https://archive.org/download"
     }
 }
