@@ -14,8 +14,12 @@ import com.kady.muhammad.quran.heritage.entity.api_response.GetMediaResponse
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.domain.pref.Pref
+import com.kady.muhammad.quran.heritage.entity.api_response.File
+import com.kady.muhammad.quran.heritage.entity.api_response.GetMetadataResponse
 import com.kady.muhammad.quran.heritage.entity.api_response.Metadata
-import com.kady.muhammad.quran.heritage.entity.media.ParentLocalMedia
+import com.kady.muhammad.quran.heritage.entity.ext.toMedia
+import com.kady.muhammad.quran.heritage.entity.media.ParentMediaLocal
+import com.kady.muhammad.quran.heritage.entity.media.ParentMediaData
 import com.kady.muhammad.quran.heritage.entity.reciter.Reciter
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
@@ -62,7 +66,11 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
             return@withContext pref.saveString(ALL_MEDIA_KEY, value)
         }
 
-    fun createParentMedia(metadata: Metadata, parentMediaId: String): Media {
+    private fun parentMediaToMedia(it: ParentMediaData): List<Media> {
+        return it.files.map { file -> file.toMedia(it.metadata.identifier, it.metadata.title) }
+    }
+
+    private fun createParentMedia(metadata: Metadata, parentMediaId: String): Media {
         return Media(
             id = metadata.identifier,
             parentId = parentMediaId,
@@ -72,21 +80,37 @@ class MediaRepo(private val cc: CoroutineContext, private val pref: Pref) : Koin
         )
     }
 
-    fun parentMediaId(parentMediaIds: List<ParentLocalMedia>, metadata: Metadata) =
+    private fun parentMediaId(parentMediaIds: List<ParentMediaLocal>, metadata: Metadata) =
         parentMediaIds.first { it.id == metadata.identifier }.parentId
 
     suspend fun cacheIfNotEmpty(list: List<Media>) {
         if (list.isNotEmpty()) cacheAllMedia(list)
     }
 
-    suspend fun parentMediaIds(): List<ParentLocalMedia> = withContext(cc) {
+    fun responseToParentMediaData(it: GetMetadataResponse): ParentMediaData {
+        val files =
+            it.files.filter { file: File -> file.format == Const.ARCHIVE_DOT_ORG_MP3_FORMAT }
+        return ParentMediaData(it.metadata, files)
+    }
+
+    fun createMediaListFromParentMedia(
+        it: ParentMediaData,
+        parentMediaIds: List<ParentMediaLocal>
+    ): MutableList<Media> {
+        val media: MutableList<Media> = parentMediaToMedia(it).toMutableList()
+        val parentMediaId: String = parentMediaId(parentMediaIds, it.metadata)
+        media.add(createParentMedia(it.metadata, parentMediaId))
+        return media
+    }
+
+    suspend fun parentMediaIds(): List<ParentMediaLocal> = withContext(cc) {
         val json: String =
             res.openRawResource(res.getIdentifier(RAW_MEDIA_FILE_NAME, RAW, packageName))
                 .bufferedReader()
                 .use { it.readText() }
-        return@withContext Gson().fromJson<List<ParentLocalMedia>>(
+        return@withContext Gson().fromJson<List<ParentMediaLocal>>(
             json,
-            object : TypeToken<List<ParentLocalMedia>>() {}.type
+            object : TypeToken<List<ParentMediaLocal>>() {}.type
         )
     }
 
