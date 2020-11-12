@@ -1,14 +1,12 @@
 package com.kady.muhammad.quran.heritage.presentation.search
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.kady.muhammad.quran.heritage.domain.repo.MediaRepo
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -17,7 +15,7 @@ class SearchViewModel : ViewModel(), KoinComponent {
 
     private val repo: MediaRepo by inject()
     private val _searchResult = MutableLiveData<List<Media>>()
-//    private val cashedMedia = viewModelScope.async(Dispatchers.IO) { repo.allCachedMedia() }
+    private val cashedMedia = viewModelScope.async(Dispatchers.IO) { repo.allMediaLocal().first() }
     private var searchJob: Job? = null
 
     //
@@ -30,11 +28,11 @@ class SearchViewModel : ViewModel(), KoinComponent {
             _searchResult.value = emptyList()
             return
         }
-//        searchJob = viewModelScope.launch(Dispatchers.Default) {
-//            val cachedMedia = cashedMedia.await()
-//            _searchResult.postValue(cachedMedia.filter { it.title.contains(query.trim(), true) }
-//                .sortedBy { !it.isList })
-//        }
+        searchJob = viewModelScope.launch(Dispatchers.Default) {
+            val cachedMedia = cashedMedia.await()
+            _searchResult.postValue(cachedMedia.filter { it.title.contains(query.trim(), true) }
+                .sortedBy { !it.isList })
+        }
     }
 
     override fun onCleared() {
