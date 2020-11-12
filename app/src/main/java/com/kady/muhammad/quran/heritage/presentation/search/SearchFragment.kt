@@ -125,7 +125,10 @@ class SearchFragment : Fragment() {
                 mainActivity
                     .addFragmentToBackStack(
                         MediaFragment
-                            .newInstance(mediaItem.id, "", mediaItem.title, true),
+                            .newInstance(mediaItem.id, "", mediaItem.title,
+                                hideSearch = true,
+                                preview = false
+                            ),
                         R.id.rootFragmentContainer
                     )
             } else mainActivity.playPause(mediaItem.id)

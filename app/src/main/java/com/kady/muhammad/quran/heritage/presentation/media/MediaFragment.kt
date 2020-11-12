@@ -44,9 +44,7 @@ class MediaFragment : Fragment() {
             mainActivity.colorViewModel
         )
     }
-    private val argTitle: String by lazy {
-        requireArguments().getString(Const.TITLE_KEY) ?: getString(R.string.main_title)
-    }
+
     private val vm by lazy {
         ViewModelProvider(
             this,
@@ -54,6 +52,11 @@ class MediaFragment : Fragment() {
         ).get(MediaViewModel::class.java)
     }
 
+    private val argTitle: String by lazy {
+        requireArguments().getString(Const.TITLE_KEY) ?: getString(R.string.main_title)
+    }
+
+    private val preview: Boolean by lazy { requireArguments().getBoolean(Const.PREVIEW_KEY) }
     val hideSearch: Boolean by lazy { requireArguments().getBoolean(Const.HIDE_SEARCH_KEY) }
     val argParentMediaId: String by lazy { requireArguments().getString(Const.MEDIA_ID)!! }
 
@@ -116,6 +119,7 @@ class MediaFragment : Fragment() {
 
     fun openSearchFragment() {
         //
+        if (preview) return
         val searchImageViewLocationOnScreen = IntArray(2)
         binding.searchImageView.getLocationOnScreen(searchImageViewLocationOnScreen)
         val searchFragment: SearchFragment =
@@ -127,7 +131,7 @@ class MediaFragment : Fragment() {
     }
 
     fun openFavoriteFragment() {
-
+        if (preview) return
     }
 
     private fun observeColors() {
@@ -144,6 +148,7 @@ class MediaFragment : Fragment() {
     }
 
     private fun setupToolbarMenu() {
+        if (!preview) binding.toolbar.inflateMenu(R.menu.menu)
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.colors -> addColorFragment()
@@ -174,6 +179,7 @@ class MediaFragment : Fragment() {
     }
 
     private fun onUpdate() {
+        if (preview) return
         vm.getAllMedia()
     }
 
@@ -197,10 +203,17 @@ class MediaFragment : Fragment() {
             binding.mediaRecyclerView.adapter = adapter
             binding.mediaRecyclerView.itemAnimator = SlideInDownAnimator()
         }
-        adapter.setOnItemClickListener { mediaItem ->
-            if (mediaItem.isList) mainActivity
-                .addFragmentToBackStack(newInstance(mediaItem.id, argTitle, mediaItem.title, false))
-            else mainActivity.playPause(mediaItem.id)
+        if (!preview) {
+            adapter.setOnItemClickListener { mediaItem ->
+                if (mediaItem.isList) mainActivity
+                    .addFragmentToBackStack(
+                        newInstance(
+                            mediaItem.id, argTitle, mediaItem.title, false,
+                            preview = false
+                        )
+                    )
+                else mainActivity.playPause(mediaItem.id)
+            }
         }
     }
 
@@ -256,6 +269,7 @@ class MediaFragment : Fragment() {
             parentTitle: String?,
             title: String?,
             hideSearch: Boolean,
+            preview: Boolean
         ): MediaFragment {
             val bundle = Bundle()
             bundle.putString(Const.MEDIA_ID, id)
@@ -264,6 +278,7 @@ class MediaFragment : Fragment() {
                 Const.TITLE_KEY,
                 "$parentTitle ● $title"
             )
+            bundle.putBoolean(Const.PREVIEW_KEY, preview)
             val fragment = MediaFragment()
             fragment.arguments = bundle
             return fragment

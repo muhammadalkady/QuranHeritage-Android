@@ -12,31 +12,47 @@
 
     </data>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
         android:focusable="true"
+        android:orientation="vertical"
         tools:context=".presentation.color.ColorFragment">
 
-        <com.madrapps.pikolo.HSLColorPicker
-            android:id="@+id/rgbColorPicker"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/mediaFragmentContainerView"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_gravity="center|bottom"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:background="@android:color/white"
-            android:clickable="true"
-            android:elevation="12dp"
-            android:focusable="true" />
+            android:elevation="12dp">
 
-        <View
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center|bottom"
-            android:layout_marginBottom="100dp"
-            android:background="@drawable/circle"
-            android:elevation="16dp"
-            app:tintColor="@{vm.primaryColor}" />
+            <com.madrapps.pikolo.HSLColorPicker
+                android:id="@+id/rgbColorPicker"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:clickable="true"
+                android:focusable="true" />
 
-    </FrameLayout>
+            <View
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle"
+                android:elevation="16dp"
+                app:tintColor="@{vm.primaryColor}" />
+
+        </FrameLayout>
+
+    </LinearLayout>
 </layout>

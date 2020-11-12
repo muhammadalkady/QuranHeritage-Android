@@ -4,6 +4,7 @@ object Const {
     const val MAIN_MEDIA_ID = "main-media"
     const val MEDIA_ID = "media-id"
     const val HIDE_SEARCH_KEY = "hide-search"
+    const val PREVIEW_KEY = "preview"
     const val TITLE_KEY = "title"
     const val PLAYER_ELAPSED_TIME = "elapsed.time"
     const val PLAYER_ELAPSED_TIME_EVENT = "elapsed.time.event"

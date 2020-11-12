@@ -1,5 +1,6 @@
 package com.kady.muhammad.quran.heritage.presentation.color
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,9 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.ColorUtils
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentTransaction
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.FragmentColorBinding
+import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
+import com.kady.muhammad.quran.heritage.presentation.media.MediaFragment
 import com.madrapps.pikolo.listeners.OnColorSelectionListener
 
 class ColorFragment : Fragment() {
@@ -28,9 +32,25 @@ class ColorFragment : Fragment() {
         return binding.root
     }
 
-
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupColorPicker()
+        if (savedInstanceState == null) addMediaFragment()
+    }
+
+    private fun addMediaFragment() {
+        replaceFragment(
+            MediaFragment.newInstance(
+                Const.MAIN_MEDIA_ID, null, null,
+                hideSearch = false,
+                preview = true
+            )
+        )
+    }
+
+    private fun replaceFragment(f: Fragment) {
+        val fragmentTransaction: FragmentTransaction = childFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.mediaFragmentContainerView, f).commit()
     }
 
     private fun setupColorPicker() {
