@@ -88,19 +88,15 @@ class HorizontalSwipeLayout @JvmOverloads constructor(
         return super.performClick()
     }
 
-    fun swipeBack(animate: Boolean = true, delay: Long = 0L) {
-        postDelayed({
-            animateTranslationXToPosition(0F, if (animate) ANIMATION_DURATION else 0L)
-        }, delay)
+    fun swipeBack(animate: Boolean = true) {
+        animateTranslationXToPosition(0F, if (animate) ANIMATION_DURATION else 0L)
     }
 
-    fun toMaxSwipe(animate: Boolean = true, delay: Long = 0L) {
-        postDelayed({
-            animateTranslationXToPosition(
-                if (isSwipeDirectionRight()) maxSwipe else -maxSwipe,
-                if (animate) ANIMATION_DURATION else 0L
-            )
-        }, delay)
+    fun toMaxSwipe(animate: Boolean = true) {
+        animateTranslationXToPosition(
+            if (isSwipeDirectionRight()) maxSwipe else -maxSwipe,
+            if (animate) ANIMATION_DURATION else 0L
+        )
     }
 
     fun setUpWithRecyclerView(swipeRecyclerView: SwipeRecyclerView, childrenTags: String) {
