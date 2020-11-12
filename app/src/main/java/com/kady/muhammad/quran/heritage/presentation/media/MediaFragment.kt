@@ -214,6 +214,10 @@ class MediaFragment : Fragment() {
                     )
                 else mainActivity.playPause(mediaItem.id)
             }
+            //
+            adapter.setOnFavoriteClick { mediaItem, horizontalSwipeLayout ->
+
+            }
         }
     }
 

@@ -38,7 +38,8 @@ class MediaRepo(private val cc: CoroutineContext) : KoinComponent {
     private val db: DB = DB
 
     private fun filterMedia(parentMediaId: ParentMediaId): Flow<List<Media>> {
-        return allMediaLocal().map { allMedia -> allMedia.filter { it.parentId == parentMediaId } }
+        return allMediaLocal().combine(db.getAllFavorite()) { allMedia, _ -> allMedia }
+            .map { allMedia -> allMedia.filter { it.parentId == parentMediaId } }
     }
 
     private suspend fun recitersToMedia(): List<Media> {
@@ -63,13 +64,13 @@ class MediaRepo(private val cc: CoroutineContext) : KoinComponent {
             val oldMediaIds: List<String> = db.getAllMedia().first().map { it.id }
             val newMediaIds: List<String> = media.map { it.id }
             val deletedMediaIds: List<String> = oldMediaIds.minus(newMediaIds)
-            Logger.logI("DB", "deletedMediaIds = $deletedMediaIds")
+            Logger.logI(tag = "DB", msg = "deletedMediaIds = $deletedMediaIds")
             val deletedMediaCount: Int = db.deleteMedia(deletedMediaIds)
-            Logger.logI("DB", "deletedMediaCount = $deletedMediaCount")
+            Logger.logI(tag = "DB", msg = "deletedMediaCount = $deletedMediaCount")
             val deletedFavoriteMediaCount: Int = db.deleteFavorite(deletedMediaIds)
-            Logger.logI("DB", "deletedFavoriteMediaCount = $deletedFavoriteMediaCount")
+            Logger.logI(tag = "DB", msg = "deletedFavoriteMediaCount = $deletedFavoriteMediaCount")
             val insertedMediaCount: Int = db.insertAllMedia(media).size
-            Logger.logI("DB", "insertedMediaCount = $insertedMediaCount")
+            Logger.logI(tag = "DB", msg = "insertedMediaCount = $insertedMediaCount")
             Unit
         }
 
@@ -89,6 +90,18 @@ class MediaRepo(private val cc: CoroutineContext) : KoinComponent {
 
     private fun parentMediaId(parentMediaIds: List<ParentMediaLocal>, metadata: Metadata) =
         parentMediaIds.first { it.id == metadata.identifier }.parentId
+
+    private suspend fun addToFavorite(id: String) {
+        withContext(cc) { db.insertFavorite(FavoriteMedia(id)) }
+    }
+
+    private suspend fun deleteFromFavorite(id: String) {
+        withContext(cc) { db.deleteFavorite(listOf(id)) }
+    }
+
+    suspend fun toggleFavorite(id: String) = withContext(cc) {
+        if (db.isFavorite(id)) deleteFromFavorite(id) else addToFavorite(id)
+    }
 
     fun allMediaLocal(): Flow<List<Media>> {
         return db.getAllMedia().map { it + recitersToMedia() }
@@ -137,6 +150,7 @@ class MediaRepo(private val cc: CoroutineContext) : KoinComponent {
         return filterMedia(parentMediaId)
     }
 
+    @Suppress("EXPERIMENTAL_API_USAGE")
     fun parentMediaForChildId(childMediaId: ChildMediaId): Flow<ParentMedia> {
         val childMedia: Flow<Media> =
             allMediaLocal().map { allMedia -> allMedia.first { it.id == childMediaId } }
@@ -144,6 +158,7 @@ class MediaRepo(private val cc: CoroutineContext) : KoinComponent {
         return parentMediaId.flatMapConcat { allMediaLocal().map { allMedia -> allMedia.first { media -> media.id == it } } }
     }
 
+    @Suppress("EXPERIMENTAL_API_USAGE")
     fun otherChildren(childMediaId: ChildMediaId): Flow<List<ChildMedia>> {
         val childMedia =
             allMediaLocal().map { allMedia -> allMedia.first { it.id == childMediaId } }
@@ -152,14 +167,6 @@ class MediaRepo(private val cc: CoroutineContext) : KoinComponent {
             allMediaLocal()
                 .map { allMedia -> allMedia.filter { media -> media.parentId == it && !media.isList } }
         }
-    }
-
-    suspend fun addToFavorite(id: String) {
-        withContext(cc) { db.insertFavorite(FavoriteMedia(id)) }
-    }
-
-    suspend fun deleteFromFavorite(id: String) {
-        withContext(cc) { db.deleteFavorite(listOf(id)) }
     }
 
     fun streamUrl(parentMediaId: String, mediaId: String): String =

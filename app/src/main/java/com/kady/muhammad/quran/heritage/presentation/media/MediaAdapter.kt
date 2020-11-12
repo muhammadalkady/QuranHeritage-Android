@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.MediaItemBinding
 import com.kady.muhammad.quran.heritage.entity.media.Media
-import com.kady.muhammad.quran.heritage.presentation.color.Color
 import com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel
 import com.kady.muhammad.quran.heritage.presentation.ext.MediaAdapterHelper
 import com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
@@ -25,7 +24,9 @@ class MediaAdapter(
 ) :
     RecyclerView.Adapter<MediaAdapter.MediaHolder>() {
 
-    var listener: ((mediaItem: Media) -> Unit)? = null
+    var mediaClickListener: ((mediaItem: Media) -> Unit)? = null
+    var favoriteClickListener: ((mediaItem: Media, horizontalSwipeLayout: HorizontalSwipeLayout) -> Unit)? =
+        null
 
     private val mediaAdapterHelper = MediaAdapterHelper(context, mediaList)
 
@@ -55,8 +56,12 @@ class MediaAdapter(
         }
     }
 
-    fun setOnItemClickListener(listener: (mediaItem: Media) -> Unit) {
-        this.listener = listener
+    fun setOnItemClickListener(mediaClickListener: (mediaItem: Media) -> Unit) {
+        this.mediaClickListener = mediaClickListener
+    }
+
+    fun setOnFavoriteClick(favoriteClickListener: (mediaItem: Media, horizontalSwipeLayout: HorizontalSwipeLayout) -> Unit) {
+        this.favoriteClickListener = favoriteClickListener
     }
 
     inner class MediaHolder(private val binding: MediaItemBinding) :
@@ -84,13 +89,15 @@ class MediaAdapter(
             binding.colorVm = colorViewModel
             binding.executePendingBindings()
             with(horizontalSwipeLayout) {
-                setOnClickListener { listener?.invoke(mediaItem) }
+                setOnClickListener { mediaClickListener?.invoke(mediaItem) }
                 mediaAdapterHelper.restoreHorizontalSwipeLayoutState(
                     adapterPosition,
                     horizontalSwipeLayout
                 )
             }
-            horizontalSwipeLayoutActions.setOnClickListener { horizontalSwipeLayout.swipeBack() }
+            horizontalSwipeLayoutActions.setOnClickListener {
+                favoriteClickListener?.invoke(mediaItem, horizontalSwipeLayout)
+            }
         }
 
         override fun onHorizontalSwipe(

@@ -3,5 +3,5 @@
     <color name="colorPrimaryDark">#BDBDBD</color>
     <color name="colorPrimary">#EEEEEE</color>
     <color name="colorAccent">#212121</color>
-    <color name="colorHorizontalSwipeLayoutActions">#FF0000</color>
+    <color name="colorHorizontalSwipeLayoutActions">#FFFFFF</color>
 </resources>

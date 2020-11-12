@@ -1,8 +1,6 @@
 package com.kady.muhammad.quran.heritage.presentation.ext
 
 import android.content.Context
-import android.graphics.drawable.Drawable
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
@@ -14,10 +12,6 @@ class MediaAdapterHelper(val context: Context, val mediaList: MutableList<Media>
 
     private fun setSwipe(horizontalSwipeLayout: HorizontalSwipeLayout, isSwiped: Boolean) {
         with(horizontalSwipeLayout) { if (isSwiped) toMaxSwipe(false) else swipeBack(false) }
-    }
-
-    fun getDrawable(drawableRes: Int): Drawable? {
-        return ContextCompat.getDrawable(context, drawableRes)
     }
 
     fun restoreHorizontalSwipeLayoutState(

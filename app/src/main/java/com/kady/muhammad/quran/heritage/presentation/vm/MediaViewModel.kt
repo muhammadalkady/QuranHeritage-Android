@@ -49,6 +49,10 @@ class MediaViewModel(val app: Application, parentMediaId: ParentMediaId) : Andro
         viewModelScope.launch(Dispatchers.IO) { repo.getAllMedia() }
     }
 
+    fun toggleFavorite(id: String) = liveData(Dispatchers.IO) {
+        emit(repo.toggleFavorite(id))
+    }
+
 }
 
 class MediaViewModelFactory(val app: Application, private val parentMediaId: ParentMediaId) :

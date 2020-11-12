@@ -39,6 +39,14 @@ object DB : KoinComponent {
         return roomDb.dao().deleteMedia(ids)
     }
 
+    fun getAllFavorite(): Flow<List<FavoriteMedia>> {
+        return roomDb.dao().getAllFavorite()
+    }
+
+    suspend fun isFavorite(id: String): Boolean {
+        return roomDb.dao().isFavorite(id)
+    }
+
     suspend fun insertFavorite(favoriteMedia: FavoriteMedia): Long {
         return roomDb.dao().insertFavorite(favoriteMedia)
     }

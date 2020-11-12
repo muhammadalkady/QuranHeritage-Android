@@ -23,4 +23,10 @@ interface DAO {
     @Query("DELETE FROM FavoriteMedia WHERE id in (:ids)")
     suspend fun deleteFavorite(ids: List<String>): Int
 
+    @Query("SELECT * FROM FavoriteMedia")
+    fun getAllFavorite(): Flow<List<FavoriteMedia>>
+
+    @Query("SELECT EXISTS (SELECT * FROM FavoriteMedia WHERE id = :id)")
+    suspend fun isFavorite(id: String): Boolean
+
 }
