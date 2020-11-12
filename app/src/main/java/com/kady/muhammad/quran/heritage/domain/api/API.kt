@@ -7,6 +7,7 @@ import com.kady.muhammad.quran.heritage.domain.repo.MediaRepo
 import com.kady.muhammad.quran.heritage.entity.api_response.*
 import com.kady.muhammad.quran.heritage.entity.media.ParentMediaLocal
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 import kotlin.coroutines.CoroutineContext
 
 class API(
@@ -40,7 +41,6 @@ class API(
                 .map { repo.responseToParentMediaData(it) }
                 .flatMap { repo.createMediaListFromParentMedia(it, parentMediaIds) }
                 .apply { repo.cacheIfNotEmpty(this) }
-                .run { if (isEmpty()) repo.allCachedMedia() else this }
                 .run { GetMediaResponse(this) }
         }
 

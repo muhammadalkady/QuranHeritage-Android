@@ -174,7 +174,7 @@ class MediaFragment : Fragment() {
     }
 
     private fun onUpdate() {
-        vm.mediaChildrenForParentId(false, argParentMediaId)
+        vm.getAllMedia()
     }
 
     private fun setupMediaCount() {

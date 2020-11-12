@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "592d4106cdeea54def4c94933ef73819",
+    "identityHash": "455ba25b1528aa256142566e1053840d",
     "entities": [
       {
         "tableName": "Media",
@@ -47,12 +47,32 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "FavoriteMedia",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '592d4106cdeea54def4c94933ef73819')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '455ba25b1528aa256142566e1053840d')"
     ]
   }
 }

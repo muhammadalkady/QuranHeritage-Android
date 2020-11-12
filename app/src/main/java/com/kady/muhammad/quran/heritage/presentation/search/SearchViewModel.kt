@@ -17,7 +17,7 @@ class SearchViewModel : ViewModel(), KoinComponent {
 
     private val repo: MediaRepo by inject()
     private val _searchResult = MutableLiveData<List<Media>>()
-    private val cashedMedia = viewModelScope.async(Dispatchers.IO) { repo.allCachedMedia() }
+//    private val cashedMedia = viewModelScope.async(Dispatchers.IO) { repo.allCachedMedia() }
     private var searchJob: Job? = null
 
     //
@@ -30,11 +30,11 @@ class SearchViewModel : ViewModel(), KoinComponent {
             _searchResult.value = emptyList()
             return
         }
-        searchJob = viewModelScope.launch(Dispatchers.Default) {
-            val cachedMedia = cashedMedia.await()
-            _searchResult.postValue(cachedMedia.filter { it.title.contains(query.trim(), true) }
-                .sortedBy { !it.isList })
-        }
+//        searchJob = viewModelScope.launch(Dispatchers.Default) {
+//            val cachedMedia = cashedMedia.await()
+//            _searchResult.postValue(cachedMedia.filter { it.title.contains(query.trim(), true) }
+//                .sortedBy { !it.isList })
+//        }
     }
 
     override fun onCleared() {

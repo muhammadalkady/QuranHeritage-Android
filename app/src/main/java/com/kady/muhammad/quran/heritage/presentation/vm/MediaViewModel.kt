@@ -2,11 +2,12 @@ package com.kady.muhammad.quran.heritage.presentation.vm
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.domain.repo.MediaRepo
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMedia
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ParentMediaId
-import com.kady.muhammad.quran.heritage.entity.constant.Const
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -15,34 +16,37 @@ class MediaViewModel(val app: Application, parentMediaId: ParentMediaId) : Andro
     KoinComponent {
 
     private val repo: MediaRepo by inject()
-    private val _liveMedia: MutableLiveData<List<ChildMedia>> = MutableLiveData()
-    private val _liveMediaCount: MutableLiveData<Int> = MutableLiveData()
+
+    //
     private val _liveLoading: MutableLiveData<Boolean> = MutableLiveData()
-    val liveMedia: LiveData<List<ChildMedia>> get() = _liveMedia
-    val liveMediaCount: LiveData<Int> get() = _liveMediaCount
     val liveLoading: LiveData<Boolean> get() = _liveLoading
 
-    init {
-        mediaChildrenForParentId(false, parentMediaId)
-    }
-
-    fun mediaChildrenForParentId(
-        fromCache: Boolean,
-        parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID
-    ) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _liveLoading.postValue(true)
-            _liveMedia.postValue(
-                repo.mediaChildrenForParentId(
-                    fromCache = true,
-                    parentMediaId = parentMediaId
-                )
-            )
-            _liveMediaCount.postValue(repo.count())
-            _liveMedia.postValue(repo.mediaChildrenForParentId(fromCache, parentMediaId))
-            _liveMediaCount.postValue(repo.count())
+    //
+    val liveMedia: LiveData<List<ChildMedia>> = liveData(Dispatchers.IO) {
+        _liveLoading.postValue(true)
+        repo.mediaChildrenForParentId(parentMediaId = parentMediaId).collect {
+            Logger.logI("Media", "collect size = ${it.size}")
+            emit(it)
             _liveLoading.postValue(false)
         }
+    }
+
+    //
+    val liveMediaCount: LiveData<Int> = liveData(Dispatchers.IO) {
+        repo.count().collect {
+            Logger.logI("Media", "collect media count = $it")
+            emit(it)
+        }
+    }
+    //
+
+    init {
+        getAllMedia()
+    }
+
+    fun getAllMedia() {
+        _liveLoading.value = true
+        viewModelScope.launch(Dispatchers.IO) { repo.getAllMedia() }
     }
 
 }

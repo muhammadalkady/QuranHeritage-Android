@@ -34,6 +34,7 @@ import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMediaId
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.lang.Runnable
@@ -176,7 +177,7 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     }
 
     private suspend fun allChildren(childMediaId: ChildMediaId): List<ChildMedia> {
-        return repo.otherChildren(true, childMediaId)
+        return repo.otherChildren(childMediaId).first()
     }
 
     private suspend fun currentChildMedia(childMediaId: ChildMediaId): Media {
@@ -184,7 +185,7 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
     }
 
     private suspend fun parentMedia(childMediaId: ChildMediaId): Media {
-        return repo.parentMediaForChildId(true, childMediaId)
+        return repo.parentMediaForChildId(childMediaId).first()
     }
 
     private suspend fun buildMetadata(childMediaId: ChildMediaId): MediaMetadataCompat {
@@ -326,10 +327,10 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
 
     fun play() = post {
         Logger.logI(tag, "play")
-        val allCachedMedia = repo.allCachedMedia()
-        if (allCachedMedia.isEmpty()) return@post
+        val allMedia = repo.allMediaLocal().first()
+        if (allMedia.isEmpty()) return@post
         if (!::childMediaId.isInitialized) {
-            childMediaId = allCachedMedia.first().id
+            childMediaId = allMedia.first().id
         }
         ensureChildrenCount(childMediaId)
         wifiLock.acquire()
@@ -387,11 +388,9 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
         if (::childMediaId.isInitialized) {
             ensureChildrenCount(childMediaId)
             with(simpleExoPlayer) {
-                val allChildren = repo.otherChildren(true, childMediaId)
-                if (currentWindowIndex < allChildren.lastIndex) seekTo(
-                    simpleExoPlayer.currentWindowIndex + 1,
-                    0
-                )
+                val allChildren = repo.otherChildren(childMediaId).first()
+                if (currentWindowIndex < allChildren.lastIndex)
+                    seekTo(simpleExoPlayer.currentWindowIndex + 1, 0)
                 else seekTo(0, 0)
                 if (!playWhenReady) play()
             }
@@ -403,7 +402,7 @@ object Player : Runnable, AudioManager.OnAudioFocusChangeListener, KoinComponent
         if (::childMediaId.isInitialized) {
             ensureChildrenCount(childMediaId)
             with(simpleExoPlayer) {
-                val allChildren = repo.otherChildren(true, childMediaId)
+                val allChildren = repo.otherChildren(childMediaId).first()
                 if (currentWindowIndex == 0) seekTo(allChildren.lastIndex, 0)
                 else seekTo(currentWindowIndex - 1, 0)
                 if (!playWhenReady) play()

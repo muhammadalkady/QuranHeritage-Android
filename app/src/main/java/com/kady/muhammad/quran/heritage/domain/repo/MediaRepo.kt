@@ -7,20 +7,23 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kady.muhammad.quran.heritage.domain.api.API
 import com.kady.muhammad.quran.heritage.domain.db.DB
+import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMedia
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMediaId
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ParentMedia
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ParentMediaId
-import com.kady.muhammad.quran.heritage.entity.api_response.GetMediaResponse
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.entity.api_response.File
 import com.kady.muhammad.quran.heritage.entity.api_response.GetMetadataResponse
 import com.kady.muhammad.quran.heritage.entity.api_response.Metadata
+import com.kady.muhammad.quran.heritage.entity.api_response.Response
 import com.kady.muhammad.quran.heritage.entity.ext.toMedia
+import com.kady.muhammad.quran.heritage.entity.media.FavoriteMedia
 import com.kady.muhammad.quran.heritage.entity.media.ParentMediaLocal
 import com.kady.muhammad.quran.heritage.entity.media.ParentMediaData
 import com.kady.muhammad.quran.heritage.entity.reciter.Reciter
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -28,20 +31,14 @@ import kotlin.coroutines.CoroutineContext
 
 class MediaRepo(private val cc: CoroutineContext) : KoinComponent {
 
-    private val api: API by inject()
     private val app: Application by inject()
+    private val api: API by inject()
     private val res: Resources = app.resources
     private val packageName: String = app.packageName
     private val db: DB = DB
 
-    private suspend fun allMedia(fromCache: Boolean): List<Media> {
-        val allMedia: List<Media> = if (fromCache) allCachedMedia()
-        else (api.allMedia() as GetMediaResponse).media
-        return allMedia + recitersToMedia()
-    }
-
-    private suspend fun filterMedia(fromCache: Boolean, parentMediaId: ParentMediaId): List<Media> {
-        return (allMedia(fromCache).filter { it.parentId == parentMediaId })
+    private fun filterMedia(parentMediaId: ParentMediaId): Flow<List<Media>> {
+        return allMediaLocal().map { allMedia -> allMedia.filter { it.parentId == parentMediaId } }
     }
 
     private suspend fun recitersToMedia(): List<Media> {
@@ -61,10 +58,19 @@ class MediaRepo(private val cc: CoroutineContext) : KoinComponent {
         )
     }
 
-    private suspend fun cacheAllMedia(media: List<Media>) =
+    private suspend fun cacheAllMedia(media: List<Media>): Unit =
         withContext(context = cc) {
-            db.deleteAllMedia()
-            db.insertAllMedia(media)
+            val oldMediaIds: List<String> = db.getAllMedia().first().map { it.id }
+            val newMediaIds: List<String> = media.map { it.id }
+            val deletedMediaIds: List<String> = oldMediaIds.minus(newMediaIds)
+            Logger.logI("DB", "deletedMediaIds = $deletedMediaIds")
+            val deletedMediaCount: Int = db.deleteMedia(deletedMediaIds)
+            Logger.logI("DB", "deletedMediaCount = $deletedMediaCount")
+            val deletedFavoriteMediaCount: Int = db.deleteFavorite(deletedMediaIds)
+            Logger.logI("DB", "deletedFavoriteMediaCount = $deletedFavoriteMediaCount")
+            val insertedMediaCount: Int = db.insertAllMedia(media).size
+            Logger.logI("DB", "insertedMediaCount = $insertedMediaCount")
+            Unit
         }
 
     private fun parentMediaToMedia(it: ParentMediaData): List<Media> {
@@ -83,6 +89,14 @@ class MediaRepo(private val cc: CoroutineContext) : KoinComponent {
 
     private fun parentMediaId(parentMediaIds: List<ParentMediaLocal>, metadata: Metadata) =
         parentMediaIds.first { it.id == metadata.identifier }.parentId
+
+    fun allMediaLocal(): Flow<List<Media>> {
+        return db.getAllMedia().map { it + recitersToMedia() }
+    }
+
+    suspend fun getAllMedia(): Response {
+        return api.allMedia()
+    }
 
     suspend fun cacheIfNotEmpty(list: List<Media>) {
         if (list.isNotEmpty()) cacheAllMedia(list)
@@ -115,30 +129,38 @@ class MediaRepo(private val cc: CoroutineContext) : KoinComponent {
         )
     }
 
-    suspend fun count(): Int {
-        return allCachedMedia().filterNot { it.isList }.size
+    fun count(): Flow<Int> {
+        return allMediaLocal().map { allMedia -> allMedia.filterNot { it.isList }.size }
     }
 
-    suspend fun mediaChildrenForParentId(
-        fromCache: Boolean,
-        parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID
-    ): List<ChildMedia> {
-        return filterMedia(fromCache, parentMediaId)
+    fun mediaChildrenForParentId(parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID): Flow<List<ChildMedia>> {
+        return filterMedia(parentMediaId)
     }
 
-    suspend fun parentMediaForChildId(fromCache: Boolean, childMediaId: ChildMediaId): ParentMedia {
-        val childMedia: Media = allMedia(fromCache).first { it.id == childMediaId }
-        val parentMediaId: String = childMedia.parentId
-        return allMedia(fromCache).first { it.id == parentMediaId }
+    fun parentMediaForChildId(childMediaId: ChildMediaId): Flow<ParentMedia> {
+        val childMedia: Flow<Media> =
+            allMediaLocal().map { allMedia -> allMedia.first { it.id == childMediaId } }
+        val parentMediaId: Flow<String> = childMedia.map { it.parentId }
+        return parentMediaId.flatMapConcat { allMediaLocal().map { allMedia -> allMedia.first { media -> media.id == it } } }
     }
 
-    suspend fun otherChildren(fromCache: Boolean, childMediaId: ChildMediaId): List<ChildMedia> {
-        val childMedia: Media = allMedia(fromCache).first { it.id == childMediaId }
-        val parentMediaId: String = childMedia.parentId
-        return allMedia(fromCache).filter { it.parentId == parentMediaId && !it.isList }
+    fun otherChildren(childMediaId: ChildMediaId): Flow<List<ChildMedia>> {
+        val childMedia =
+            allMediaLocal().map { allMedia -> allMedia.first { it.id == childMediaId } }
+        val parentMediaId = childMedia.map { it.parentId }
+        return parentMediaId.flatMapConcat {
+            allMediaLocal()
+                .map { allMedia -> allMedia.filter { media -> media.parentId == it && !media.isList } }
+        }
     }
 
-    suspend fun allCachedMedia(): List<Media> = withContext(cc) { db.getAllMedia() }
+    suspend fun addToFavorite(id: String) {
+        withContext(cc) { db.insertFavorite(FavoriteMedia(id)) }
+    }
+
+    suspend fun deleteFromFavorite(id: String) {
+        withContext(cc) { db.deleteFavorite(listOf(id)) }
+    }
 
     fun streamUrl(parentMediaId: String, mediaId: String): String =
         Uri
@@ -152,10 +174,6 @@ class MediaRepo(private val cc: CoroutineContext) : KoinComponent {
 
     companion object {
         private const val ARCHIVE_DOT_ORG_DOWNLOAD_BASE_URL = "https://archive.org/download"
-
-        //
-        const val ALL_MEDIA_KEY = "all_media"
-        const val ALL_MEDIA_DEFAULT_VALUE = "[]"
         const val RAW_MEDIA_FILE_NAME = "media"
         const val RAW_RECITERS_FILE_NAME = "reciters"
         const val EMPTY_PARENT_MEDIA_TITLE = ""

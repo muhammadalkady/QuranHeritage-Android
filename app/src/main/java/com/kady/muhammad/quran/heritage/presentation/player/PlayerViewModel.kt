@@ -17,6 +17,7 @@ import com.kady.muhammad.quran.heritage.domain.player.PlayerService
 import com.kady.muhammad.quran.heritage.domain.repo.MediaRepo
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMediaId
 import com.kady.muhammad.quran.heritage.entity.constant.Const
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -142,7 +143,7 @@ class PlayerViewModel(private val app: Application) : AndroidViewModel(app), Koi
         childMediaId1: ChildMediaId,
         childMediaId2: ChildMediaId
     ): Boolean {
-        val siblings = repo.otherChildren(true, childMediaId1).map { it.id }
+        val siblings = repo.otherChildren(childMediaId1).first().map { it.id }
         return siblings.contains(childMediaId2)
     }
 

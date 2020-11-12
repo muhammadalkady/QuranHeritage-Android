@@ -4,7 +4,9 @@ import android.app.Application
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.kady.muhammad.quran.heritage.entity.media.FavoriteMedia
 import com.kady.muhammad.quran.heritage.entity.media.Media
+import kotlinx.coroutines.flow.Flow
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
@@ -16,7 +18,11 @@ object DB : KoinComponent {
     private val roomDb: QuranHeritageDb =
         Room.databaseBuilder(app, QuranHeritageDb::class.java, DB_NAME).build()
 
-    @Database(entities = [Media::class], version = DB_VERSION, exportSchema = true)
+    @Database(
+        entities = [Media::class, FavoriteMedia::class],
+        version = DB_VERSION,
+        exportSchema = true
+    )
     abstract class QuranHeritageDb : RoomDatabase() {
         abstract fun dao(): DAO
     }
@@ -25,12 +31,20 @@ object DB : KoinComponent {
         return roomDb.dao().insertAllMedia(allMedia = allMedia)
     }
 
-    suspend fun deleteAllMedia() {
-        roomDb.dao().deleteAllMedia()
+    fun getAllMedia(): Flow<List<Media>> {
+        return roomDb.dao().getAllMedia()
     }
 
-    suspend fun getAllMedia(): List<Media> {
-        return roomDb.dao().getAllMedia()
+    suspend fun deleteMedia(ids: List<String>): Int {
+        return roomDb.dao().deleteMedia(ids)
+    }
+
+    suspend fun insertFavorite(favoriteMedia: FavoriteMedia): Long {
+        return roomDb.dao().insertFavorite(favoriteMedia)
+    }
+
+    suspend fun deleteFavorite(ids: List<String>): Int {
+        return roomDb.dao().deleteFavorite(ids)
     }
 
 }
