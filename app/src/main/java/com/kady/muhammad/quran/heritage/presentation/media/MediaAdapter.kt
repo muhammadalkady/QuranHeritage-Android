@@ -44,14 +44,12 @@ class MediaAdapter(
     }
 
     fun updateMedia(mediaList: List<Media>) {
-        mediaAdapterHelper.mediaList.clear()
-        mediaAdapterHelper.mediaList.addAll(mediaList)
-        if (this.mediaList.isEmpty()) {
-            this.mediaList.addAll(mediaList)
-            notifyItemRangeChanged(0, mediaList.size)
+        val isEmpty = this.mediaList.isEmpty()
+        this.mediaList.clear()
+        this.mediaList.addAll(mediaList)
+        if (isEmpty) {
+            notifyItemRangeInserted(0, mediaList.size)
         } else {
-            this.mediaList.clear()
-            this.mediaList.addAll(mediaList)
             notifyDataSetChanged()
         }
     }

@@ -27,7 +27,6 @@ import com.kady.muhammad.quran.heritage.presentation.search.SearchFragment
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModel
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModelFactory
 import com.kady.muhammad.quran.heritage.presentation.widget.OptionMenu
-import jp.wasabeef.recyclerview.animators.SlideInDownAnimator
 import kotlinx.android.synthetic.main.fragment_media.*
 
 class MediaFragment : Fragment() {
@@ -55,12 +54,10 @@ class MediaFragment : Fragment() {
     private val argTitle: String by lazy {
         requireArguments().getString(Const.TITLE_KEY) ?: getString(R.string.main_title)
     }
-
+    private val argParentMediaId: String by lazy { requireArguments().getString(Const.MEDIA_ID)!! }
+    private val mainActivity: MainActivity by lazy { requireActivity() as MainActivity }
     val preview: Boolean by lazy { requireArguments().getBoolean(Const.PREVIEW_KEY) }
     val hideSearch: Boolean by lazy { requireArguments().getBoolean(Const.HIDE_SEARCH_KEY) }
-    val argParentMediaId: String by lazy { requireArguments().getString(Const.MEDIA_ID)!! }
-
-    private val mainActivity: MainActivity by lazy { requireActivity() as MainActivity }
 
     private val updateImageViewRotateObjectAnimator: ObjectAnimator by lazy {
         ObjectAnimator
@@ -135,10 +132,13 @@ class MediaFragment : Fragment() {
         val colorsOptionMenuItem =
             OptionMenu.MenuItem(getString(R.string.colors), R.drawable.ic_outline_color_lens_24)
         val favoriteOptionMenuItem =
-            OptionMenu.MenuItem(getString(R.string.favorite), R.drawable.ic_outline_favorite_border_24)
+            OptionMenu.MenuItem(
+                getString(R.string.favorite),
+                R.drawable.ic_outline_favorite_border_24
+            )
         optionMenuItems.add(colorsOptionMenuItem)
         optionMenuItems.add(favoriteOptionMenuItem)
-        optionMenu.addItems(optionMenuItems)
+        optionMenu.addMenuItems(optionMenuItems)
         optionMenu.show(binding.optionMenuImageView)
         optionMenu.addOnItemClickListener {
             when (it) {
@@ -206,7 +206,6 @@ class MediaFragment : Fragment() {
             binding.mediaRecyclerView.layoutManager =
                 GridLayoutManager(it, resources.getInteger(R.integer.span_count))
             binding.mediaRecyclerView.adapter = adapter
-            binding.mediaRecyclerView.itemAnimator = SlideInDownAnimator()
         }
         if (!preview) {
             adapter.setOnItemClickListener { mediaItem ->

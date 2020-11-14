@@ -28,6 +28,7 @@ class OptionMenu @JvmOverloads constructor(
     private val content: FrameLayout by lazy { (context as Activity).findViewById(android.R.id.content) }
     private val colorViewModel by lazy { (context as MainActivity).colorViewModel }
     private val binding: OptionMenuBinding
+    private val menuItems:MutableList<MenuItem> = mutableListOf()
 
     //
     private var isPopupShown = false
@@ -61,6 +62,7 @@ class OptionMenu @JvmOverloads constructor(
             }
             false
         }
+        visibility = View.INVISIBLE
     }
 
     override fun onKeyPreIme(keyCode: Int, event: KeyEvent?): Boolean {
@@ -71,22 +73,25 @@ class OptionMenu @JvmOverloads constructor(
         return super.onKeyPreIme(keyCode, event)
     }
 
-    fun addItems(items: List<MenuItem>) {
-        adapter.updateAdapter(items)
+    fun addMenuItems(menuItems: List<MenuItem>) {
+        this.menuItems.clear()
+        this.menuItems.addAll(menuItems)
     }
 
     fun show(anchorView: View) {
         isPopupShown = true
         //
-        content.addView(this)
         post {
             binding.cardView.x = anchorView.x + 8F.px
             binding.cardView.y = anchorView.y + statusBarHeight + 8F.px
+            visibility = View.VISIBLE
         }
+        content.addView(this)
         binding.cardView.animateProperty(ViewProperty.HEIGHT, duration = 350)
         postDelayed({
             requestFocus()
         }, 100)
+        adapter.updateAdapter(menuItems)
     }
 
     fun addOnItemClickListener(onItemClickListener: (Int) -> Unit) {
@@ -126,10 +131,10 @@ class OptionMenu @JvmOverloads constructor(
             return items.size
         }
 
-        fun updateAdapter(items: List<MenuItem>) {
+        fun updateAdapter(menuItems: List<MenuItem>) {
             this.items.clear()
-            this.items.addAll(items)
-            notifyDataSetChanged()
+            this.items.addAll(menuItems)
+            notifyItemRangeInserted(0, menuItems.size)
         }
 
         inner class ViewHolder(binding: PopupItemBinding) :

@@ -26,7 +26,6 @@ import com.kady.muhammad.quran.heritage.presentation.ext.*
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
 import com.kady.muhammad.quran.heritage.presentation.media.MediaFragment
 import com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
-import jp.wasabeef.recyclerview.animators.SlideInDownAnimator
 
 class SearchFragment : Fragment() {
 
@@ -111,7 +110,6 @@ class SearchFragment : Fragment() {
             binding.searchResultRecyclerView.layoutManager =
                 GridLayoutManager(it, resources.getInteger(R.integer.span_count))
             binding.searchResultRecyclerView.adapter = adapter
-            binding.searchResultRecyclerView.itemAnimator = SlideInDownAnimator()
             binding.searchResultRecyclerView.addOnScrollListener(object :
                 RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
