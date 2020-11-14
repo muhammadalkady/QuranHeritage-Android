@@ -7,7 +7,6 @@ import com.kady.muhammad.quran.heritage.domain.repo.MediaRepo
 import com.kady.muhammad.quran.heritage.entity.api_response.*
 import com.kady.muhammad.quran.heritage.entity.media.ParentMediaLocal
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.first
 import kotlin.coroutines.CoroutineContext
 
 class API(
