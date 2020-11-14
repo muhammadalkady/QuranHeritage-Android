@@ -26,7 +26,7 @@ import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
 import com.kady.muhammad.quran.heritage.presentation.search.SearchFragment
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModel
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModelFactory
-import com.kady.muhammad.quran.heritage.presentation.widget.Popup
+import com.kady.muhammad.quran.heritage.presentation.widget.OptionMenu
 import jp.wasabeef.recyclerview.animators.SlideInDownAnimator
 import kotlinx.android.synthetic.main.fragment_media.*
 
@@ -90,7 +90,7 @@ class MediaFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_media, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.vm = vm
-        binding.colorVm = mainActivity.colorViewModel
+        binding.colorViewModel = mainActivity.colorViewModel
         binding.fragment = this
         return binding.root
     }
@@ -129,19 +129,27 @@ class MediaFragment : Fragment() {
         mainActivity.addSearchFragment(searchFragment)
     }
 
-    fun openFavoriteFragment() {
-        if (preview) return
-    }
-
     fun showOptionMenu() {
-        val popup = Popup(requireContext())
-        popup.addItems(listOf(getString(R.string.colors)))
-        popup.show(binding.optionsImageView)
-        popup.addOnItemClickListener {
+        val optionMenu = OptionMenu(requireContext())
+        val optionMenuItems: MutableList<OptionMenu.MenuItem> = mutableListOf()
+        val colorsOptionMenuItem =
+            OptionMenu.MenuItem(getString(R.string.colors), R.drawable.ic_outline_color_lens_24)
+        val favoriteOptionMenuItem =
+            OptionMenu.MenuItem(getString(R.string.favorite), R.drawable.ic_outline_favorite_border_24)
+        optionMenuItems.add(colorsOptionMenuItem)
+        optionMenuItems.add(favoriteOptionMenuItem)
+        optionMenu.addItems(optionMenuItems)
+        optionMenu.show(binding.optionMenuImageView)
+        optionMenu.addOnItemClickListener {
             when (it) {
-                0 -> addColorFragment()
+                0 -> openColorFragment()
+                1 -> openFavoriteFragment()
             }
         }
+    }
+
+    private fun openFavoriteFragment() {
+        if (preview) return
     }
 
     private fun observeColors() {
@@ -154,7 +162,7 @@ class MediaFragment : Fragment() {
         binding.appBarLayout.animateProperty(ViewProperty.HEIGHT)
     }
 
-    private fun addColorFragment() {
+    private fun openColorFragment() {
         mainActivity.addColorFragment(ColorFragment())
     }
 

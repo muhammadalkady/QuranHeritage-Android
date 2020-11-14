@@ -13,4 +13,5 @@
     <string name="media_count">عدد التلاوات %1$d تلاوة</string>
     <string name="search">ابحث عن تلاوة…</string>
     <string name="colors">الألوان</string>
+    <string name="favorite">المفضلة</string>
 </resources>

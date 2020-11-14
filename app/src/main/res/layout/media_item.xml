@@ -18,7 +18,7 @@
             type="int" />
 
         <variable
-            name="colorVm"
+            name="colorViewModel"
             type="com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel" />
 
         <import type="com.kady.muhammad.quran.heritage.presentation.color.Color" />
@@ -51,7 +51,7 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:tag="horizontalSwipeLayoutChild"
-            app:backgroundColor="@{Color.INSTANCE.colorIndexFromPosition(spanCount,position) == 0 ? colorVm.color1 : colorVm.color2}"
+            app:backgroundColor="@{Color.INSTANCE.colorIndexFromPosition(spanCount,position) == 0 ? colorViewModel.color1 : colorViewModel.color2}"
             app:maxSwipe="100dp"
             app:swipeBackOnTouchUp="false"
             app:swipeDirection="left">
@@ -75,7 +75,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="center"
                     app:srcCompat="@{mediaItem.list ? @drawable/media_item_list : @drawable/media_item_non_list }"
-                    app:tintColor="@{colorVm.primaryColor}"
+                    app:tintColor="@{colorViewModel.primaryColor}"
                     tools:src="@drawable/media_item_list" />
 
             </androidx.cardview.widget.CardView>
@@ -99,7 +99,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/cardView"
                 app:layout_constraintTop_toTopOf="parent"
-                app:textColor="@{colorVm.textPrimaryColor}"
+                app:textColor="@{colorViewModel.textPrimaryColor}"
                 tools:text="ما تيسر من سورة الفاتحة" />
 
         </com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout>

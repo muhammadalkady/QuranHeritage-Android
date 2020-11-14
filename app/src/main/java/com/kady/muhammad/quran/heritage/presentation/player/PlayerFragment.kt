@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_player.*
 class PlayerFragment : Fragment(), PanelSlideListener {
 
     private val vm: PlayerViewModel by lazy { ViewModelProvider(this).get(PlayerViewModel::class.java) }
-    private val colorVm: ColorViewModel by lazy { (activity as MainActivity).colorViewModel }
+    private val colorViewModel: ColorViewModel by lazy { (activity as MainActivity).colorViewModel }
     private lateinit var binding: FragmentPlayerBinding
     private var isUserSeeking: Boolean = false
     private val upLp = LinearLayout.LayoutParams(0, 0)
@@ -85,7 +85,7 @@ class PlayerFragment : Fragment(), PanelSlideListener {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.fragment = this
         binding.vm = vm
-        binding.colorVm = colorVm
+        binding.colorViewModel = colorViewModel
     }
 
     private fun observerPlayerState() {

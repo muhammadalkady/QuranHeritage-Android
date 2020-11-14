@@ -74,7 +74,7 @@ class MediaAdapter(
         init {
             //
             binding.spanCount = spanCount
-            binding.colorVm = colorViewModel
+            binding.colorViewModel = colorViewModel
             //
             horizontalSwipeLayout.setUpWithRecyclerView(recyclerView, horizontalSwipeLayoutTag)
             horizontalSwipeLayout.setupWithParentHorizontalSwipeLayout(parentHorizontalSwipeLayout)
@@ -86,7 +86,7 @@ class MediaAdapter(
             binding.mediaItem = mediaItem
             binding.position = position
             binding.spanCount = spanCount
-            binding.colorVm = colorViewModel
+            binding.colorViewModel = colorViewModel
             binding.executePendingBindings()
             with(horizontalSwipeLayout) {
                 setOnClickListener { mediaClickListener?.invoke(mediaItem) }

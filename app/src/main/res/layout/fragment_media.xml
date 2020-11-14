@@ -14,7 +14,7 @@
             type="com.kady.muhammad.quran.heritage.presentation.media.MediaFragment" />
 
         <variable
-            name="colorVm"
+            name="colorViewModel"
             type="com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel" />
 
         <import type="android.view.View" />
@@ -57,7 +57,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:paddingTop="24dp"
-                    app:backgroundColor="@{colorVm.primaryColor}"
+                    app:backgroundColor="@{colorViewModel.primaryColor}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -102,12 +102,12 @@
                                 android:textColor="@color/colorAccent"
                                 android:textStyle="bold"
                                 app:fontFamily="@font/main_bold"
-                                app:textColor="@{colorVm.textPrimaryColor}"
+                                app:textColor="@{colorViewModel.textPrimaryColor}"
                                 tools:text="القرآن الكريم" />
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/searchImageView"
-                                android:layout_width="56dp"
+                                android:layout_width="48dp"
                                 android:layout_height="match_parent"
                                 android:background="?android:selectableItemBackgroundBorderless"
                                 android:clickable="true"
@@ -116,38 +116,24 @@
                                 android:scaleType="center"
                                 android:visibility="@{fragment.hideSearch ? View.INVISIBLE : View.VISIBLE}"
                                 app:srcCompat="@drawable/ic_baseline_search_24"
-                                app:tintColor="@{colorVm.textPrimaryColor}" />
-
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:id="@+id/favoriteImageView"
-                                android:layout_width="56dp"
-                                android:layout_height="match_parent"
-                                android:background="?android:selectableItemBackgroundBorderless"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:onClick="@{()->fragment.openFavoriteFragment()}"
-                                android:scaleType="center"
-                                android:visibility="@{fragment.argParentMediaId == Const.MAIN_MEDIA_ID ? View.VISIBLE : View.GONE }"
-                                app:srcCompat="@drawable/ic_outline_favorite_border_24"
-                                app:tintColor="@{colorVm.textPrimaryColor}" />
+                                app:tintColor="@{colorViewModel.textPrimaryColor}" />
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/updateImageView"
-                                android:layout_width="56dp"
+                                android:layout_width="48dp"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
-                                android:layout_marginEnd="16dp"
                                 android:background="?android:selectableItemBackgroundBorderless"
                                 android:clickable="true"
                                 android:focusable="true"
                                 android:gravity="center"
                                 android:scaleType="center"
                                 app:srcCompat="@drawable/ic_round_refresh_24"
-                                app:tintColor="@{colorVm.textPrimaryColor}" />
+                                app:tintColor="@{colorViewModel.textPrimaryColor}" />
 
                             <androidx.appcompat.widget.AppCompatImageView
-                                android:id="@+id/optionsImageView"
-                                android:layout_width="56dp"
+                                android:id="@+id/option_menu_image_view"
+                                android:layout_width="48dp"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
                                 android:background="?android:selectableItemBackgroundBorderless"
@@ -158,7 +144,7 @@
                                 android:scaleType="center"
                                 android:visibility="@{fragment.preview ? View.GONE : View.VISIBLE }"
                                 app:srcCompat="@drawable/ic_baseline_more_vert_24"
-                                app:tintColor="@{colorVm.textPrimaryColor}" />
+                                app:tintColor="@{colorViewModel.textPrimaryColor}" />
 
                         </LinearLayout>
                     </androidx.appcompat.widget.Toolbar>
@@ -172,7 +158,7 @@
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:paddingBottom="36dp"
-                    app:backgroundColor="@{colorVm.color1}"
+                    app:backgroundColor="@{colorViewModel.color1}"
                     app:layout_constraintBottom_toTopOf="@+id/mediaCountTextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -190,11 +176,11 @@
                     android:gravity="center"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    app:backgroundColor="@{colorVm.primaryDarkColor}"
+                    app:backgroundColor="@{colorViewModel.primaryDarkColor}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:textColor="@{colorVm.textSecondaryColor}"
+                    app:textColor="@{colorViewModel.textSecondaryColor}"
                     tools:text="عدد التلاوات ١٠٠ تلاوه"
                     tools:visibility="visible" />
 

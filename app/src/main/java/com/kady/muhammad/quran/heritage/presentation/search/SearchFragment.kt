@@ -36,7 +36,7 @@ class SearchFragment : Fragment() {
             mutableListOf(),
             binding.searchResultRecyclerView,
             binding.rootHorizontalSwipeLayout,
-            colorVm,
+            colorViewModel,
         )
     }
     private val searchImageViewXPosition: Int by lazy {
@@ -51,7 +51,7 @@ class SearchFragment : Fragment() {
     }
     private val vm by lazy { ViewModelProvider(this).get(SearchViewModel::class.java) }
     private val mainActivity: MainActivity by lazy { requireActivity() as MainActivity }
-    private val colorVm: ColorViewModel by lazy { mainActivity.colorViewModel }
+    private val colorViewModel: ColorViewModel by lazy { mainActivity.colorViewModel }
     private val viewHandler = Handler(Looper.getMainLooper())
     private lateinit var binding: FragmentSearchBinding
     private var isRestarted = false
@@ -69,7 +69,7 @@ class SearchFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.fragment = this
         binding.vm = vm
-        binding.colorVm = colorVm
+        binding.colorViewModel = colorViewModel
         return binding.root
     }
 
@@ -125,7 +125,8 @@ class SearchFragment : Fragment() {
                 mainActivity
                     .addFragmentToBackStack(
                         MediaFragment
-                            .newInstance(mediaItem.id, "", mediaItem.title,
+                            .newInstance(
+                                mediaItem.id, "", mediaItem.title,
                                 hideSearch = true,
                                 preview = false
                             ),
@@ -182,7 +183,7 @@ class SearchFragment : Fragment() {
                 requireContext(),
                 R.drawable.search_to_close_avd_anim
             ) as AnimatedVectorDrawable
-            searchToCloseImageViewCopy.tintDrawable(colorVm.avdColor1.value!!)
+            searchToCloseImageViewCopy.tintDrawable(colorViewModel.avdColor1.value!!)
             //
             getContentView().addView(searchToCloseImageViewCopy)
             searchToCloseImageViewCopy.apply {

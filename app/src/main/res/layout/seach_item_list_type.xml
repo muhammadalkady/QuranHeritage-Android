@@ -22,7 +22,7 @@
             type="String" />
 
         <variable
-            name="colorVm"
+            name="colorViewModel"
             type="com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel" />
 
         <import type="com.kady.muhammad.quran.heritage.presentation.color.Color" />
@@ -58,7 +58,7 @@
             android:elevation="12dp"
             android:focusable="true"
             android:tag="horizontalSwipeLayoutChild"
-            app:backgroundColor="@{Color.INSTANCE.colorIndexFromPosition(spanCount,position) == 0 ? colorVm.color1 : colorVm.color2}"
+            app:backgroundColor="@{Color.INSTANCE.colorIndexFromPosition(spanCount,position) == 0 ? colorViewModel.color1 : colorViewModel.color2}"
             app:disableSwipe="false"
             app:maxSwipe="100dp"
             app:swipeBackOnTouchUp="false"
@@ -84,7 +84,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:srcCompat="@drawable/media_item_list"
-                    app:tintColor="@{colorVm.primaryColor}" />
+                    app:tintColor="@{colorViewModel.primaryColor}" />
 
             </androidx.cardview.widget.CardView>
 
@@ -108,7 +108,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/cardView"
                 app:layout_constraintTop_toTopOf="parent"
-                app:textColor="@{colorVm.textPrimaryColor}"
+                app:textColor="@{colorViewModel.textPrimaryColor}"
                 tools:text="ما تيسر من سورة الفاتحة" />
 
         </com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout>

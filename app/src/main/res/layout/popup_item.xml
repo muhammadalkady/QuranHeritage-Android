@@ -11,17 +11,33 @@
 
     </data>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
-        android:focusable="true"
-        android:gravity="center|start"
-        android:minWidth="100dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:singleLine="true"
-        app:textColor="@{colorViewModel.textPrimaryColor}"
-        tools:text="Item" />
+        android:focusable="true">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iconImageView"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="4dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            app:tintColor="@{colorViewModel.textPrimaryColor}" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:gravity="center|start"
+            android:minWidth="100dp"
+            android:singleLine="true"
+            android:textSize="16sp"
+            app:textColor="@{colorViewModel.textPrimaryColor}"
+            tools:text="Item" />
+    </LinearLayout>
+
 </layout>

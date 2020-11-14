@@ -14,13 +14,13 @@
             type="com.kady.muhammad.quran.heritage.presentation.player.PlayerViewModel" />
 
         <variable
-            name="colorVm"
+            name="colorViewModel"
             type="com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel" />
     </data>
 
     <FrameLayout
         android:id="@+id/rootFrameLayout"
-        backgroundColor="@{colorVm.primaryColor}"
+        backgroundColor="@{colorViewModel.primaryColor}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".presentation.player.PlayerFragment">
@@ -45,7 +45,7 @@
 
             <FrameLayout
                 android:id="@+id/up"
-                backgroundColor="@{colorVm.primaryDarkColor}"
+                backgroundColor="@{colorViewModel.primaryDarkColor}"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -58,7 +58,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:srcCompat="@drawable/ic_arrow_up"
-                    app:tintColor="@{colorVm.textPrimaryColor}" />
+                    app:tintColor="@{colorViewModel.textPrimaryColor}" />
 
             </FrameLayout>
 
@@ -73,9 +73,9 @@
                 android:onClick="@{()->vm.toggleRepeatOne()}"
                 android:scaleType="center"
                 app:avd1="@drawable/repeat_one_to_active_avd_anim"
-                app:avd1TintColor="@{colorVm.avdColor1}"
+                app:avd1TintColor="@{colorViewModel.avdColor1}"
                 app:avd2="@drawable/repeat_one_to_inactive_avd_anim"
-                app:avd2TintColor="@{colorVm.avdColor2}" />
+                app:avd2TintColor="@{colorViewModel.avdColor2}" />
 
             <com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
                 android:id="@+id/previous"
@@ -88,7 +88,7 @@
                 android:onClick="@{()->fragment.previous()}"
                 android:scaleType="center"
                 app:avd="@drawable/skip_previous_avd_anim"
-                app:tintColor="@{colorVm.avdColor1}" />
+                app:tintColor="@{colorViewModel.avdColor1}" />
 
             <com.kady.muhammad.quran.heritage.presentation.widget.TwoStatesAVDImageView
                 android:id="@+id/playPause"
@@ -102,7 +102,7 @@
                 android:scaleType="center"
                 app:avd1="@drawable/play_to_pause_rounded_avd_anim"
                 app:avd2="@drawable/pause_to_play_rounded_avd_anim"
-                app:tintColor="@{colorVm.avdColor1}" />
+                app:tintColor="@{colorViewModel.avdColor1}" />
 
             <com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
                 android:id="@+id/next"
@@ -115,7 +115,7 @@
                 android:onClick="@{()->fragment.next()}"
                 android:scaleType="center"
                 app:avd="@drawable/skip_next_avd_anim"
-                app:tintColor="@{colorVm.avdColor1}" />
+                app:tintColor="@{colorViewModel.avdColor1}" />
 
             <com.kady.muhammad.quran.heritage.presentation.widget.TwoStatesAVDImageView
                 android:id="@+id/shuffle"
@@ -128,9 +128,9 @@
                 android:onClick="@{()->vm.toggleShuffle()}"
                 android:scaleType="center"
                 app:avd1="@drawable/shuffle_to_active_avd_anim"
-                app:avd1TintColor="@{colorVm.avdColor1}"
+                app:avd1TintColor="@{colorViewModel.avdColor1}"
                 app:avd2="@drawable/shuffle_to_inactive_avd_anim"
-                app:avd2TintColor="@{colorVm.avdColor2}" />
+                app:avd2TintColor="@{colorViewModel.avdColor2}" />
         </LinearLayout>
 
         <LinearLayout
@@ -141,7 +141,7 @@
 
             <LinearLayout
                 android:id="@+id/metadataContainerLinearLayout"
-                backgroundColor="@{colorVm.primaryDarkColor}"
+                backgroundColor="@{colorViewModel.primaryDarkColor}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipChildren="false"
@@ -151,7 +151,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/title"
-                    textColor="@{colorVm.textPrimaryColor}"
+                    textColor="@{colorViewModel.textPrimaryColor}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -161,7 +161,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/subTitle"
-                    textColor="@{colorVm.textSecondaryColor}"
+                    textColor="@{colorViewModel.textSecondaryColor}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -171,7 +171,7 @@
             </LinearLayout>
 
             <LinearLayout
-                backgroundColor="@{colorVm.primaryColor}"
+                backgroundColor="@{colorViewModel.primaryColor}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -180,7 +180,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/elapsedDuration"
                     style="@style/AppThemeTimeFont"
-                    textColor="@{colorVm.textPrimaryColor}"
+                    textColor="@{colorViewModel.textPrimaryColor}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -198,12 +198,12 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
                     android:layout_weight="1"
-                    app:tintColor="@{colorVm.textSecondaryColor}" />
+                    app:tintColor="@{colorViewModel.textSecondaryColor}" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/duration"
                     style="@style/AppThemeTimeFont"
-                    textColor="@{colorVm.textSecondaryColor}"
+                    textColor="@{colorViewModel.textSecondaryColor}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"

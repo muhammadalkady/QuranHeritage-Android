@@ -87,7 +87,7 @@ class SearchAdapter(
 
         init {
             binding.spanCount = spanCount
-            binding.colorVm = colorViewModel
+            binding.colorViewModel = colorViewModel
             //
             horizontalSwipeLayout.setUpWithRecyclerView(recyclerView, horizontalSwipeLayoutTag)
             horizontalSwipeLayout.setupWithParentHorizontalSwipeLayout(parentHorizontalSwipeLayout)
@@ -112,7 +112,7 @@ class SearchAdapter(
 
         init {
             binding.spanCount = spanCount
-            binding.colorVm = colorViewModel
+            binding.colorViewModel = colorViewModel
             horizontalSwipeLayout.setUpWithRecyclerView(recyclerView, horizontalSwipeLayoutTag)
             horizontalSwipeLayout.setupWithParentHorizontalSwipeLayout(parentHorizontalSwipeLayout)
         }
