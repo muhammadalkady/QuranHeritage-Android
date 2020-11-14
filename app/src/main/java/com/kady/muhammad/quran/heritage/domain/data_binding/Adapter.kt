@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatSeekBar
+import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.databinding.BindingAdapter
@@ -63,6 +64,12 @@ object Adapter {
     @JvmStatic
     fun setBackground(view: View, color: Int) {
         view.setBackgroundColor(color)
+    }
+
+    @BindingAdapter("backgroundColor")
+    @JvmStatic
+    fun setBackground(cardView: CardView, color: Int) {
+        cardView.setCardBackgroundColor(color)
     }
 
     @BindingAdapter("tintColor")

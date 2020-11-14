@@ -145,6 +145,21 @@
                                 app:srcCompat="@drawable/ic_round_refresh_24"
                                 app:tintColor="@{colorVm.textPrimaryColor}" />
 
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/optionsImageView"
+                                android:layout_width="56dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:background="?android:selectableItemBackgroundBorderless"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:gravity="center"
+                                android:onClick="@{()->fragment.showOptionMenu()}"
+                                android:scaleType="center"
+                                android:visibility="@{fragment.preview ? View.GONE : View.VISIBLE }"
+                                app:srcCompat="@drawable/ic_baseline_more_vert_24"
+                                app:tintColor="@{colorVm.textPrimaryColor}" />
+
                         </LinearLayout>
                     </androidx.appcompat.widget.Toolbar>
 

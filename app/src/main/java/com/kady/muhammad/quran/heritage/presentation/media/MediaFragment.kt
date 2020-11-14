@@ -10,7 +10,6 @@ import android.view.animation.LinearInterpolator
 import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.kady.muhammad.quran.heritage.R
@@ -19,14 +18,15 @@ import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.presentation.color.ColorFragment
-import com.kady.muhammad.quran.heritage.presentation.search.SearchFragment
 import com.kady.muhammad.quran.heritage.presentation.ext.ViewProperty
 import com.kady.muhammad.quran.heritage.presentation.ext.animateProperty
 import com.kady.muhammad.quran.heritage.presentation.ext.hide
 import com.kady.muhammad.quran.heritage.presentation.ext.show
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
+import com.kady.muhammad.quran.heritage.presentation.search.SearchFragment
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModel
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModelFactory
+import com.kady.muhammad.quran.heritage.presentation.widget.Popup
 import jp.wasabeef.recyclerview.animators.SlideInDownAnimator
 import kotlinx.android.synthetic.main.fragment_media.*
 
@@ -56,7 +56,7 @@ class MediaFragment : Fragment() {
         requireArguments().getString(Const.TITLE_KEY) ?: getString(R.string.main_title)
     }
 
-    private val preview: Boolean by lazy { requireArguments().getBoolean(Const.PREVIEW_KEY) }
+    val preview: Boolean by lazy { requireArguments().getBoolean(Const.PREVIEW_KEY) }
     val hideSearch: Boolean by lazy { requireArguments().getBoolean(Const.HIDE_SEARCH_KEY) }
     val argParentMediaId: String by lazy { requireArguments().getString(Const.MEDIA_ID)!! }
 
@@ -99,7 +99,6 @@ class MediaFragment : Fragment() {
         setupSwipe()
         setToolbarTitle()
         setupToolbarLogo()
-        setupToolbarMenu()
         setupMediaCount()
         setupUpdate()
         setupRecyclerView()
@@ -134,27 +133,25 @@ class MediaFragment : Fragment() {
         if (preview) return
     }
 
+    fun showOptionMenu() {
+        val popup = Popup(requireContext())
+        popup.addItems(listOf(getString(R.string.colors)))
+        popup.show(binding.optionsImageView)
+        popup.addOnItemClickListener {
+            when (it) {
+                0 -> addColorFragment()
+            }
+        }
+    }
+
     private fun observeColors() {
-        val textColorPrimary: MutableLiveData<Int> = mainActivity.colorViewModel.textPrimaryColor
         mainActivity.colorViewModel.primaryColor.observe(viewLifecycleOwner) {
             adapter.notifyDataSetChanged()
-            binding.toolbar.overflowIcon!!.setTint(textColorPrimary.value!!)
-
         }
     }
 
     private fun animateAppBarLayoutHeight() {
         binding.appBarLayout.animateProperty(ViewProperty.HEIGHT)
-    }
-
-    private fun setupToolbarMenu() {
-        if (!preview) binding.toolbar.inflateMenu(R.menu.menu)
-        binding.toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.colors -> addColorFragment()
-            }
-            true
-        }
     }
 
     private fun addColorFragment() {
@@ -215,9 +212,6 @@ class MediaFragment : Fragment() {
                 else mainActivity.playPause(mediaItem.id)
             }
             //
-            adapter.setOnFavoriteClick { mediaItem, horizontalSwipeLayout ->
-
-            }
         }
     }
 

@@ -8,6 +8,7 @@ import android.content.res.Resources
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
+import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 
@@ -45,7 +46,12 @@ enum class ViewProperty {
     WIDTH, HEIGHT
 }
 
-fun View.animateProperty(viewProperty: ViewProperty, duration: Long = PROPERTY_ANIMATION_DURATION) {
+fun View.animateProperty(
+    viewProperty: ViewProperty,
+    reverse: Boolean = false,
+    duration: Long = PROPERTY_ANIMATION_DURATION,
+    onEnd: () -> Unit = {}
+) {
     doOnLayout {
         val oldProperty = 0
         val newPropertyValue = when (viewProperty) {
@@ -53,7 +59,10 @@ fun View.animateProperty(viewProperty: ViewProperty, duration: Long = PROPERTY_A
             ViewProperty.WIDTH -> width
         }
         val valueAnimator =
-            ValueAnimator.ofInt(oldProperty, newPropertyValue)
+            if (!reverse) ValueAnimator.ofInt(
+                oldProperty,
+                newPropertyValue
+            ) else ValueAnimator.ofInt(newPropertyValue, oldProperty)
         valueAnimator.addUpdateListener {
             val lp = layoutParams
             when (viewProperty) {
@@ -62,6 +71,7 @@ fun View.animateProperty(viewProperty: ViewProperty, duration: Long = PROPERTY_A
             }
             this.layoutParams = lp
         }
+        valueAnimator.doOnEnd { onEnd() }
         valueAnimator.duration = duration
         valueAnimator.start()
     }

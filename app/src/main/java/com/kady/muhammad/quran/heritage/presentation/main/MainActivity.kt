@@ -10,10 +10,10 @@ import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.presentation.color.ColorFragment
 import com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel
-import com.kady.muhammad.quran.heritage.presentation.search.SearchFragment
 import com.kady.muhammad.quran.heritage.presentation.ext.*
 import com.kady.muhammad.quran.heritage.presentation.media.MediaFragment
 import com.kady.muhammad.quran.heritage.presentation.player.PlayerFragment
+import com.kady.muhammad.quran.heritage.presentation.search.SearchFragment
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_player.*
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
             syncPlayerWithPanel(slidingUpPanelLayout, getPanelOffset())
         }
         if (!isRestarted) {
-            mediaFragmentContainerView.animateProperty(ViewProperty.HEIGHT, 1_000L)
+            mediaFragmentContainerView.animateProperty(ViewProperty.HEIGHT, duration = 1_000L)
         }
     }
 
