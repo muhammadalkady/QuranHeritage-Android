@@ -231,7 +231,7 @@ class MediaFragment : Fragment() {
                 else mainActivity.playPause(mediaItem.id)
             }
             //
-            adapter.setOnFavoriteClickListener { mediaItem, horizontalSwipeLayout ->
+            adapter.setOnFavoriteClickListener { mediaItem, _ ->
                 vm.toggleFavorite(mediaItem.id).observe(viewLifecycleOwner) {}
             }
         }
