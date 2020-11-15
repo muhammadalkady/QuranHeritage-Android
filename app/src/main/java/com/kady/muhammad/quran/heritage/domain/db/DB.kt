@@ -35,6 +35,10 @@ object DB : KoinComponent {
         return roomDb.dao().getAllMedia()
     }
 
+    fun getMedia(ids: List<String>): Flow<List<Media>> {
+        return roomDb.dao().getMedia(ids)
+    }
+
     suspend fun deleteMedia(ids: List<String>): Int {
         return roomDb.dao().deleteMedia(ids)
     }

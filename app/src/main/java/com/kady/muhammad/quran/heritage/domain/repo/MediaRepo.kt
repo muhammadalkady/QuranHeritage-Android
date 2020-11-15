@@ -12,16 +12,16 @@ import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMedia
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ChildMediaId
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ParentMedia
 import com.kady.muhammad.quran.heritage.entity.`typealias`.ParentMediaId
-import com.kady.muhammad.quran.heritage.entity.constant.Const
-import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.entity.api_response.File
 import com.kady.muhammad.quran.heritage.entity.api_response.GetMetadataResponse
 import com.kady.muhammad.quran.heritage.entity.api_response.Metadata
 import com.kady.muhammad.quran.heritage.entity.api_response.Response
+import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.ext.toMedia
 import com.kady.muhammad.quran.heritage.entity.media.FavoriteMedia
-import com.kady.muhammad.quran.heritage.entity.media.ParentMediaLocal
+import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.entity.media.ParentMediaData
+import com.kady.muhammad.quran.heritage.entity.media.ParentMediaLocal
 import com.kady.muhammad.quran.heritage.entity.reciter.Reciter
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
@@ -146,7 +146,12 @@ class MediaRepo(private val cc: CoroutineContext) : KoinComponent {
         return allMediaLocal().map { allMedia -> allMedia.filterNot { it.isList }.size }
     }
 
+    @Suppress("EXPERIMENTAL_API_USAGE")
     fun mediaChildrenForParentId(parentMediaId: ParentMediaId = Const.MAIN_MEDIA_ID): Flow<List<ChildMedia>> {
+        if (parentMediaId == Const.FAVORITE_MEDIA_ID) {
+            return db.getAllFavorite()
+                .flatMapConcat { db.getMedia(it.map { favoriteMedia -> favoriteMedia.id }) }
+        }
         return filterMedia(parentMediaId)
     }
 

@@ -1,6 +1,9 @@
 package com.kady.muhammad.quran.heritage.domain.db
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.kady.muhammad.quran.heritage.entity.media.FavoriteMedia
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import kotlinx.coroutines.flow.Flow
@@ -14,13 +17,16 @@ interface DAO {
     @Query("SELECT * FROM Media")
     fun getAllMedia(): Flow<List<Media>>
 
-    @Query("DELETE FROM Media WHERE id in (:ids)")
+    @Query("SELECT * FROM Media WHERE id IN (:ids)")
+    fun getMedia(ids: List<String>): Flow<List<Media>>
+
+    @Query("DELETE FROM Media WHERE id IN (:ids)")
     suspend fun deleteMedia(ids: List<String>): Int
 
     @Insert
     suspend fun insertFavorite(favoriteMedia: FavoriteMedia): Long
 
-    @Query("DELETE FROM FavoriteMedia WHERE id in (:ids)")
+    @Query("DELETE FROM FavoriteMedia WHERE id IN (:ids)")
     suspend fun deleteFavorite(ids: List<String>): Int
 
     @Query("SELECT * FROM FavoriteMedia")

@@ -57,7 +57,7 @@ class MediaAdapter(
         this.mediaClickListener = mediaClickListener
     }
 
-    fun setOnFavoriteClick(favoriteClickListener: (mediaItem: Media, horizontalSwipeLayout: HorizontalSwipeLayout) -> Unit) {
+    fun setOnFavoriteClickListener(favoriteClickListener: (mediaItem: Media, horizontalSwipeLayout: HorizontalSwipeLayout) -> Unit) {
         this.favoriteClickListener = favoriteClickListener
     }
 

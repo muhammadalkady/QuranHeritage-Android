@@ -2,6 +2,7 @@ package com.kady.muhammad.quran.heritage.entity.constant
 
 object Const {
     const val MAIN_MEDIA_ID = "main-media"
+    const val FAVORITE_MEDIA_ID = "favorite-media-id"
     const val MEDIA_ID = "media-id"
     const val HIDE_SEARCH_KEY = "hide-search"
     const val PREVIEW_KEY = "preview"

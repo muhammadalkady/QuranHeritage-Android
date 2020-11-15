@@ -155,6 +155,13 @@ class MediaFragment : Fragment() {
 
     private fun openFavoriteFragment() {
         if (preview) return
+        mainActivity
+            .addFragmentToBackStack(
+                newInstance(
+                    Const.FAVORITE_MEDIA_ID, argTitle, getString(R.string.favorite), false,
+                    preview = false
+                )
+            )
     }
 
     private fun observeColors() {
@@ -224,6 +231,9 @@ class MediaFragment : Fragment() {
                 else mainActivity.playPause(mediaItem.id)
             }
             //
+            adapter.setOnFavoriteClickListener { mediaItem, horizontalSwipeLayout ->
+                vm.toggleFavorite(mediaItem.id).observe(viewLifecycleOwner) {}
+            }
         }
     }
 
