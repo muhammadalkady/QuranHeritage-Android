@@ -2,12 +2,12 @@ package com.kady.muhammad.quran.heritage.presentation.color
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.ColorUtils
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.FragmentColorBinding
@@ -56,7 +56,7 @@ class ColorFragment : Fragment() {
     private fun setupColorPicker() {
         binding.rgbColorPicker.setColorSelectionListener(object : OnColorSelectionListener {
             override fun onColorSelected(color: Int) {
-                vm.primaryDarkColor.value = Color.darkenColor(color, .1F)
+                vm.primaryDarkColor.value = Color.darkenColor(color, .09F)
                 vm.primaryColor.value = color
                 vm.color1.value = color
                 vm.color2.value = Color.lightenColor(color, .1F)
