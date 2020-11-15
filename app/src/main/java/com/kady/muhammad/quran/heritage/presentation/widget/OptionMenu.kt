@@ -10,13 +10,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
+import com.kady.muhammad.quran.heritage.databinding.MenuItemBinding
 import com.kady.muhammad.quran.heritage.databinding.OptionMenuBinding
-import com.kady.muhammad.quran.heritage.databinding.PopupItemBinding
 import com.kady.muhammad.quran.heritage.presentation.ext.ViewProperty
 import com.kady.muhammad.quran.heritage.presentation.ext.animateProperty
 import com.kady.muhammad.quran.heritage.presentation.ext.px
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
-import kotlinx.android.synthetic.main.popup_item.view.*
 import kotlin.math.ceil
 
 class OptionMenu @JvmOverloads constructor(
@@ -28,7 +27,7 @@ class OptionMenu @JvmOverloads constructor(
     private val content: FrameLayout by lazy { (context as Activity).findViewById(android.R.id.content) }
     private val colorViewModel by lazy { (context as MainActivity).colorViewModel }
     private val binding: OptionMenuBinding
-    private val menuItems:MutableList<MenuItem> = mutableListOf()
+    private val menuItems: MutableList<MenuItem> = mutableListOf()
 
     //
     private var isPopupShown = false
@@ -113,13 +112,13 @@ class OptionMenu @JvmOverloads constructor(
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val context = parent.context
             val li = LayoutInflater.from(context)
-            return ViewHolder(DataBindingUtil.inflate(li, R.layout.popup_item, parent, false))
+            return ViewHolder(DataBindingUtil.inflate(li, R.layout.menu_item, parent, false))
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             (holder.itemView).apply {
-                titleTextView.text = items[position].title
-                iconImageView.setImageResource(items[position].icon)
+                holder.binding.titleTextView.text = items[position].title
+                holder.binding.iconImageView.setImageResource(items[position].icon)
                 setOnClickListener {
                     hide()
                     onItemClickListener?.invoke(position)
@@ -137,7 +136,7 @@ class OptionMenu @JvmOverloads constructor(
             notifyItemRangeInserted(0, menuItems.size)
         }
 
-        inner class ViewHolder(binding: PopupItemBinding) :
+        inner class ViewHolder(val binding: MenuItemBinding) :
             RecyclerView.ViewHolder(binding.root) {
             init {
                 binding.colorViewModel = colorViewModel

@@ -12,32 +12,34 @@
     </data>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:minWidth="112dp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iconImageView"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="4dp"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            app:tintColor="@{colorViewModel.textPrimaryColor}" />
+            android:scaleType="center"
+            app:tintColor="@{colorViewModel.textPrimaryColor}"
+            tools:src="@drawable/ic_outline_color_lens_24" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/titleTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="48dp"
             android:gravity="center|start"
-            android:minWidth="100dp"
             android:singleLine="true"
-            android:textSize="16sp"
+            android:textDirection="locale"
             app:textColor="@{colorViewModel.textPrimaryColor}"
             tools:text="Item" />
+
     </LinearLayout>
 
 </layout>

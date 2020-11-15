@@ -25,13 +25,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             app:backgroundColor="@{colorViewModel.primaryDarkColor}">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:listitem="@layout/popup_item" />
+                tools:listitem="@layout/menu_item" />
 
         </androidx.cardview.widget.CardView>
 
