@@ -1,4 +1,4 @@
-package com.kady.muhammad.quran.heritage.presentation.ext
+package com.kady.muhammad.quran.heritage.presentation.common
 
 import android.view.View
 

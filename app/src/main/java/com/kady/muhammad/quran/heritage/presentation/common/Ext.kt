@@ -1,4 +1,4 @@
-package com.kady.muhammad.quran.heritage.presentation.ext
+package com.kady.muhammad.quran.heritage.presentation.common
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -12,7 +12,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 
-private const val PROPERTY_ANIMATION_DURATION = 1_000L
+private const val ANIMATE_HEIGHT_DURATION = 1_000L
 
 fun View.show(onEnd: () -> Unit = {}) {
     animate().alpha(1F).setDuration(300).setListener(object : AnimatorListenerAdapter() {
@@ -42,33 +42,19 @@ fun View.upAnimation(): ObjectAnimator {
     return objectAnimator
 }
 
-enum class ViewProperty {
-    WIDTH, HEIGHT
-}
-
-fun View.animateProperty(
-    viewProperty: ViewProperty,
+fun View.animateHeight(
+    duration: Long = ANIMATE_HEIGHT_DURATION,
     reverse: Boolean = false,
-    duration: Long = PROPERTY_ANIMATION_DURATION,
     onEnd: () -> Unit = {}
 ) {
     doOnLayout {
         val oldProperty = 0
-        val newPropertyValue = when (viewProperty) {
-            ViewProperty.HEIGHT -> height
-            ViewProperty.WIDTH -> width
-        }
         val valueAnimator =
-            if (!reverse) ValueAnimator.ofInt(
-                oldProperty,
-                newPropertyValue
-            ) else ValueAnimator.ofInt(newPropertyValue, oldProperty)
+            if (!reverse) ValueAnimator.ofInt(oldProperty, height)
+            else ValueAnimator.ofInt(height, oldProperty)
         valueAnimator.addUpdateListener {
             val lp = layoutParams
-            when (viewProperty) {
-                ViewProperty.HEIGHT -> lp.height = it.animatedValue as Int
-                ViewProperty.WIDTH -> lp.width = it.animatedValue as Int
-            }
+            lp.height = it.animatedValue as Int
             this.layoutParams = lp
         }
         valueAnimator.doOnEnd { onEnd() }

@@ -12,9 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.MenuItemBinding
 import com.kady.muhammad.quran.heritage.databinding.OptionMenuBinding
-import com.kady.muhammad.quran.heritage.presentation.ext.ViewProperty
-import com.kady.muhammad.quran.heritage.presentation.ext.animateProperty
-import com.kady.muhammad.quran.heritage.presentation.ext.px
+import com.kady.muhammad.quran.heritage.presentation.common.animateHeight
+import com.kady.muhammad.quran.heritage.presentation.common.px
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
 import kotlin.math.ceil
 
@@ -86,7 +85,7 @@ class OptionMenu @JvmOverloads constructor(
             visibility = View.VISIBLE
         }
         content.addView(this)
-        binding.cardView.animateProperty(ViewProperty.HEIGHT, duration = 350)
+        binding.cardView.animateHeight(duration = 350)
         postDelayed({
             requestFocus()
         }, 100)
@@ -99,7 +98,7 @@ class OptionMenu @JvmOverloads constructor(
 
     private fun hide() {
         isPopupShown = false
-        binding.cardView.animateProperty(ViewProperty.HEIGHT, true, duration = 350) {
+        binding.cardView.animateHeight(duration = 350, true) {
             content.removeView(this)
         }
     }

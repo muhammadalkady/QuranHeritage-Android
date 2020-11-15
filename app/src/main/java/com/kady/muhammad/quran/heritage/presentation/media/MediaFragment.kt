@@ -18,10 +18,9 @@ import com.kady.muhammad.quran.heritage.domain.log.Logger
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.presentation.color.ColorFragment
-import com.kady.muhammad.quran.heritage.presentation.ext.ViewProperty
-import com.kady.muhammad.quran.heritage.presentation.ext.animateProperty
-import com.kady.muhammad.quran.heritage.presentation.ext.hide
-import com.kady.muhammad.quran.heritage.presentation.ext.show
+import com.kady.muhammad.quran.heritage.presentation.common.animateHeight
+import com.kady.muhammad.quran.heritage.presentation.common.hide
+import com.kady.muhammad.quran.heritage.presentation.common.show
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
 import com.kady.muhammad.quran.heritage.presentation.search.SearchFragment
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModel
@@ -159,7 +158,7 @@ class MediaFragment : Fragment() {
     }
 
     private fun animateAppBarLayoutHeight() {
-        binding.appBarLayout.animateProperty(ViewProperty.HEIGHT)
+        binding.appBarLayout.animateHeight()
     }
 
     private fun openColorFragment() {

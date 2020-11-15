@@ -9,7 +9,7 @@ import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.MediaItemBinding
 import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel
-import com.kady.muhammad.quran.heritage.presentation.ext.MediaAdapterHelper
+import com.kady.muhammad.quran.heritage.presentation.common.MediaAdapterHelper
 import com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
 import com.kady.muhammad.quran.heritage.presentation.widget.SwipeRecyclerView
 import kotlinx.android.synthetic.main.media_item.view.*
@@ -43,15 +43,14 @@ class MediaAdapter(
         return MediaHolder(DataBindingUtil.inflate(li, R.layout.media_item, parent, false))
     }
 
+    override fun onViewAttachedToWindow(holder: MediaHolder) {
+        holder.itemView.clearAnimation()
+    }
+
     fun updateMedia(mediaList: List<Media>) {
-        val isEmpty = this.mediaList.isEmpty()
         this.mediaList.clear()
         this.mediaList.addAll(mediaList)
-        if (isEmpty) {
-            notifyItemRangeInserted(0, mediaList.size)
-        } else {
-            notifyDataSetChanged()
-        }
+        notifyDataSetChanged()
     }
 
     fun setOnItemClickListener(mediaClickListener: (mediaItem: Media) -> Unit) {
@@ -78,7 +77,6 @@ class MediaAdapter(
             horizontalSwipeLayout.setupWithParentHorizontalSwipeLayout(parentHorizontalSwipeLayout)
             horizontalSwipeLayout.addHorizontalSwipeListener(this)
         }
-
 
         fun bind(mediaItem: Media, position: Int) {
             binding.mediaItem = mediaItem

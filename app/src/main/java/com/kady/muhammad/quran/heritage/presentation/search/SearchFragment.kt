@@ -22,7 +22,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.FragmentSearchBinding
 import com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel
-import com.kady.muhammad.quran.heritage.presentation.ext.*
+import com.kady.muhammad.quran.heritage.presentation.common.animateHeight
+import com.kady.muhammad.quran.heritage.presentation.common.hideKeyboard
+import com.kady.muhammad.quran.heritage.presentation.common.px
+import com.kady.muhammad.quran.heritage.presentation.common.showKeyboard
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
 import com.kady.muhammad.quran.heritage.presentation.media.MediaFragment
 import com.kady.muhammad.quran.heritage.presentation.widget.AVDImageView
@@ -164,7 +167,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun animateHeight() {
-        requireView().animateProperty(ViewProperty.HEIGHT)
+        requireView().animateHeight()
     }
 
     private fun getContentView(): FrameLayout {

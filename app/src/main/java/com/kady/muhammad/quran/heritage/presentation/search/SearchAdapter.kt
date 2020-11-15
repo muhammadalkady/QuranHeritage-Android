@@ -63,14 +63,9 @@ class SearchAdapter(
     }
 
     fun updateMedia(mediaList: List<Media>, query: String) {
-        if (this.mediaList.isEmpty()) {
-            this.mediaList.addAll(mediaList)
-            notifyItemRangeChanged(0, mediaList.size)
-        } else {
-            this.mediaList.clear()
-            this.mediaList.addAll(mediaList)
-            notifyDataSetChanged()
-        }
+        this.mediaList.clear()
+        this.mediaList.addAll(mediaList)
+        notifyDataSetChanged()
         this.query = query
     }
 

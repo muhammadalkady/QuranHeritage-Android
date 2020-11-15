@@ -15,7 +15,7 @@ import com.kady.muhammad.quran.heritage.R
 import com.kady.muhammad.quran.heritage.databinding.FragmentPlayerBinding
 import com.kady.muhammad.quran.heritage.domain.ext.millisToPlayerDuration
 import com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel
-import com.kady.muhammad.quran.heritage.presentation.ext.*
+import com.kady.muhammad.quran.heritage.presentation.common.*
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.android.synthetic.main.fragment_player.*
