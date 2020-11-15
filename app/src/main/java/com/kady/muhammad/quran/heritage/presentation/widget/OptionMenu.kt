@@ -29,7 +29,7 @@ class OptionMenu @JvmOverloads constructor(
     private val menuItems: MutableList<MenuItem> = mutableListOf()
 
     //
-    private var isPopupShown = false
+    private var isMenuShown = false
     private var onItemClickListener: ((Int) -> Unit)? = null
 
     init {
@@ -64,7 +64,7 @@ class OptionMenu @JvmOverloads constructor(
     }
 
     override fun onKeyPreIme(keyCode: Int, event: KeyEvent?): Boolean {
-        if (event?.action == MotionEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && isPopupShown) {
+        if (event?.action == MotionEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && isMenuShown) {
             hide()
             return true
         }
@@ -77,7 +77,7 @@ class OptionMenu @JvmOverloads constructor(
     }
 
     fun show(anchorView: View) {
-        isPopupShown = true
+        isMenuShown = true
         //
         post {
             binding.cardView.x = anchorView.x + 8F.px
@@ -97,7 +97,7 @@ class OptionMenu @JvmOverloads constructor(
     }
 
     private fun hide() {
-        isPopupShown = false
+        isMenuShown = false
         binding.cardView.animateHeight(duration = 350, true) {
             content.removeView(this)
         }
