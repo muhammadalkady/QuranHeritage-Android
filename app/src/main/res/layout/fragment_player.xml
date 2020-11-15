@@ -92,7 +92,7 @@
 
             <com.kady.muhammad.quran.heritage.presentation.widget.TwoStatesAVDImageView
                 android:id="@+id/playPause"
-                android:layout_width="48dp"
+                android:layout_width="28dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="?android:attr/selectableItemBackgroundBorderless"

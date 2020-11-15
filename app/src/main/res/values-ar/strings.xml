@@ -14,4 +14,6 @@
     <string name="search">ابحث عن تلاوة…</string>
     <string name="colors">الألوان</string>
     <string name="favorite">المفضلة</string>
+    <string name="about_app">عن التطبيق</string>
+    <string name="rate_app">قيم التطبيق</string>
 </resources>

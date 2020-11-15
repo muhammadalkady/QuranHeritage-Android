@@ -115,14 +115,10 @@ class OptionMenu @JvmOverloads constructor(
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            (holder.itemView).apply {
-                holder.binding.titleTextView.text = items[position].title
-                holder.binding.iconImageView.setImageResource(items[position].icon)
-                setOnClickListener {
-                    hide()
-                    onItemClickListener?.invoke(position)
-                }
-            }
+            holder.binding.titleTextView.text = items[position].title
+            holder.binding.iconImageView.setImageResource(items[position].icon)
+            setClickListener(holder, position)
+            binding.executePendingBindings()
         }
 
         override fun getItemCount(): Int {
@@ -133,6 +129,13 @@ class OptionMenu @JvmOverloads constructor(
             this.items.clear()
             this.items.addAll(menuItems)
             notifyItemRangeInserted(0, menuItems.size)
+        }
+
+        private fun setClickListener(holder: ViewHolder, position: Int) {
+            holder.binding.root.setOnClickListener {
+                hide()
+                onItemClickListener?.invoke(position)
+            }
         }
 
         inner class ViewHolder(val binding: MenuItemBinding) :

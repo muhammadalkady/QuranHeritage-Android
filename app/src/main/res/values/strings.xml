@@ -14,4 +14,6 @@
     <string name="search">Search for recitation…</string>
     <string name="colors">Colors</string>
     <string name="favorite">Favorite</string>
+    <string name="about_app">About app</string>
+    <string name="rate_app">Rate app</string>
 </resources>

@@ -135,8 +135,14 @@ class MediaFragment : Fragment() {
                 getString(R.string.favorite),
                 R.drawable.ic_outline_favorite_border_24
             )
+        val rateAppMenuItem =
+            OptionMenu.MenuItem(getString(R.string.rate_app), R.drawable.ic_outline_star_rate_24)
+        val aboutMenuItem =
+            OptionMenu.MenuItem(getString(R.string.about_app), R.drawable.ic_outline_info_24)
         optionMenuItems.add(colorsOptionMenuItem)
         optionMenuItems.add(favoriteOptionMenuItem)
+        optionMenuItems.add(rateAppMenuItem)
+        optionMenuItems.add(aboutMenuItem)
         optionMenu.addMenuItems(optionMenuItems)
         optionMenu.show(binding.optionMenuImageView)
         optionMenu.addOnItemClickListener {
