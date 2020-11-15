@@ -54,7 +54,8 @@ class ColorFragment : Fragment() {
     }
 
     private fun setupColorPicker() {
-        binding.rgbColorPicker.setColorSelectionListener(object : OnColorSelectionListener {
+        binding.hslColorPicker.setColor(vm.primaryColor.value!!)
+        binding.hslColorPicker.setColorSelectionListener(object : OnColorSelectionListener {
             override fun onColorSelected(color: Int) {
                 vm.primaryDarkColor.value = Color.darkenColor(color, .09F)
                 vm.primaryColor.value = color

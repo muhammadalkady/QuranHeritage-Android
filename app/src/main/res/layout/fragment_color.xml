@@ -30,15 +30,15 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="300dp"
             android:layout_gravity="bottom"
-            android:background="@android:color/white"
-            android:elevation="12dp">
+            android:elevation="12dp"
+            app:backgroundColor="@{vm.primaryColor}">
 
             <com.madrapps.pikolo.HSLColorPicker
-                android:id="@+id/rgbColorPicker"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
+                android:id="@+id/hslColorPicker"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
                 android:clickable="true"
