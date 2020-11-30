@@ -71,7 +71,6 @@ class MediaRepo(private val cc: CoroutineContext) : KoinComponent {
             Logger.logI(tag = "DB", msg = "deletedFavoriteMediaCount = $deletedFavoriteMediaCount")
             val insertedMediaCount: Int = db.insertAllMedia(media).size
             Logger.logI(tag = "DB", msg = "insertedMediaCount = $insertedMediaCount")
-            Unit
         }
 
     private fun parentMediaToMedia(it: ParentMediaData): List<Media> {
