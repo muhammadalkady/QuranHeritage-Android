@@ -71,7 +71,6 @@ def room_version = "2.3.0-alpha03"
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.google.android.exoplayer:exoplayer:$exo_Player"
     implementation "com.sothree.slidinguppanel:library:$slidinguppanel"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
