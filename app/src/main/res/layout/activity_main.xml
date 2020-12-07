@@ -1,48 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:fitsSystemWindows="false"
-    tools:context="com.kady.muhammad.quran.heritage.presentation.main.MainActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.sothree.slidinguppanel.SlidingUpPanelLayout
-        android:id="@+id/slidingUpPanelLayout"
+    <data>
+
+    </data>
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:gravity="bottom"
-        sothree:umanoPanelHeight="64dp"
-        sothree:umanoShadowHeight="4dp">
+        android:fitsSystemWindows="false"
+        tools:context="com.kady.muhammad.quran.heritage.presentation.main.MainActivity">
+
+        <com.sothree.slidinguppanel.SlidingUpPanelLayout
+            android:id="@+id/slidingUpPanelLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:gravity="bottom"
+            sothree:umanoPanelHeight="64dp"
+            sothree:umanoShadowHeight="4dp">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/mediaFragmentContainerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/playerFragment"
+                android:name="com.kady.muhammad.quran.heritage.presentation.player.PlayerFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:tag="player"
+                tools:layout="@layout/fragment_player">
+
+            </androidx.fragment.app.FragmentContainerView>
+
+        </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
         <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/mediaFragmentContainerView"
+            android:id="@+id/rootFragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipChildren="false"
             android:clipToPadding="false" />
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/playerFragment"
-            android:name="com.kady.muhammad.quran.heritage.presentation.player.PlayerFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:tag="player"
-            tools:layout="@layout/fragment_player">
-
-        </androidx.fragment.app.FragmentContainerView>
-
-    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/rootFragmentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false" />
-
-</FrameLayout>
+    </FrameLayout>
+</layout>

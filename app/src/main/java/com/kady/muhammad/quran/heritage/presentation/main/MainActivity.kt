@@ -3,10 +3,12 @@ package com.kady.muhammad.quran.heritage.presentation.main
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.kady.muhammad.quran.heritage.R
+import com.kady.muhammad.quran.heritage.databinding.ActivityMainBinding
 import com.kady.muhammad.quran.heritage.entity.constant.Const
 import com.kady.muhammad.quran.heritage.presentation.color.ColorFragment
 import com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel
@@ -18,8 +20,6 @@ import com.kady.muhammad.quran.heritage.presentation.media.MediaFragment
 import com.kady.muhammad.quran.heritage.presentation.player.PlayerFragment
 import com.kady.muhammad.quran.heritage.presentation.search.SearchFragment
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_player.*
 
 class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListener,
     PlayerUpClickListener, PanelLayout {
@@ -29,24 +29,25 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
         supportFragmentManager.findFragmentByTag("player") as PlayerFragment
     }
     private var isRestarted = false
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isRestarted = savedInstanceState != null
-        setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         if (savedInstanceState == null) addMediaFragment()
-        slidingUpPanelLayout.post {
+        binding.slidingUpPanelLayout.post {
             setupSlidingPanel()
-            syncPlayerWithPanel(slidingUpPanelLayout, getPanelOffset())
+            syncPlayerWithPanel(binding.slidingUpPanelLayout, getPanelOffset())
         }
         if (!isRestarted) {
-            mediaFragmentContainerView.animateHeight(duration = 1_000L)
+            binding.mediaFragmentContainerView.animateHeight(duration = 1_000L)
         }
     }
 
     override fun onBackPressed() {
-        if (slidingUpPanelLayout.panelState == SlidingUpPanelLayout.PanelState.EXPANDED) {
-            slidingUpPanelLayout.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
+        if (binding.slidingUpPanelLayout.panelState == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            binding.slidingUpPanelLayout.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
         } else {
             super.onBackPressed()
         }
@@ -64,11 +65,11 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
     }
 
     override fun onUp() {
-        slidingUpPanelLayout.panelState = SlidingUpPanelLayout.PanelState.EXPANDED
+        binding.slidingUpPanelLayout.panelState = SlidingUpPanelLayout.PanelState.EXPANDED
     }
 
     override fun getPanel(): SlidingUpPanelLayout {
-        return slidingUpPanelLayout
+        return binding.slidingUpPanelLayout
     }
 
     private fun addMediaFragment() {
@@ -90,12 +91,12 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
     }
 
     private fun setupSlidingPanel() {
-        slidingUpPanelLayout.addPanelSlideListener(this)
-        slidingUpPanelLayout.setDragView(playerFragment.rootFrameLayout)
+        binding.slidingUpPanelLayout.addPanelSlideListener(this)
+        binding.slidingUpPanelLayout.setDragView(playerFragment.binding.rootFrameLayout)
     }
 
     private fun getPanelOffset(): Float =
-        if (slidingUpPanelLayout.panelState == SlidingUpPanelLayout.PanelState.EXPANDED) 1F else 0F
+        if (binding.slidingUpPanelLayout.panelState == SlidingUpPanelLayout.PanelState.EXPANDED) 1F else 0F
 
     fun playPause(mediaId: String) {
         playerFragment.playPause(mediaId)

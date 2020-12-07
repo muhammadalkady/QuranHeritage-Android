@@ -11,7 +11,6 @@ import com.kady.muhammad.quran.heritage.entity.media.Media
 import com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel
 import com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
 import com.kady.muhammad.quran.heritage.presentation.widget.SwipeRecyclerView
-import kotlinx.android.synthetic.main.media_item.view.*
 
 class SearchAdapter(
     private val spanCount: Int,
@@ -77,7 +76,7 @@ class SearchAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         private val horizontalSwipeLayout: HorizontalSwipeLayout =
-            binding.root.horizontalSwipeLayout
+            binding.horizontalSwipeLayout
         private val horizontalSwipeLayoutTag = "${horizontalSwipeLayout.tag}"
 
         init {
@@ -93,8 +92,8 @@ class SearchAdapter(
             binding.position = position
             binding.query = query
             binding.executePendingBindings()
-            binding.root.horizontalSwipeLayout.setOnClickListener { listener?.invoke(mediaItem) }
-            binding.root.horizontalSwipeLayoutActions.setOnClickListener { horizontalSwipeLayout.swipeBack() }
+            binding.horizontalSwipeLayout.setOnClickListener { listener?.invoke(mediaItem) }
+            binding.horizontalSwipeLayoutActions.setOnClickListener { horizontalSwipeLayout.swipeBack() }
         }
     }
 
@@ -102,7 +101,7 @@ class SearchAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         private val horizontalSwipeLayout: HorizontalSwipeLayout =
-            binding.root.horizontalSwipeLayout
+            binding.horizontalSwipeLayout
         private val horizontalSwipeLayoutTag = "${horizontalSwipeLayout.tag}"
 
         init {
@@ -117,8 +116,8 @@ class SearchAdapter(
             binding.position = position
             binding.query = query
             binding.executePendingBindings()
-            binding.root.horizontalSwipeLayout.setOnClickListener { listener?.invoke(mediaItem) }
-            binding.root.horizontalSwipeLayoutActions.setOnClickListener { horizontalSwipeLayout.swipeBack() }
+            binding.horizontalSwipeLayout.setOnClickListener { listener?.invoke(mediaItem) }
+            binding.horizontalSwipeLayoutActions.setOnClickListener { horizontalSwipeLayout.swipeBack() }
         }
 
     }

@@ -12,7 +12,6 @@ import com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel
 import com.kady.muhammad.quran.heritage.presentation.common.MediaAdapterHelper
 import com.kady.muhammad.quran.heritage.presentation.widget.HorizontalSwipeLayout
 import com.kady.muhammad.quran.heritage.presentation.widget.SwipeRecyclerView
-import kotlinx.android.synthetic.main.media_item.view.*
 
 class MediaAdapter(
     context: Context,
@@ -64,9 +63,9 @@ class MediaAdapter(
     inner class MediaHolder(private val binding: MediaItemBinding) :
         RecyclerView.ViewHolder(binding.root), HorizontalSwipeLayout.HorizontalSwipeListener {
 
-        private val horizontalSwipeLayout = binding.root.horizontalSwipeLayout
+        private val horizontalSwipeLayout = binding.horizontalSwipeLayout
         private val horizontalSwipeLayoutTag = "${horizontalSwipeLayout.tag}"
-        private val horizontalSwipeLayoutActions = binding.root.horizontalSwipeLayoutActions
+        private val horizontalSwipeLayoutActions = binding.horizontalSwipeLayoutActions
 
         init {
             //

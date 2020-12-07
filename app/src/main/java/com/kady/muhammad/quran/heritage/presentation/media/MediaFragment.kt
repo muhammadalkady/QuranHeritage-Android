@@ -26,7 +26,6 @@ import com.kady.muhammad.quran.heritage.presentation.search.SearchFragment
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModel
 import com.kady.muhammad.quran.heritage.presentation.vm.MediaViewModelFactory
 import com.kady.muhammad.quran.heritage.presentation.widget.OptionMenu
-import kotlinx.android.synthetic.main.fragment_media.*
 
 class MediaFragment : Fragment() {
 
@@ -82,7 +81,7 @@ class MediaFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_media, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.vm = vm
@@ -179,7 +178,8 @@ class MediaFragment : Fragment() {
     }
 
     private fun setupSwipe() {
-        if (argParentMediaId == Const.MAIN_MEDIA_ID) rootHorizontalSwipeLayout.disableSwipe = true
+        if (argParentMediaId == Const.MAIN_MEDIA_ID) binding.rootHorizontalSwipeLayout.disableSwipe =
+            true
         binding.rootHorizontalSwipeLayout.addDismissListener {
             animationEnabled = false
             requireActivity().supportFragmentManager.popBackStackImmediate()

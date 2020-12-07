@@ -18,15 +18,14 @@ import com.kady.muhammad.quran.heritage.presentation.color.ColorViewModel
 import com.kady.muhammad.quran.heritage.presentation.common.*
 import com.kady.muhammad.quran.heritage.presentation.main.MainActivity
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import kotlinx.android.synthetic.main.fragment_player.*
 
 class PlayerFragment : Fragment(), PanelSlideListener {
 
     private val vm: PlayerViewModel by lazy { ViewModelProvider(this).get(PlayerViewModel::class.java) }
     private val colorViewModel: ColorViewModel by lazy { (activity as MainActivity).colorViewModel }
-    private lateinit var binding: FragmentPlayerBinding
-    private var isUserSeeking: Boolean = false
     private val upLp = LinearLayout.LayoutParams(0, 0)
+    private var isUserSeeking: Boolean = false
+    lateinit var binding: FragmentPlayerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,17 +57,17 @@ class PlayerFragment : Fragment(), PanelSlideListener {
 
     override fun onPanelSlide(panel: View, slideOffset: Float) {
         view ?: return
-        up.layoutParams = upLp.apply {
+        binding.up.layoutParams = upLp.apply {
             width = 0
             height = LinearLayout.LayoutParams.MATCH_PARENT
             weight = 1 - slideOffset
         }
-        up.translationX = slideOffset * up.width
-        metadataContainerLinearLayout.alpha = slideOffset
+        binding.up.translationX = slideOffset * binding.up.width
+        binding.metadataContainerLinearLayout.alpha = slideOffset
     }
 
     private fun setupUp() {
-        upIcon.upAnimation()
+        binding.upIcon.upAnimation()
     }
 
     private fun syncWithPanelLayout() {
@@ -109,69 +108,69 @@ class PlayerFragment : Fragment(), PanelSlideListener {
 
     private fun setSeekBarMax(max: Long) {
         if (max <= 0) return
-        seekBar.max = max.toInt()
+        binding.seekBar.max = max.toInt()
     }
 
     private fun setDuration(mediaItemDuration: String) {
-        duration.text = mediaItemDuration
+        binding.duration.text = mediaItemDuration
     }
 
     private fun setTitle(mediaTitle: String) {
-        title.text = mediaTitle
+        binding.title.text = mediaTitle
     }
 
     private fun setSubTitle(mediaSubTitle: String) {
-        subTitle.text = mediaSubTitle
+        binding.subTitle.text = mediaSubTitle
     }
 
     private fun observerElapsedTime() {
         vm.elapsedTime.observe(viewLifecycleOwner, {
             if (!isUserSeeking) {
-                elapsedDuration.text = it.first
-                seekBar.setProgressCompat(it.second)
+                binding.elapsedDuration.text = it.first
+                binding.seekBar.setProgressCompat(it.second)
             }
         })
     }
 
     private fun observerRepeatOneMode() {
         vm.repeatOne.observe(viewLifecycleOwner, {
-            if (it) repeatOne.toState1() else repeatOne.toState2()
+            if (it) binding.repeatOne.toState1() else binding.repeatOne.toState2()
         })
     }
 
     private fun observerShuffleMode() {
         vm.shuffle.observe(viewLifecycleOwner, {
-            if (it) shuffle.toState1() else shuffle.toState2()
+            if (it) binding.shuffle.toState1() else binding.shuffle.toState2()
         })
     }
 
     private fun onPlaying() {
-        loadingProgressBar.hide()
-        playPause.toState1()
+        binding.loadingProgressBar.hide()
+        binding.playPause.toState1()
     }
 
     private fun onPaused() {
-        loadingProgressBar.hide()
-        playPause.toState2()
+        binding.loadingProgressBar.hide()
+        binding.playPause.toState2()
     }
 
     private fun onError() {
-        loadingProgressBar.hide()
-        playPause.toState2()
+        binding.loadingProgressBar.hide()
+        binding.playPause.toState2()
     }
 
     private fun onBuffering() {
-        loadingProgressBar.show()
-        playPause.toState1()
+        binding.loadingProgressBar.show()
+        binding.playPause.toState1()
     }
 
     private fun onStopped() {
-        loadingProgressBar.hide()
-        playPause.toState2()
+        binding.loadingProgressBar.hide()
+        binding.playPause.toState2()
     }
 
     private fun SeekBar.setProgressCompat(inProgress: Long) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) seekBar.setProgress(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) binding.seekBar.setProgress(
             inProgress.toInt(),
             true
         )
@@ -179,11 +178,11 @@ class PlayerFragment : Fragment(), PanelSlideListener {
     }
 
     private fun setSeekBarChangeListener() {
-        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekbar: SeekBar, progress: Int, isFromUser: Boolean) {
                 if (isFromUser) {
                     isUserSeeking = true
-                    elapsedDuration.text = progress.toLong().millisToPlayerDuration()
+                    binding.elapsedDuration.text = progress.toLong().millisToPlayerDuration()
                 }
             }
 
@@ -198,12 +197,12 @@ class PlayerFragment : Fragment(), PanelSlideListener {
     fun playPause(mediaId: String) = vm.playPause(mediaId)
 
     fun previous() {
-        previous.startAVDAnim()
+        binding.previous.startAVDAnim()
         vm.previous()
     }
 
     fun next() {
-        next.startAVDAnim()
+        binding.next.startAVDAnim()
         vm.next()
     }
 

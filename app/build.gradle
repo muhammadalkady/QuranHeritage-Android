@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
 
 android {
     compileSdkVersion 30
@@ -46,6 +46,7 @@ android {
     }
     buildFeatures {
         dataBinding = true
+        viewBinding = true
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -102,7 +103,4 @@ dependencies {
     androidTestImplementation "androidx.test:runner:1.3.0"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.3.0"
     testImplementation "androidx.room:room-testing:$room_version"
-}
-androidExtensions {
-    experimental = true
 }
