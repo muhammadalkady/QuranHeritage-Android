@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity(), SlidingUpPanelLayout.PanelSlideListene
         super.onCreate(savedInstanceState)
         isRestarted = savedInstanceState != null
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.colorViewModel = colorViewModel
         if (savedInstanceState == null) addMediaFragment()
         binding.slidingUpPanelLayout.post {
             setupSlidingPanel()
